@@ -579,7 +579,7 @@ function GameAchievementsPanel({ ga }: { ga: GameAchievements }) {
 }
 
 export default function App() {
-    const { data, connected } = useStats()
+    const { data, connected, stale } = useStats()
     const gameLive  = connected && !!data && (Date.now() / 1000 - data.last_updated) < 15
     const gameState = gameLive ? (data!.game_state === 'playing' ? 'playing' : 'menu') : 'off'
 
@@ -609,7 +609,7 @@ export default function App() {
                     {connected ? 'Waiting for stats — load a save in-game.' : 'Connecting to server…'}
                 </div>
             ) : (
-                <main>
+                <main style={stale ? { opacity: 0.5, pointerEvents: 'none' } : undefined}>
                     <CurrentRunPanel stats={data.session} location={data.actor?.location} locationName={data.actor?.location_name} gameTime={data.actor?.game_time} companions={data.companions} />
                     {Array.isArray(data.last_run) && data.last_run.map((run, i) => <LastRunPanel key={run.start} run={run} index={i} />)}
                     <StatsPanel title="All Time"          stats={data.alltime} />
