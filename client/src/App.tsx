@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import { useStats } from './useStats'
 import type { StatsBlock, SessionBlock, PdaStats, ActorInfo, Kills, GameAchievements, Companion } from './types'
@@ -583,6 +583,10 @@ export default function App() {
     const gameLive  = connected && !!data && (Date.now() / 1000 - data.last_updated) < 15
     const gameState = gameLive ? (data!.game_state === 'playing' ? 'playing' : 'menu') : 'off'
 
+    const lastActorRef = useRef<ActorInfo | null>(null)
+    if (data?.actor?.name) lastActorRef.current = data.actor
+    const displayActor = data?.actor?.name ? data.actor : lastActorRef.current
+
     return (
         <div className="app">
             <header>
@@ -602,7 +606,7 @@ export default function App() {
                 </div>
             </header>
 
-            {data?.actor && <PlayerCard actor={data.actor} money={data.actor.money} />}
+            {displayActor && <PlayerCard actor={displayActor} money={displayActor.money} />}
 
             {!data ? (
                 <div className="empty">
@@ -610,7 +614,7 @@ export default function App() {
                 </div>
             ) : (
                 <main style={stale ? { opacity: 0.5, pointerEvents: 'none' } : undefined}>
-                    <CurrentRunPanel stats={data.session} location={data.actor?.location} locationName={data.actor?.location_name} gameTime={data.actor?.game_time} companions={data.companions} />
+                    <CurrentRunPanel stats={data.session} location={displayActor?.location} locationName={displayActor?.location_name} gameTime={displayActor?.game_time} companions={data.companions} />
                     {Array.isArray(data.last_run) && data.last_run.map((run, i) => <LastRunPanel key={run.start} run={run} index={i} />)}
                     <StatsPanel title="All Time"          stats={data.alltime} />
                     {data.alltime_official && <PdaStatsPanel stats={data.alltime_official} />}
