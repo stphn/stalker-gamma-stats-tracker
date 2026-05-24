@@ -334,7 +334,7 @@ function CurrentRunPanel({ stats, location, locationName, gameTime, companions }
     const alive = stats.deaths === 0
     const deathLine = alive ? null : DEATH_LINES[(stats as SessionBlock).start % DEATH_LINES.length]
     return (
-        <section className="panel">
+        <section className={`panel${alive ? '' : ' panel--dead'}`}>
             <div className="panel-head">
                 <div>
                     <h2>{alive ? 'Current Run' : 'Last Run'}</h2>
