@@ -198,7 +198,7 @@ function KillBreakdown({ kills }: { kills: Kills }) {
                             </Pie>
                             <Tooltip
                                 contentStyle={{ background: '#161616', border: '1px solid #2a2a2a', borderRadius: '3px', color: '#c9c9c9', fontFamily: 'Chakra Petch, monospace', fontSize: '12px' }}
-                                formatter={(value: number, name: string) => [value, name]}
+                                formatter={(value, name) => [value, name] as [typeof value, typeof name]}
                             />
                         </PieChart>
                     </ResponsiveContainer>
