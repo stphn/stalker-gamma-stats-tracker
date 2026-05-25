@@ -1,17 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
 import type { StatsData } from './types'
 
-const isLocal   = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-const WS_URL    = import.meta.env.VITE_WS_URL ?? `${isLocal ? 'ws' : 'wss'}://${window.location.hostname}:3001`
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY as string
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
 const CACHE_KEY = 'tracker_last_stats'
 
 function loadCache(): StatsData | null {
-    try {
-        const raw = localStorage.getItem(CACHE_KEY)
-        return raw ? JSON.parse(raw) : null
-    } catch { return null }
+    try { return JSON.parse(localStorage.getItem(CACHE_KEY) ?? 'null') }
+    catch { return null }
 }
-
 function saveCache(data: StatsData) {
     try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)) } catch {}
 }
@@ -20,27 +21,43 @@ export function useStats() {
     const [data, setData]           = useState<StatsData | null>(loadCache)
     const [connected, setConnected] = useState(false)
     const [stale, setStale]         = useState(true)
-    const wsRef = useRef<WebSocket | null>(null)
 
     useEffect(() => {
-        function connect() {
-            const ws = new WebSocket(WS_URL)
-            wsRef.current = ws
-
-            ws.onopen    = () => setConnected(true)
-            ws.onclose   = () => { setConnected(false); setStale(true); setTimeout(connect, 3000) }
-            ws.onerror   = () => ws.close()
-            ws.onmessage = e => {
-                try {
-                    const parsed = JSON.parse(e.data) as StatsData
-                    setData(parsed)
+        // Initial fetch
+        supabase
+            .from('stats')
+            .select('data')
+            .eq('id', 'live')
+            .single()
+            .then(({ data: row }) => {
+                if (row?.data) {
+                    setData(row.data as StatsData)
+                    saveCache(row.data as StatsData)
                     setStale(false)
-                    saveCache(parsed)
-                } catch {}
-            }
-        }
-        connect()
-        return () => wsRef.current?.close()
+                }
+            })
+
+        // Realtime subscription
+        const channel = supabase
+            .channel('stats-live')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'stats', filter: 'id=eq.live' },
+                payload => {
+                    const incoming = (payload.new as { data: StatsData }).data
+                    if (incoming) {
+                        setData(incoming)
+                        saveCache(incoming)
+                        setStale(false)
+                        setConnected(true)
+                    }
+                }
+            )
+            .subscribe(status => {
+                setConnected(status === 'SUBSCRIBED')
+            })
+
+        return () => { supabase.removeChannel(channel) }
     }, [])
 
     return { data, connected, stale }
