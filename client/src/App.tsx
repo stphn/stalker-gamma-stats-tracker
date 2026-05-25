@@ -225,9 +225,15 @@ function day_period(h: number): { label: string; color: string } {
 }
 
 function StatCard({ label, value }: { label: string; value: React.ReactNode }) {
+    const keyRef  = useRef(0)
+    const prevRef = useRef(value)
+    if (prevRef.current !== value) {
+        prevRef.current = value
+        keyRef.current++
+    }
     return (
         <div className="stat-card">
-            <div className="stat-value">{value}</div>
+            <div key={keyRef.current} className="stat-value">{value}</div>
             <div className="stat-label">{label}</div>
         </div>
     )
