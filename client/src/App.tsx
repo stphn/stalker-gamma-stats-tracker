@@ -376,17 +376,23 @@ function CurrentRunPanel({ stats, location, locationName, gameTime, companions, 
     )
 }
 
+function ordinal(n: number) {
+    const s = ['th','st','nd','rd']
+    const v = n % 100
+    return n + (s[(v - 20) % 10] ?? s[v] ?? s[0])
+}
+
 function LastRunPanel({ run, index }: { run: SessionBlock; index: number }) {
     const loc = run.death_location
         ? fmt_location(run.death_location, run.death_location_name)
         : null
+    const label = index === 0 ? 'Last Stand' : `${ordinal(index + 1)} Last Stand`
     return (
         <section className="panel last-run-panel">
             <div className="panel-head">
-                <h2>{index === 0 ? 'Previous Run' : `${index + 1} Runs Ago`}</h2>
+                <h2><span className="run-icon dead" style={{ fontSize: '0.85em', marginRight: '0.35em' }}>☠</span>{label}</h2>
                 <div className="run-status">
                     <span className="run-time" style={{ color: 'var(--text-dim)' }}>{fmt_time(run.playtime)}</span>
-                    <span className="run-icon dead">☠</span>
                 </div>
             </div>
             <div className="last-run-body">
