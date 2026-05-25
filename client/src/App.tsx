@@ -330,14 +330,18 @@ const DEATH_LINES = [
     'The Zone giveth, the Zone taketh.',
 ]
 
-function CurrentRunPanel({ stats, location, locationName, gameTime, companions }: { stats: StatsBlock; location?: string; locationName?: string; gameTime?: { h: number; m: number }; companions?: Companion[] }) {
+function CurrentRunPanel({ stats, location, locationName, gameTime, companions, gameState }: { stats: StatsBlock; location?: string; locationName?: string; gameTime?: { h: number; m: number }; companions?: Companion[]; gameState?: 'playing' | 'menu' | 'off' }) {
     const alive = stats.deaths === 0
     const deathLine = alive ? null : DEATH_LINES[(stats as SessionBlock).start % DEATH_LINES.length]
+    const idleBadge = alive && gameState && gameState !== 'playing'
+        ? (gameState === 'menu' ? 'In Menu' : 'Off')
+        : null
     return (
         <section className={`panel${alive ? '' : ' panel--dead'}`}>
             <div className="panel-head">
-                <div>
+                <div className="panel-head-title">
                     <h2>{alive ? 'Current Run' : 'Last Run'}</h2>
+                    {idleBadge && <span className="run-idle-badge">{idleBadge}</span>}
                     {deathLine && <div className="death-line">{deathLine}</div>}
                 </div>
                 <div className="run-status">
@@ -614,7 +618,7 @@ export default function App() {
                 </div>
             ) : (
                 <main style={stale ? { opacity: 0.5, pointerEvents: 'none' } : undefined}>
-                    <CurrentRunPanel stats={data.session} location={displayActor?.location} locationName={displayActor?.location_name} gameTime={displayActor?.game_time} companions={data.companions} />
+                    <CurrentRunPanel stats={data.session} location={displayActor?.location} locationName={displayActor?.location_name} gameTime={displayActor?.game_time} companions={data.companions} gameState={gameState} />
                     {Array.isArray(data.last_run) && data.last_run.map((run, i) => <LastRunPanel key={run.start} run={run} index={i} />)}
                     <StatsPanel title="All Time"          stats={data.alltime} />
                     {data.alltime_official && <PdaStatsPanel stats={data.alltime_official} />}
