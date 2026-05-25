@@ -559,7 +559,18 @@ main { display: grid; gap: 24px; }
     gap: 16px;
 }
 
+.donut-row > :first-child {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px;
+}
+
 .donut-legend { display: grid; gap: 5px; align-content: center; }
+
+
+.donut-legend--large { gap: 10px; }
+.donut-legend--large .donut-legend-name  { font-size: 14px; color: var(--text); }
+.donut-legend--large .donut-legend-value { font-size: 14px; font-weight: 700; color: #fff; }
 
 @container panel (max-width: 500px) {
     .donut-row { grid-template-columns: 1fr; }
@@ -567,7 +578,7 @@ main { display: grid; gap: 24px; }
 
 .donut-legend-item {
     display: grid;
-    grid-template-columns: 8px 1fr auto;
+    grid-template-columns: 18px 1fr auto;
     align-items: center;
     gap: 8px;
 }
@@ -579,15 +590,22 @@ main { display: grid; gap: 24px; }
     flex-shrink: 0;
 }
 
+.donut-legend-badge {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
 .donut-legend-name {
     font-family: var(--font-display);
-    font-size: 11px;
-    color: var(--text-dim);
+    font-size: 13px;
 }
 
 .donut-legend-value {
     font-family: var(--font-display);
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text);
     text-align: right;
 }

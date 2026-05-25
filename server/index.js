@@ -11,12 +11,21 @@ const PORT       = process.env.PORT || 3001
 const CERT_CRT   = process.env.TLS_CERT || 'C:/Users/sgoeu/greybox3090.tail77f472.ts.net.crt'
 const CERT_KEY   = process.env.TLS_KEY  || 'C:/Users/sgoeu/greybox3090.tail77f472.ts.net.key'
 
-const app    = express()
+const app          = express()
 const tlsAvailable = fs.existsSync(CERT_CRT) && fs.existsSync(CERT_KEY)
-const server = tlsAvailable
+const server       = tlsAvailable
     ? https.createServer({ cert: fs.readFileSync(CERT_CRT), key: fs.readFileSync(CERT_KEY) }, app)
     : http.createServer(app)
-const wss    = new WebSocketServer({ server })
+
+// Plain HTTP listener for local dev (ws://localhost:3002) when TLS is active
+const localServer  = tlsAvailable ? http.createServer(app) : null
+const wss          = new WebSocketServer({ noServer: true })
+
+;[server, localServer].filter(Boolean).forEach(s => {
+    s.on('upgrade', (req, socket, head) => {
+        wss.handleUpgrade(req, socket, head, ws => wss.emit('connection', ws, req))
+    })
+})
 
 app.use(cors())
 
@@ -59,3 +68,10 @@ server.listen(PORT, () => {
     console.log(`TLS              → ${tlsAvailable ? 'yes (WSS)' : 'no (WS)'}`)
     console.log(`Watching         → ${STATS_FILE}`)
 })
+
+if (localServer) {
+    const LOCAL_PORT = Number(PORT) + 1
+    localServer.listen(LOCAL_PORT, () => {
+        console.log(`Local WS (no TLS) → ws://localhost:${LOCAL_PORT}`)
+    })
+}

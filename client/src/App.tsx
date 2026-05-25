@@ -149,18 +149,18 @@ function CombatBar({ kills, deaths }: { kills: number; deaths?: number }) {
     )
 }
 
-function KillBreakdown({ kills }: { kills: Kills }) {
-    const allRows: [string, number, string][] = [
-        ['Loners',      kills.stalker,    '#4a9eff'],
-        ['Bandits',     kills.bandit,     '#e8a838'],
-        ['Military',    kills.military,   '#5cb85c'],
-        ['Freedom',     kills.freedom,    '#9b59b6'],
-        ['Duty',        kills.duty,       '#e74c3c'],
-        ['Ecologists',  kills.ecolog,     '#1abc9c'],
-        ['Clear Sky',   kills.csky,       '#3498db'],
-        ['Monolith',    kills.monolith,   '#8e44ad'],
-        ['Mercs',       kills.killer,     '#e67e22'],
-        ['Renegades',   kills.renegade,   '#95a5a6'],
+function KillBreakdown({ kills, large }: { kills: Kills; large?: boolean }) {
+    const allRows: [string, number, string, string?][] = [
+        ['Loners',      kills.stalker,    '#d4a832', '/factions/faction_loners.png'],
+        ['Bandits',     kills.bandit,     '#a8a8a8', '/factions/faction_bandits.png'],
+        ['Military',    kills.military,   '#c8a830', '/factions/faction_military.png'],
+        ['Freedom',     kills.freedom,    '#4cae5a', '/factions/faction_freedom.png'],
+        ['Duty',        kills.duty,       '#c0362a', '/factions/faction_duty.png'],
+        ['Ecologists',  kills.ecolog,     '#c8b040', '/factions/faction_ecologists.png'],
+        ['Clear Sky',   kills.csky,       '#4a9ee0', '/factions/faction_clearsky.png'],
+        ['Monolith',    kills.monolith,   '#38b8b8', '/factions/faction_monolith.png'],
+        ['Mercs',       kills.killer,     '#4a7ec8', '/factions/faction_mercenary.png'],
+        ['Renegades',   kills.renegade,   '#7a8c30', '/factions/faction_renegades.png'],
         ['Mutants',     kills.mutant,     '#c0392b'],
         ['Helicopters', kills.helicopter, '#f39c12'],
         ['Other',       kills.other,      '#7f8c8d'],
@@ -171,10 +171,10 @@ function KillBreakdown({ kills }: { kills: Kills }) {
     if (kills.total === 0) return null
 
     return (
-        <div className="kill-breakdown">
-            <div className="kill-breakdown-label">By Type</div>
+        <div className={`kill-breakdown${large ? ' kill-breakdown--large' : ''}`}>
+            <div className="kill-breakdown-label">Kills</div>
             <div className="donut-row">
-                <ResponsiveContainer width="100%" height={180}>
+                <ResponsiveContainer width="100%" height={large ? 220 : 180}>
                     <PieChart>
                         <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} dataKey="value" paddingAngle={2}>
                             {pieData.map((entry, i) => (
@@ -187,11 +187,14 @@ function KillBreakdown({ kills }: { kills: Kills }) {
                         />
                     </PieChart>
                 </ResponsiveContainer>
-                <div className="donut-legend">
-                    {pieData.map(({ name, value, color }) => (
+                <div className={`donut-legend${large ? ' donut-legend--large' : ''}`}>
+                    {rows.map(([name, value, color, icon]) => (
                         <div key={name} className="donut-legend-item">
-                            <span className="donut-legend-dot" style={{ background: color }} />
-                            <span className="donut-legend-name">{name}</span>
+                            {icon
+                                ? <img className="donut-legend-badge" src={icon} alt="" />
+                                : <span className="donut-legend-dot" style={{ background: color }} />
+                            }
+                            <span className="donut-legend-name" style={{ color }}>{name}</span>
                             <span className="donut-legend-value">{value}</span>
                         </div>
                     ))}
@@ -345,12 +348,7 @@ function CurrentRunPanel({ stats, location, locationName, gameTime, companions, 
             {location && <LocationCard location={location} locationName={locationName} gameTime={gameTime} />}
             {companions && companions.length > 0 && <SquadSection companions={companions} />}
             <div className="panel-body">
-                {stats.kills.total > 0 && (
-                    <div className="panel-combat">
-                        <CombatBar kills={stats.kills.total} />
-                        <KillBreakdown kills={stats.kills} />
-                    </div>
-                )}
+                {stats.kills.total > 0 && <KillBreakdown kills={stats.kills} large />}
                 <div className="stat-groups-row">
                     <StatGroup label="Economy" color="#e8a838">
                         <StatCard label="Rubles Earned" value={fmt_money(stats.rubles_earned)} />
