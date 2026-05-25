@@ -720,8 +720,9 @@ main { display: grid; gap: 24px; }
     text-transform: uppercase;
 }
 
-.foot-letter { color: var(--accent); font-weight: bold; }
-.foot-dot    { color: var(--border); }
+.foot-dot  { color: var(--border); }
+.foot-link { color: var(--text-dim); text-decoration: none; }
+.foot-link:hover { color: var(--accent); }
 
 /* ── Empty state ── */
 .empty {

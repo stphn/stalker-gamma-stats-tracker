@@ -640,19 +640,11 @@ export default function App() {
             )}
 
             <footer className="site-footer">
-                <span><span className="foot-letter">T</span>asks</span>
+                <a className="foot-link" href="https://www.stalkergamma.com/" target="_blank" rel="noreferrer">STALKER GAMMA</a>
                 <span className="foot-dot">·</span>
-                <span><span className="foot-letter">R</span>ubles</span>
+                <a className="foot-link" href="https://discord.gg/stalker-gamma" target="_blank" rel="noreferrer">Discord</a>
                 <span className="foot-dot">·</span>
-                <span><span className="foot-letter">A</span>rtifacts</span>
-                <span className="foot-dot">·</span>
-                <span><span className="foot-letter">C</span>asualties</span>
-                <span className="foot-dot">·</span>
-                <span><span className="foot-letter">K</span>ills</span>
-                <span className="foot-dot">·</span>
-                <span><span className="foot-letter">E</span>missions</span>
-                <span className="foot-dot">·</span>
-                <span><span className="foot-letter">R</span>eputation</span>
+                <a className="foot-link" href="https://github.com/Grokitach/Stalker_GAMMA" target="_blank" rel="noreferrer">GitHub</a>
             </footer>
         </div>
     )
