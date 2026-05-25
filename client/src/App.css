@@ -354,22 +354,25 @@ main { display: grid; gap: 24px; }
 
 .panel-body {
     display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 40px;
-    align-items: start;
+    gap: 20px;
 }
 
-.panel-right  { order: 1; }
-.stat-groups  { order: 2; }
+.panel-combat {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
 
-@container panel (max-width: 560px) {
-    .panel-body { grid-template-columns: 1fr; }
+@container panel (max-width: 500px) {
+    .panel-combat { grid-template-columns: 1fr; }
 }
 
 /* ── Stat grid ── */
 .stat-grid { display: grid; }
 
-.stat-groups     { display: grid; gap: 16px; }
 .stat-groups-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
 .stat-group-label {
@@ -416,8 +419,6 @@ main { display: grid; gap: 24px; }
     color: var(--text-dim);
     order: 1;
 }
-
-.panel-right { display: grid; gap: 16px; align-content: start; }
 
 /* ── Map thumbnail ── */
 /* ── Location card ── */
@@ -501,12 +502,15 @@ main { display: grid; gap: 24px; }
 
 .combat-stats {
     display: grid;
-    grid-template-columns: 1fr;
     gap: 12px;
 }
 
 .combat-stats.with-deaths {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 1fr;
+}
+
+.combat-stats.with-deaths .combat-stat:nth-child(3) {
+    grid-column: 1 / -1;
 }
 
 .playtime-stats {
@@ -537,32 +541,6 @@ main { display: grid; gap: 24px; }
 /* ── Kill breakdown ── */
 .kill-breakdown { display: grid; gap: 8px; }
 
-.kill-breakdown-header {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    margin-bottom: 2px;
-}
-
-.view-toggle {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--text-dim);
-    font-size: 13px;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    transition: color 0.15s, border-color 0.15s;
-}
-
-.view-toggle:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-}
-
 .kill-breakdown-label {
     font-family: var(--font-display);
     font-size: 10px;
@@ -574,7 +552,18 @@ main { display: grid; gap: 24px; }
     border-left: 2px solid var(--border);
 }
 
-.donut-legend { display: grid; gap: 5px; margin-top: 8px; }
+.donut-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 16px;
+}
+
+.donut-legend { display: grid; gap: 5px; align-content: center; }
+
+@container panel (max-width: 500px) {
+    .donut-row { grid-template-columns: 1fr; }
+}
 
 .donut-legend-item {
     display: grid;

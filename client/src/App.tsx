@@ -129,7 +129,7 @@ function CombatBar({ kills, deaths }: { kills: number; deaths?: number }) {
     return (
         <div className="combat-bar">
             <div className="combat-bar-label">Combat</div>
-            <div className={`combat-stats ${deaths != null ? 'with-deaths' : ''}`}>
+            <div className={`combat-stats${deaths != null ? ' with-deaths' : ''}`}>
                 <div className="combat-stat">
                     <span className="combat-stat-value">{kills}</span>
                     <span className="combat-stat-label">Kills</span>
@@ -150,7 +150,6 @@ function CombatBar({ kills, deaths }: { kills: number; deaths?: number }) {
 }
 
 function KillBreakdown({ kills }: { kills: Kills }) {
-    const [view, setView] = useState<'list' | 'donut'>('donut')
     const allRows: [string, number, string][] = [
         ['Loners',      kills.stalker,    '#4a9eff'],
         ['Bandits',     kills.bandit,     '#e8a838'],
@@ -169,50 +168,35 @@ function KillBreakdown({ kills }: { kills: Kills }) {
     const rows = allRows.filter(r => r[1] > 0).sort((a, b) => b[1] - a[1])
     const pieData = rows.map(([name, value, color]) => ({ name, value, color }))
 
+    if (kills.total === 0) return null
+
     return (
         <div className="kill-breakdown">
-            <div className="kill-breakdown-header">
-                <div className="kill-breakdown-label">By Type</div>
-                <button className="view-toggle" onClick={() => setView(v => v === 'list' ? 'donut' : 'list')} title="Switch view">
-                    {view === 'list' ? '◑' : '≡'}
-                </button>
+            <div className="kill-breakdown-label">By Type</div>
+            <div className="donut-row">
+                <ResponsiveContainer width="100%" height={180}>
+                    <PieChart>
+                        <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} dataKey="value" paddingAngle={2}>
+                            {pieData.map((entry, i) => (
+                                <Cell key={i} fill={entry.color} stroke="transparent" />
+                            ))}
+                        </Pie>
+                        <Tooltip
+                            contentStyle={{ background: '#161616', border: '1px solid #2a2a2a', borderRadius: '3px', color: '#c9c9c9', fontFamily: 'Chakra Petch, monospace', fontSize: '12px' }}
+                            formatter={(value, name) => [value, name] as [typeof value, typeof name]}
+                        />
+                    </PieChart>
+                </ResponsiveContainer>
+                <div className="donut-legend">
+                    {pieData.map(({ name, value, color }) => (
+                        <div key={name} className="donut-legend-item">
+                            <span className="donut-legend-dot" style={{ background: color }} />
+                            <span className="donut-legend-name">{name}</span>
+                            <span className="donut-legend-value">{value}</span>
+                        </div>
+                    ))}
+                </div>
             </div>
-            {rows.length === 0 && <div className="kill-empty">No kills yet</div>}
-            {view === 'list' ? (
-                rows.map(([label, count, color], i) => (
-                    <div key={label} className="kill-list-row">
-                        <span className="kill-list-rank">#{i + 1}</span>
-                        <span className="kill-list-dot" style={{ background: color }} />
-                        <span className="kill-list-name">{label}</span>
-                        <span className="kill-list-count">{count}</span>
-                    </div>
-                ))
-            ) : (
-                <>
-                    <ResponsiveContainer width="100%" height={180}>
-                        <PieChart>
-                            <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} dataKey="value" paddingAngle={2}>
-                                {pieData.map((entry, i) => (
-                                    <Cell key={i} fill={entry.color} stroke="transparent" />
-                                ))}
-                            </Pie>
-                            <Tooltip
-                                contentStyle={{ background: '#161616', border: '1px solid #2a2a2a', borderRadius: '3px', color: '#c9c9c9', fontFamily: 'Chakra Petch, monospace', fontSize: '12px' }}
-                                formatter={(value, name) => [value, name] as [typeof value, typeof name]}
-                            />
-                        </PieChart>
-                    </ResponsiveContainer>
-                    <div className="donut-legend">
-                        {pieData.map(({ name, value, color }) => (
-                            <div key={name} className="donut-legend-item">
-                                <span className="donut-legend-dot" style={{ background: color }} />
-                                <span className="donut-legend-name">{name}</span>
-                                <span className="donut-legend-value">{value}</span>
-                            </div>
-                        ))}
-                    </div>
-                </>
-            )}
         </div>
     )
 }
@@ -249,29 +233,30 @@ function StatGroup({ label, color, children }: { label: string; color: string; c
 }
 
 function StatsPanel({ title, stats }: { title: string; stats: StatsBlock }) {
+    const hasCombat = stats.kills.total > 0 || stats.deaths > 0
     return (
         <section className="panel">
             <h2>{title}</h2>
             <div className="panel-body">
-                <div className="stat-groups">
-                    <PlaytimeBlock seconds={stats.playtime} />
-                    <div className="stat-groups-row">
-                        <StatGroup label="Economy" color="#e8a838">
-                            <StatCard label="Rubles Earned" value={fmt_money(stats.rubles_earned)} />
-                            <StatCard label="Rubles Spent"  value={fmt_money(stats.rubles_spent ?? 0)} />
-                            <StatCard label="Artifacts"     value={stats.artifacts} />
-                            <StatCard label="Items Looted"  value={stats.items} />
-                        </StatGroup>
-                        <StatGroup label="Exploration" color="#1abc9c">
-                            <StatCard label="Tasks Done"    value={stats.tasks} />
-                            <StatCard label="Stashes Found" value={stats.stashes} />
-                            <StatCard label="Level Changes" value={stats.level_changes} />
-                        </StatGroup>
+                {hasCombat && (
+                    <div className="panel-combat">
+                        <CombatBar kills={stats.kills.total} deaths={stats.deaths} />
+                        <KillBreakdown kills={stats.kills} />
                     </div>
-                </div>
-                <div className="panel-right">
-                    <CombatBar kills={stats.kills.total} deaths={stats.deaths} />
-                    <KillBreakdown kills={stats.kills} />
+                )}
+                <PlaytimeBlock seconds={stats.playtime} />
+                <div className="stat-groups-row">
+                    <StatGroup label="Economy" color="#e8a838">
+                        <StatCard label="Rubles Earned" value={fmt_money(stats.rubles_earned)} />
+                        <StatCard label="Rubles Spent"  value={fmt_money(stats.rubles_spent ?? 0)} />
+                        <StatCard label="Artifacts"     value={stats.artifacts} />
+                        <StatCard label="Items Looted"  value={stats.items} />
+                    </StatGroup>
+                    <StatGroup label="Exploration" color="#1abc9c">
+                        <StatCard label="Tasks Done"    value={stats.tasks} />
+                        <StatCard label="Stashes Found" value={stats.stashes} />
+                        <StatCard label="Level Changes" value={stats.level_changes} />
+                    </StatGroup>
                 </div>
             </div>
         </section>
@@ -360,7 +345,13 @@ function CurrentRunPanel({ stats, location, locationName, gameTime, companions, 
             {location && <LocationCard location={location} locationName={locationName} gameTime={gameTime} />}
             {companions && companions.length > 0 && <SquadSection companions={companions} />}
             <div className="panel-body">
-                <div className="stat-groups">
+                {stats.kills.total > 0 && (
+                    <div className="panel-combat">
+                        <CombatBar kills={stats.kills.total} />
+                        <KillBreakdown kills={stats.kills} />
+                    </div>
+                )}
+                <div className="stat-groups-row">
                     <StatGroup label="Economy" color="#e8a838">
                         <StatCard label="Rubles Earned" value={fmt_money(stats.rubles_earned)} />
                         <StatCard label="Rubles Spent"  value={fmt_money(stats.rubles_spent ?? 0)} />
@@ -372,10 +363,6 @@ function CurrentRunPanel({ stats, location, locationName, gameTime, companions, 
                         <StatCard label="Stashes Found" value={stats.stashes} />
                         <StatCard label="Level Changes" value={stats.level_changes} />
                     </StatGroup>
-                </div>
-                <div className="panel-right">
-                    <CombatBar kills={stats.kills.total} />
-                    <KillBreakdown kills={stats.kills} />
                 </div>
             </div>
         </section>
@@ -402,10 +389,12 @@ function LastRunPanel({ run, index }: { run: SessionBlock; index: number }) {
                 </div>
             </div>
             <div className="last-run-body">
-                <div className="last-run-stat">
-                    <span className="last-run-value">{run.kills.total}</span>
-                    <span className="last-run-label">Kills</span>
-                </div>
+                {run.kills.total > 0 && (
+                    <div className="last-run-stat">
+                        <span className="last-run-value">{run.kills.total}</span>
+                        <span className="last-run-label">Kills</span>
+                    </div>
+                )}
                 <div className="last-run-stat">
                     <span className="last-run-value">{run.tasks}</span>
                     <span className="last-run-label">Tasks</span>
@@ -454,7 +443,13 @@ function PdaStatsPanel({ stats }: { stats: PdaStats }) {
         <section className="panel">
             <h2>PDA Stats</h2>
             <div className="panel-body">
-                <div className="stat-groups">
+                {stats.kills.total > 0 && (
+                    <div className="panel-combat">
+                        <CombatBar kills={stats.kills.total} />
+                        <KillBreakdown kills={stats.kills} />
+                    </div>
+                )}
+                <div className="stat-groups-row">
                     <StatGroup label="Tasks" color="#3498db">
                         <StatCard label="Completed"  value={stats.tasks} />
                         <StatCard label="Failed"     value={stats.tasks_failed} />
@@ -480,10 +475,6 @@ function PdaStatsPanel({ stats }: { stats: PdaStats }) {
                         <StatCard label="Boxes Smashed"   value={stats.boxes_smashed} />
                         <StatCard label="Achievements"    value={stats.achievements_count} />
                     </StatGroup>
-                </div>
-                <div className="panel-right">
-                    <CombatBar kills={stats.kills.total} />
-                    <KillBreakdown kills={stats.kills} />
                 </div>
             </div>
         </section>
