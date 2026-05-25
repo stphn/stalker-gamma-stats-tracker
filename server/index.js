@@ -4,12 +4,18 @@ const { WebSocketServer } = require('ws')
 const chokidar = require('chokidar')
 const fs   = require('fs')
 const http = require('http')
+const https = require('https')
 
 const STATS_FILE = process.env.STATS_FILE || 'C:/anomaly/appdata/gamma_stats.json'
 const PORT       = process.env.PORT || 3001
+const CERT_CRT   = process.env.TLS_CERT || 'C:/Users/sgoeu/greybox3090.tail77f472.ts.net.crt'
+const CERT_KEY   = process.env.TLS_KEY  || 'C:/Users/sgoeu/greybox3090.tail77f472.ts.net.key'
 
 const app    = express()
-const server = http.createServer(app)
+const tlsAvailable = fs.existsSync(CERT_CRT) && fs.existsSync(CERT_KEY)
+const server = tlsAvailable
+    ? https.createServer({ cert: fs.readFileSync(CERT_CRT), key: fs.readFileSync(CERT_KEY) }, app)
+    : http.createServer(app)
 const wss    = new WebSocketServer({ server })
 
 app.use(cors())
@@ -48,6 +54,8 @@ chokidar
     .on('change', () => { const s = readStats(); if (s) broadcast(s) })
 
 server.listen(PORT, () => {
-    console.log(`Stralker server → http://localhost:${PORT}`)
+    const proto = tlsAvailable ? 'https' : 'http'
+    console.log(`Stralker server → ${proto}://localhost:${PORT}`)
+    console.log(`TLS              → ${tlsAvailable ? 'yes (WSS)' : 'no (WS)'}`)
     console.log(`Watching         → ${STATS_FILE}`)
 })

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { StatsData } from './types'
 
-const WS_URL    = import.meta.env.VITE_WS_URL ?? `ws://${window.location.hostname}:3001`
+const WS_URL    = import.meta.env.VITE_WS_URL ?? `wss://${window.location.hostname}:3001`
 const CACHE_KEY = 'tracker_last_stats'
 
 function loadCache(): StatsData | null {
