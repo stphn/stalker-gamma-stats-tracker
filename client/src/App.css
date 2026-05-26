@@ -20,9 +20,37 @@ body {
 .app {
     container-type: inline-size;
     container-name: app;
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 24px 16px;
+}
+
+/* Mobile: constrain and pad */
+@container app (max-width: 900px) {
+    .app > header,
+    .app > .player-card,
+    .app > main,
+    .app > .site-footer {
+        max-width: 960px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    .app > header { padding-top: 24px; }
+}
+
+/* Desktop: full bleed, hide mobile-only elements */
+@container app (min-width: 901px) {
+    .app > .player-card { display: none; }
+    .app > main         { display: none; }
+    .app > header {
+        padding: 10px 16px;
+        margin-bottom: 0;
+    }
+}
+
+/* Mobile: hide desktop-only elements */
+@container app (max-width: 900px) {
+    .dt-profile { display: none; }
+    .dt-main    { display: none; }
 }
 
 /* ── Header ── */
@@ -739,4 +767,407 @@ main { display: grid; gap: 24px; }
     letter-spacing: 2px;
     text-transform: uppercase;
     font-size: 13px;
+}
+
+/* ══════════════════════════════════════
+   Desktop layout (≥ 901px)
+══════════════════════════════════════ */
+
+/* ── Desktop header overrides ── */
+@container app (min-width: 901px) {
+    header {
+        background: #1c1c1c;
+        border-bottom: 1px solid var(--border);
+        padding: 8px 16px;
+        margin-bottom: 0;
+    }
+    header h1 { font-size: 14px; letter-spacing: 4px; }
+    .header-tagline { font-size: 8px; letter-spacing: 1.5px; }
+    .status-group { gap: 12px; }
+    .status-item { flex-direction: row; display: flex; align-items: center; gap: 5px; }
+}
+
+/* ── Profile strip ── */
+.dt-profile {
+    background: #1c1c1c;
+    border-bottom: 1px solid var(--border);
+}
+
+.dt-profile-faction-label {
+    background: #242424;
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 4px 16px;
+}
+
+.dt-profile-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 8px 16px;
+    min-height: 52px;
+}
+
+.dt-profile-identity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.dt-profile-icon {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    opacity: 0.9;
+}
+
+.dt-profile-name {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+}
+
+.dt-profile-faction {
+    font-family: var(--font-display);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.dt-profile-stats {
+    display: flex;
+    gap: 0;
+    flex: 1;
+}
+
+.dt-profile-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 0 20px;
+    border-left: 1px solid var(--border);
+}
+
+.dt-profile-stat-label {
+    font-family: var(--font-display);
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.dt-profile-stat-value {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.dt-profile-companions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 20px;
+    border-left: 1px solid var(--border);
+}
+
+.dt-profile-companions-label {
+    font-family: var(--font-display);
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    flex-shrink: 0;
+}
+
+.dt-companion-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dt-companion-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    opacity: 0.85;
+    flex-shrink: 0;
+}
+
+.dt-companion-name {
+    font-family: var(--font-display);
+    font-size: 11px;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.dt-companion-hp {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.dt-companion-hp-track {
+    width: 60px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.dt-companion-hp-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s;
+}
+
+/* ── Main desktop area ── */
+.dt-main { display: flex; flex-direction: column; }
+
+/* ── Hero (location image + right overlay) ── */
+.dt-hero {
+    position: relative;
+    width: 100%;
+    min-height: 340px;
+    overflow: hidden;
+    background: #111;
+}
+
+.dt-hero--dead {
+    border-left: 3px solid #e74c3c;
+}
+
+.dt-hero .location-card {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+}
+
+.dt-hero .location-card-img {
+    filter: saturate(0.5) brightness(0.6);
+}
+
+.dt-hero-empty {
+    position: absolute;
+    inset: 0;
+    background: #111;
+}
+
+/* Right overlay panel */
+.dt-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 400px;
+    background: rgba(17, 17, 17, 0.92);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px;
+    gap: 12px;
+    overflow-y: auto;
+}
+
+.dt-overlay-run-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.dt-overlay-title-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+
+.dt-run-label {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.dt-run-time {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-left: auto;
+}
+
+/* Kills panel inside overlay */
+.dt-kills-panel {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto 1fr;
+    gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.dt-panel-label {
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding-left: 6px;
+    border-left: 2px solid var(--border);
+    grid-column: 1 / -1;
+}
+
+.dt-kills-rows {
+    display: grid;
+    gap: 4px;
+    align-content: start;
+}
+
+.dt-kill-row {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    align-items: center;
+    gap: 6px;
+}
+
+.dt-kill-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    opacity: 0.9;
+}
+
+.dt-kill-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    justify-self: center;
+}
+
+.dt-kill-name {
+    font-family: var(--font-display);
+    font-size: 11px;
+}
+
+.dt-kill-value {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    text-align: right;
+}
+
+.dt-kills-donut {
+    align-self: center;
+}
+
+/* Economy / Exploration */
+.dt-stats-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.dt-stats-col { display: grid; gap: 4px; align-content: start; }
+
+.dt-stat-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+}
+
+.dt-stat-row:last-child { border-bottom: none; }
+
+.dt-stat-row > span:first-child { color: var(--text-dim); }
+.dt-stat-row > span:last-child  { font-family: var(--font-display); font-size: 11px; font-weight: 600; color: var(--text); text-align: right; }
+
+/* ── Death log strip ── */
+.dt-death-log {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: #111111;
+    border-top: 1px solid var(--border);
+}
+
+.dt-death-col {
+    padding: 10px 16px;
+    border-right: 1px solid var(--border);
+}
+
+.dt-death-col:last-child { border-right: none; }
+
+.dt-death-header {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.dt-death-title {
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #e74c3c;
+}
+
+.dt-death-date {
+    font-family: var(--font-display);
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-left: 2px;
+}
+
+.dt-death-time {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    margin-left: auto;
+}
+
+.dt-death-stats {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.dt-death-stat { display: flex; flex-direction: column; gap: 1px; }
+
+.dt-death-val {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+}
+
+.dt-death-lbl {
+    font-family: var(--font-display);
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
 }

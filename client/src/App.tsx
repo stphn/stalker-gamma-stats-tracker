@@ -583,6 +583,173 @@ function GameAchievementsPanel({ ga }: { ga: GameAchievements }) {
     )
 }
 
+function DesktopCurrentRun({ data, displayActor, gameState, stale }: {
+    data: import('./types').StatsData
+    displayActor: ActorInfo | null
+    gameState: 'playing' | 'menu' | 'off'
+    stale: boolean
+}) {
+    const alive = data.session.deaths === 0
+    const deathLine = alive ? null : DEATH_LINES[(data.session as SessionBlock).start % DEATH_LINES.length]
+    const idleBadge = alive && gameState !== 'playing' ? (gameState === 'menu' ? 'In Menu' : 'Off') : null
+
+    return (
+        <div className="dt-main" style={stale ? { opacity: 0.5, pointerEvents: 'none' } : undefined}>
+            {/* Location hero with overlay panels */}
+            <div className={`dt-hero${alive ? '' : ' dt-hero--dead'}`}>
+                {displayActor?.location && <LocationCard location={displayActor.location} locationName={displayActor.location_name} gameTime={displayActor.game_time} />}
+                {!displayActor?.location && <div className="dt-hero-empty" />}
+
+                {/* Right overlay: kills + stats */}
+                <div className="dt-overlay">
+                    <div className="dt-overlay-run-head">
+                        <div className="dt-overlay-title-row">
+                            <span className="dt-run-label">{alive ? 'Current Run' : 'Last Run'}</span>
+                            {idleBadge && <span className="run-idle-badge">{idleBadge}</span>}
+                            {deathLine && <span className="death-line">{deathLine}</span>}
+                        </div>
+                        <span className={`run-icon ${alive ? 'alive' : 'dead'}`} style={{ fontSize: 16 }}>
+                            {alive ? '♥' : '☠'}
+                        </span>
+                        <span className="dt-run-time">{fmt_time(data.session.playtime)}</span>
+                    </div>
+
+                    {data.session.kills.total > 0 && (
+                        <div className="dt-kills-panel">
+                            <div className="dt-panel-label">Kills</div>
+                            <div className="dt-kills-rows">
+                                {(
+                                    [
+                                        ['Loners',     data.session.kills.stalker,   '#d4a832', '/factions/faction_loners.png'],
+                                        ['Bandits',    data.session.kills.bandit,    '#a8a8a8', '/factions/faction_bandits.png'],
+                                        ['Military',   data.session.kills.military,  '#c8a830', '/factions/faction_military.png'],
+                                        ['Freedom',    data.session.kills.freedom,   '#4cae5a', '/factions/faction_freedom.png'],
+                                        ['Duty',       data.session.kills.duty,      '#c0362a', '/factions/faction_duty.png'],
+                                        ['Ecologists', data.session.kills.ecolog,    '#c8b040', '/factions/faction_ecologists.png'],
+                                        ['Clear Sky',  data.session.kills.csky,      '#4a9ee0', '/factions/faction_clearsky.png'],
+                                        ['Monolith',   data.session.kills.monolith,  '#38b8b8', '/factions/faction_monolith.png'],
+                                        ['Mercs',      data.session.kills.killer,    '#4a7ec8', '/factions/faction_mercenary.png'],
+                                        ['Renegades',  data.session.kills.renegade,  '#7a8c30', '/factions/faction_renegades.png'],
+                                        ['Mutants',    data.session.kills.mutant,    '#c0392b'],
+                                        ['Helis',      data.session.kills.helicopter,'#f39c12'],
+                                        ['Other',      data.session.kills.other,     '#7f8c8d'],
+                                    ] as [string, number, string, string?][]
+                                ).filter(r => r[1] > 0).sort((a,b) => b[1]-a[1]).map(([name, value, color, icon]) => (
+                                    <div key={name} className="dt-kill-row">
+                                        {icon
+                                            ? <img className="dt-kill-icon" src={icon} alt="" />
+                                            : <span className="dt-kill-dot" style={{ background: color }} />
+                                        }
+                                        <span className="dt-kill-name" style={{ color }}>{name}</span>
+                                        <span className="dt-kill-value">{value}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="dt-kills-donut">
+                                <ResponsiveContainer width="100%" height={130}>
+                                    <PieChart>
+                                        <Pie
+                                            data={(
+                                                [
+                                                    ['Loners',    data.session.kills.stalker,  '#d4a832'],
+                                                    ['Bandits',   data.session.kills.bandit,   '#a8a8a8'],
+                                                    ['Military',  data.session.kills.military, '#c8a830'],
+                                                    ['Freedom',   data.session.kills.freedom,  '#4cae5a'],
+                                                    ['Duty',      data.session.kills.duty,     '#c0362a'],
+                                                    ['Ecologist', data.session.kills.ecolog,   '#c8b040'],
+                                                    ['Clear Sky', data.session.kills.csky,     '#4a9ee0'],
+                                                    ['Monolith',  data.session.kills.monolith, '#38b8b8'],
+                                                    ['Mercs',     data.session.kills.killer,   '#4a7ec8'],
+                                                    ['Renegades', data.session.kills.renegade, '#7a8c30'],
+                                                    ['Mutants',   data.session.kills.mutant,   '#c0392b'],
+                                                    ['Helis',     data.session.kills.helicopter,'#f39c12'],
+                                                    ['Other',     data.session.kills.other,    '#7f8c8d'],
+                                                ] as [string, number, string][]
+                                            ).filter(r => r[1] > 0).map(([name, value, color]) => ({ name, value, color }))}
+                                            cx="50%" cy="50%"
+                                            innerRadius={35} outerRadius={55}
+                                            dataKey="value" paddingAngle={2}
+                                        >
+                                            {(
+                                                [
+                                                    ['Loners',    data.session.kills.stalker,  '#d4a832'],
+                                                    ['Bandits',   data.session.kills.bandit,   '#a8a8a8'],
+                                                    ['Military',  data.session.kills.military, '#c8a830'],
+                                                    ['Freedom',   data.session.kills.freedom,  '#4cae5a'],
+                                                    ['Duty',      data.session.kills.duty,     '#c0362a'],
+                                                    ['Ecologist', data.session.kills.ecolog,   '#c8b040'],
+                                                    ['Clear Sky', data.session.kills.csky,     '#4a9ee0'],
+                                                    ['Monolith',  data.session.kills.monolith, '#38b8b8'],
+                                                    ['Mercs',     data.session.kills.killer,   '#4a7ec8'],
+                                                    ['Renegades', data.session.kills.renegade, '#7a8c30'],
+                                                    ['Mutants',   data.session.kills.mutant,   '#c0392b'],
+                                                    ['Helis',     data.session.kills.helicopter,'#f39c12'],
+                                                    ['Other',     data.session.kills.other,    '#7f8c8d'],
+                                                ] as [string, number, string][]
+                                            ).filter(r => r[1] > 0).map(([,, color], i) => (
+                                                <Cell key={i} fill={color} stroke="transparent" />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip
+                                            contentStyle={{ background: '#161616', border: '1px solid #2a2a2a', borderRadius: '3px', color: '#c9c9c9', fontFamily: 'Chakra Petch, monospace', fontSize: '11px' }}
+                                        />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="dt-stats-panels">
+                        <div className="dt-stats-col">
+                            <div className="dt-panel-label">Economy</div>
+                            <div className="dt-stat-row"><span>Rubles Earned</span><span>{fmt_money(data.session.rubles_earned)}</span></div>
+                            <div className="dt-stat-row"><span>Rubles Spent</span><span>{fmt_money(data.session.rubles_spent ?? 0)}</span></div>
+                            <div className="dt-stat-row"><span>Artifacts</span><span>{data.session.artifacts}</span></div>
+                            <div className="dt-stat-row"><span>Items Looted</span><span>{data.session.items}</span></div>
+                        </div>
+                        <div className="dt-stats-col">
+                            <div className="dt-panel-label">Exploration</div>
+                            <div className="dt-stat-row"><span>Tasks Done</span><span>{data.session.tasks}</span></div>
+                            <div className="dt-stat-row"><span>Stashes Found</span><span>{data.session.stashes}</span></div>
+                            <div className="dt-stat-row"><span>Level Changes</span><span>{data.session.level_changes}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Death log strip */}
+            {Array.isArray(data.last_run) && data.last_run.length > 0 && (
+                <div className="dt-death-log">
+                    {data.last_run.slice(0, 3).map((run, i) => {
+                        const label = i === 0 ? 'Last Stand' : `${ordinal(i + 1)} Last Stand`
+                        const loc = run.death_location ? fmt_location(run.death_location, run.death_location_name) : null
+                        const date = new Date(run.start * 1000).toLocaleDateString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric' })
+                        return (
+                            <div key={run.start} className="dt-death-col">
+                                <div className="dt-death-header">
+                                    <span className="dt-death-title">
+                                        <span className="run-icon dead" style={{ fontSize: '0.8em', marginRight: 4 }}>☠</span>
+                                        {label}
+                                    </span>
+                                    <span className="dt-death-date">{date}</span>
+                                    <span className="dt-death-time">{fmt_time(run.playtime)}</span>
+                                </div>
+                                <div className="dt-death-stats">
+                                    <div className="dt-death-stat"><span className="dt-death-val">{run.kills.total}</span><span className="dt-death-lbl">Kills</span></div>
+                                    <div className="dt-death-stat"><span className="dt-death-val">{run.tasks}</span><span className="dt-death-lbl">Tasks</span></div>
+                                    <div className="dt-death-stat"><span className="dt-death-val">{fmt_money(run.rubles_earned)}</span><span className="dt-death-lbl">Earned</span></div>
+                                    <div className="dt-death-stat"><span className="dt-death-val">{run.artifacts}</span><span className="dt-death-lbl">Artifacts</span></div>
+                                    {loc && <div className="dt-death-stat"><span className="dt-death-val">{loc}</span><span className="dt-death-lbl">Died at</span></div>}
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            )}
+        </div>
+    )
+}
+
 export default function App() {
     const { data, connected, stale } = useStats()
     const gameLive  = connected && !!data && (Date.now() / 1000 - data.last_updated) < 15
@@ -594,10 +761,11 @@ export default function App() {
 
     return (
         <div className="app">
+            {/* ── Top bar ── */}
             <header>
                 <div className="header-title">
                     <h1>T.R.A.C.K.E.R.</h1>
-                    <div className="header-tagline">S.T.A.L.K.E.R. G.A.M.M.A. stat tracker</div>
+                    <div className="header-tagline">A S.T.A.L.K.E.R. Anomaly Companion</div>
                 </div>
                 <div className="status-group">
                     <div className="status-item">
@@ -606,11 +774,59 @@ export default function App() {
                     </div>
                     <div className="status-item">
                         <span className={`status-dot ${gameState === 'playing' ? 'green' : gameState === 'menu' ? 'amber' : 'red'}`} />
-                        <span className="status-label">{gameState === 'playing' ? 'Playing' : gameState === 'menu' ? 'In Menu' : 'Off'}</span>
+                        <span className="status-label">Game</span>
                     </div>
                 </div>
             </header>
 
+            {/* ── Profile strip (desktop) ── */}
+            {displayActor && (
+                <div className="dt-profile">
+                    <div className="dt-profile-faction-label">Stalker</div>
+                    <div className="dt-profile-row">
+                        <div className="dt-profile-identity">
+                            {FACTION_ICONS[displayActor.faction] && (
+                                <img className="dt-profile-icon" src={FACTION_ICONS[displayActor.faction]} alt="" />
+                            )}
+                            <div>
+                                <div className="dt-profile-name">{displayActor.name}</div>
+                                <div className="dt-profile-faction" style={{ color: FACTION_COLORS[displayActor.faction] ?? '#4a9eff' }}>
+                                    {FACTIONS[displayActor.faction] ?? displayActor.faction}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="dt-profile-stats">
+                            <div className="dt-profile-stat"><span className="dt-profile-stat-label">Rank</span><span className="dt-profile-stat-value">{rank_label(displayActor.rank)}</span></div>
+                            <div className="dt-profile-stat"><span className="dt-profile-stat-label">Reputation</span><span className="dt-profile-stat-value" style={{ color: rep_color(displayActor.reputation) }}>{rep_label(displayActor.reputation)}</span></div>
+                            <div className="dt-profile-stat"><span className="dt-profile-stat-label">Location</span><span className="dt-profile-stat-value">{fmt_location(displayActor.location, displayActor.location_name)}</span></div>
+                            <div className="dt-profile-stat"><span className="dt-profile-stat-label">Rubles</span><span className="dt-profile-stat-value" style={{ color: '#e8a838' }}>{fmt_money(displayActor.money)}</span></div>
+                        </div>
+                        {data?.companions && data.companions.length > 0 && (
+                            <div className="dt-profile-companions">
+                                <div className="dt-profile-companions-label">Squad</div>
+                                {data.companions.map((c, i) => {
+                                    const icon = FACTION_ICONS[c.faction]
+                                    const color = hp_color(c.health)
+                                    return (
+                                        <div key={i} className="dt-companion-row">
+                                            {icon ? <img className="dt-companion-icon" src={icon} alt="" /> : <span className="dt-companion-icon" />}
+                                            <span className="dt-companion-name">{c.name}</span>
+                                            <div className="dt-companion-hp">
+                                                <div className="dt-companion-hp-track">
+                                                    <div className="dt-companion-hp-fill" style={{ width: `${c.health}%`, background: color }} />
+                                                </div>
+                                                <span style={{ color, fontSize: 10, fontFamily: 'var(--font-display)' }}>{c.health}%</span>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* ── Mobile player card (hidden on desktop) ── */}
             {displayActor && <PlayerCard actor={displayActor} money={displayActor.money} />}
 
             {!data ? (
@@ -618,14 +834,20 @@ export default function App() {
                     {connected ? 'Waiting for stats — load a save in-game.' : 'Connecting to server…'}
                 </div>
             ) : (
-                <main style={stale ? { opacity: 0.5, pointerEvents: 'none' } : undefined}>
-                    <CurrentRunPanel stats={data.session} location={displayActor?.location} locationName={displayActor?.location_name} gameTime={displayActor?.game_time} companions={data.companions} gameState={gameState} />
-                    {Array.isArray(data.last_run) && data.last_run.map((run, i) => <LastRunPanel key={run.start} run={run} index={i} />)}
-                    <StatsPanel title="All Time"          stats={data.alltime} />
-                    {data.alltime_official && <PdaStatsPanel stats={data.alltime_official} />}
-                    {data.game_achievements && <GameAchievementsPanel ga={data.game_achievements} />}
-                    <Achievements achieved={data.achievements} />
-                </main>
+                <>
+                    {/* Desktop layout */}
+                    <DesktopCurrentRun data={data} displayActor={displayActor} gameState={gameState} stale={stale} />
+
+                    {/* Mobile layout */}
+                    <main style={stale ? { opacity: 0.5, pointerEvents: 'none' } : undefined}>
+                        <CurrentRunPanel stats={data.session} location={displayActor?.location} locationName={displayActor?.location_name} gameTime={displayActor?.game_time} companions={data.companions} gameState={gameState} />
+                        {Array.isArray(data.last_run) && data.last_run.map((run, i) => <LastRunPanel key={run.start} run={run} index={i} />)}
+                        <StatsPanel title="All Time" stats={data.alltime} />
+                        {data.alltime_official && <PdaStatsPanel stats={data.alltime_official} />}
+                        {data.game_achievements && <GameAchievementsPanel ga={data.game_achievements} />}
+                        <Achievements achieved={data.achievements} />
+                    </main>
+                </>
             )}
 
             <footer className="site-footer">
