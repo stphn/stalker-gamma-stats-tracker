@@ -1,0 +1,78 @@
+.section {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.label {
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+}
+
+.list { display: grid; gap: 10px; }
+
+.row {
+    display: grid;
+    grid-template-columns: 22px 1fr auto;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    opacity: 0.85;
+}
+
+.iconPlaceholder { width: 22px; height: 22px; }
+
+.identity {
+    display: grid;
+    gap: 2px;
+}
+
+.companionName {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.faction {
+    font-family: var(--font-display);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hp {
+    display: grid;
+    grid-template-columns: 80px 36px;
+    align-items: center;
+    gap: 6px;
+}
+
+.hpTrack {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.hpFill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s;
+}
+
+.hpPct {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 600;
+    text-align: right;
+}

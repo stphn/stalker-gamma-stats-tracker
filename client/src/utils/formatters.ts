@@ -1,0 +1,61 @@
+import { LEVELS } from './constants'
+
+export function fmt_location(raw: string, name?: string) {
+    if (name && name !== raw && !name.startsWith('st_level_')) return name
+    return LEVELS[raw] ?? raw.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+}
+
+export function fmt_time(seconds: number) {
+    const h = Math.floor(seconds / 3600)
+    const m = Math.floor((seconds % 3600) / 60)
+    const s = seconds % 60
+    return `${h}h ${m}m ${s}s`
+}
+
+export function fmt_money(n: number) {
+    return n.toLocaleString('en-US') + ' ₽'
+}
+
+export function rank_label(r: number) {
+    if (r >= 7200) return 'Legend'
+    if (r >= 3600) return 'Master'
+    if (r >= 1800) return 'Expert'
+    if (r >= 900)  return 'Veteran'
+    if (r >= 300)  return 'Experienced'
+    return 'Novice'
+}
+
+export function rep_label(r: number) {
+    if (r >= 2000)  return 'Excellent'
+    if (r >= 500)   return 'Good'
+    if (r >= -500)  return 'Neutral'
+    if (r >= -2000) return 'Bad'
+    return 'Terrible'
+}
+
+export function rep_color(r: number) {
+    if (r >= 2000)  return '#2ecc71'
+    if (r >= 500)   return '#27ae60'
+    if (r >= -500)  return '#95a5a6'
+    if (r >= -2000) return '#e67e22'
+    return '#e74c3c'
+}
+
+export function ordinal(n: number) {
+    const s = ['th', 'st', 'nd', 'rd']
+    const v = n % 100
+    return n + (s[(v - 20) % 10] ?? s[v] ?? s[0])
+}
+
+export function hp_color(pct: number) {
+    if (pct >= 60) return '#2ecc71'
+    if (pct >= 30) return '#e8a838'
+    return '#e74c3c'
+}
+
+export function day_period(h: number): { label: string; color: string } {
+    if (h >= 5  && h < 7)  return { label: 'Dawn',  color: '#e67e22' }
+    if (h >= 7  && h < 19) return { label: 'Day',   color: '#f1c40f' }
+    if (h >= 19 && h < 22) return { label: 'Dusk',  color: '#e8a838' }
+    return                         { label: 'Night', color: '#7f8fe4' }
+}

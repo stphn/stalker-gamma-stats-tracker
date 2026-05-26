@@ -1,0 +1,114 @@
+.killBreakdown { display: grid; gap: 8px; }
+
+.killBreakdownLabel {
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding-left: 8px;
+    border-left: 2px solid var(--border);
+}
+
+.donutRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 16px;
+}
+
+.donutRow > :first-child {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px;
+}
+
+@container panel (max-width: 500px) {
+    .donutRow { grid-template-columns: 1fr; }
+}
+
+.donutLegend { display: grid; gap: 5px; align-content: center; }
+
+.donutLegendLarge { gap: 10px; }
+.donutLegendLarge .donutLegendName  { font-size: 14px; color: var(--text); }
+.donutLegendLarge .donutLegendValue { font-size: 14px; font-weight: 700; color: #fff; }
+
+.donutLegendItem {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    align-items: center;
+    gap: 8px;
+}
+
+.donutLegendDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.donutLegendBadge {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+.donutLegendName {
+    font-family: var(--font-display);
+    font-size: 13px;
+}
+
+.donutLegendValue {
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--text);
+    text-align: right;
+}
+
+.combatBar { display: grid; gap: 4px; }
+
+.combatBarLabel {
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #e74c3c;
+    padding-left: 8px;
+    border-left: 2px solid #e74c3c;
+    margin-bottom: 4px;
+}
+
+.combatStats {
+    display: grid;
+    gap: 12px;
+}
+
+.withDeaths {
+    grid-template-columns: 1fr 1fr;
+}
+
+.withDeaths .combatStat:nth-child(3) {
+    grid-column: 1 / -1;
+}
+
+.combatStat { display: grid; gap: 3px; }
+
+.combatStatValue {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+}
+
+.combatStatLabel {
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}

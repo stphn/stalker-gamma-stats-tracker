@@ -1,0 +1,244 @@
+.root { display: flex; flex-direction: column; }
+
+/* ── Hero (location image + right overlay) ── */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    overflow: hidden;
+    background: #111;
+    flex-shrink: 0;
+}
+
+.heroDead {
+    border-left: 3px solid #e74c3c;
+}
+
+.heroCard {
+    position: absolute;
+    inset: 0;
+    width: calc(100% - 380px);
+    height: 100%;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+}
+
+.heroEmpty {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: calc(100% - 380px);
+    background: #111;
+}
+
+/* Right overlay panel */
+.overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 380px;
+    background: rgba(14, 14, 14, 0.96);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 12px 14px;
+    gap: 10px;
+    overflow-y: auto;
+}
+
+.overlayRunHead {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.overlayTitleRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+
+.runLabel {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.runTime {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-left: auto;
+}
+
+/* Kills panel inside overlay */
+.killsPanel {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 6px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.panelLabel {
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding-left: 6px;
+    border-left: 2px solid var(--border);
+    grid-column: 1 / -1;
+}
+
+.killsRows {
+    display: grid;
+    gap: 4px;
+    align-content: start;
+}
+
+.killRow {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    align-items: center;
+    gap: 6px;
+}
+
+.killIcon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    opacity: 0.9;
+}
+
+.killDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    justify-self: center;
+}
+
+.killName {
+    font-family: var(--font-display);
+    font-size: 11px;
+}
+
+.killValue {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    text-align: right;
+}
+
+.killsDonut {
+    align-self: start;
+    padding-top: 2px;
+}
+
+/* Economy / Exploration */
+.statsPanels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.statsCol { display: grid; gap: 4px; align-content: start; }
+
+.statRow {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+}
+
+.statRow:last-child { border-bottom: none; }
+
+.statRow > span:first-child { color: var(--text-dim); }
+.statRow > span:last-child  { font-family: var(--font-display); font-size: 11px; font-weight: 600; color: var(--text); text-align: right; }
+
+/* ── Death log strip ── */
+.deathLog {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: #111111;
+    border-top: 1px solid var(--border);
+}
+
+.deathCol {
+    padding: 10px 16px;
+    border-right: 1px solid var(--border);
+}
+
+.deathCol:last-child { border-right: none; }
+
+.deathHeader {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.deathTitle {
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #e74c3c;
+}
+
+.deathDate {
+    font-family: var(--font-display);
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-left: 2px;
+}
+
+.deathTime {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    margin-left: auto;
+}
+
+.deathStats {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.deathStat { display: flex; flex-direction: column; gap: 1px; }
+
+.deathVal {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+}
+
+.deathLbl {
+    font-family: var(--font-display);
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
