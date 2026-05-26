@@ -4,7 +4,6 @@ import type { ActorInfo } from './types'
 import './App.css'
 
 import { PlayerCard } from './components/PlayerCard/PlayerCard'
-import { DesktopProfileStrip } from './components/DesktopProfileStrip/DesktopProfileStrip'
 import { DesktopLayout } from './components/DesktopLayout/DesktopLayout'
 import { CurrentRunPanel } from './components/CurrentRunPanel/CurrentRunPanel'
 import { LastRunPanel } from './components/LastRunPanel/LastRunPanel'
@@ -40,11 +39,6 @@ export default function App() {
                     </div>
                 </div>
             </header>
-
-            {/* ── Profile strip (desktop) ── */}
-            {displayActor && (
-                <DesktopProfileStrip actor={displayActor} companions={data?.companions} />
-            )}
 
             {/* ── Mobile player card (hidden on desktop) ── */}
             {displayActor && <PlayerCard actor={displayActor} money={displayActor.money} />}

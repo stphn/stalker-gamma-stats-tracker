@@ -7,10 +7,12 @@ interface LocationCardProps {
     locationName?: string
     gameTime?: { h: number; m: number }
     large?: boolean
+    fill?: boolean
+    live?: boolean
     className?: string
 }
 
-export function LocationCard({ location, locationName, gameTime, large, className }: LocationCardProps) {
+export function LocationCard({ location, locationName, gameTime, large, fill, live, className }: LocationCardProps) {
     const [src, setSrc] = useState<string | null>(null)
     useEffect(() => {
         setSrc(null)
@@ -34,13 +36,16 @@ export function LocationCard({ location, locationName, gameTime, large, classNam
         : null
 
     return (
-        <div className={`${styles.card}${className ? ` ${className}` : ''}`}>
+        <div className={[styles.card, fill ? styles.fill : '', className ?? ''].filter(Boolean).join(' ')}>
             {src && <img className={styles.img} src={src} alt="" />}
             <div className={styles.overlay}>
                 <div className={`${styles.name}${large ? ` ${styles.nameLarge}` : ''}`}>{name}</div>
                 {clock && period && (
                     <div className={styles.time}>
-                        <span className={`${styles.clock}${large ? ` ${styles.clockLarge}` : ''}`}>{clock}</span>
+                        <div className={styles.clockRow}>
+                            <span className={`${styles.clock}${large ? ` ${styles.clockLarge}` : ''}`}>{clock}</span>
+                            {live && <span className={styles.liveBadge}>LIVE</span>}
+                        </div>
                         <span className={styles.period} style={{ color: period.color }}>{period.label}</span>
                     </div>
                 )}
