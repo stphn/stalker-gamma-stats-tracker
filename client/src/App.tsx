@@ -739,6 +739,7 @@ function DesktopCurrentRun({ data, displayActor, gameState, stale }: {
                                     <div className="dt-death-stat"><span className="dt-death-val">{run.tasks}</span><span className="dt-death-lbl">Tasks</span></div>
                                     <div className="dt-death-stat"><span className="dt-death-val">{fmt_money(run.rubles_earned)}</span><span className="dt-death-lbl">Earned</span></div>
                                     <div className="dt-death-stat"><span className="dt-death-val">{run.artifacts}</span><span className="dt-death-lbl">Artifacts</span></div>
+                                    <div className="dt-death-stat"><span className="dt-death-val">{run.items}</span><span className="dt-death-lbl">Items</span></div>
                                     {loc && <div className="dt-death-stat"><span className="dt-death-val">{loc}</span><span className="dt-death-lbl">Died at</span></div>}
                                 </div>
                             </div>

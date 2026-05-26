@@ -843,7 +843,6 @@ main { display: grid; gap: 24px; }
 .dt-profile-stats {
     display: flex;
     gap: 0;
-    flex: 1;
 }
 
 .dt-profile-stat {
@@ -875,6 +874,7 @@ main { display: grid; gap: 24px; }
     gap: 12px;
     padding-left: 20px;
     border-left: 1px solid var(--border);
+    margin-left: auto;
 }
 
 .dt-profile-companions-label {
@@ -934,9 +934,10 @@ main { display: grid; gap: 24px; }
 .dt-hero {
     position: relative;
     width: 100%;
-    min-height: 340px;
+    height: 320px;
     overflow: hidden;
     background: #111;
+    flex-shrink: 0;
 }
 
 .dt-hero--dead {
@@ -946,20 +947,36 @@ main { display: grid; gap: 24px; }
 .dt-hero .location-card {
     position: absolute;
     inset: 0;
-    width: 100%;
+    width: calc(100% - 380px);
     height: 100%;
     margin: 0;
     border: none;
     border-radius: 0;
 }
 
+.dt-hero .location-card-overlay {
+    width: 100%;
+}
+
+.dt-hero .location-card-name {
+    font-size: 36px;
+    letter-spacing: 6px;
+}
+
+.dt-hero .location-card-clock {
+    font-size: 28px;
+}
+
 .dt-hero .location-card-img {
-    filter: saturate(0.5) brightness(0.6);
+    filter: saturate(0.7) brightness(0.75);
 }
 
 .dt-hero-empty {
     position: absolute;
-    inset: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: calc(100% - 380px);
     background: #111;
 }
 
@@ -969,13 +986,13 @@ main { display: grid; gap: 24px; }
     top: 0;
     right: 0;
     bottom: 0;
-    width: 400px;
-    background: rgba(17, 17, 17, 0.92);
+    width: 380px;
+    background: rgba(14, 14, 14, 0.96);
     border-left: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    padding: 14px 16px;
-    gap: 12px;
+    padding: 12px 14px;
+    gap: 10px;
     overflow-y: auto;
 }
 
@@ -1016,8 +1033,8 @@ main { display: grid; gap: 24px; }
 .dt-kills-panel {
     display: grid;
     grid-template-columns: 1fr auto;
-    grid-template-rows: auto 1fr;
-    gap: 8px;
+    grid-template-rows: auto auto;
+    gap: 6px;
     padding-bottom: 10px;
     border-bottom: 1px solid var(--border);
 }
@@ -1075,7 +1092,8 @@ main { display: grid; gap: 24px; }
 }
 
 .dt-kills-donut {
-    align-self: center;
+    align-self: start;
+    padding-top: 2px;
 }
 
 /* Economy / Exploration */
