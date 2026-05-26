@@ -73,7 +73,7 @@ header h1 {
     font-size: 22px;
     font-weight: 700;
     letter-spacing: 6px;
-    color: var(--accent);
+    color: #c8a85a;
     text-transform: uppercase;
 }
 
@@ -81,20 +81,28 @@ header h1 {
     font-family: var(--font-display);
     font-size: 10px;
     letter-spacing: 2px;
-    color: var(--text-dim);
+    color: #7a6530;
     text-transform: uppercase;
 }
 
 .status-group {
-    display: grid;
-    grid-template-columns: auto auto;
-    gap: 16px;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+}
+
+.status-super-label {
+    font-family: var(--font-display);
+    font-size: 6px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
 }
 
 .status-item {
-    display: grid;
-    justify-items: center;
+    display: flex;
+    align-items: center;
     gap: 5px;
 }
 
@@ -102,19 +110,24 @@ header h1 {
     width: 8px;
     height: 8px;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
-.status-dot.green { background: #4caf50; box-shadow: 0 0 5px #4caf5088; }
+.status-dot.green { background: #5a9e6a; box-shadow: 0 0 5px #5a9e6a88; }
 .status-dot.amber { background: #e8a838; box-shadow: 0 0 5px #e8a83888; }
-.status-dot.red   { background: #e74c3c; box-shadow: 0 0 5px #e74c3c88; }
+.status-dot.red   { background: #c85a5a; box-shadow: 0 0 5px #c85a5a88; }
 
 .status-label {
     font-family: var(--font-display);
     font-size: 9px;
+    font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--text-dim);
 }
+
+.status-label.green { color: #5a9e6a; }
+.status-label.amber { color: #e8a838; }
+.status-label.red   { color: #c85a5a; }
 
 @container app (max-width: 400px) {
     header { grid-template-columns: 1fr; gap: 10px; }
@@ -264,8 +277,8 @@ main { display: grid; gap: 24px; }
         padding: 8px 16px;
         margin-bottom: 0;
     }
-    header h1 { font-size: 14px; letter-spacing: 4px; }
-    .header-tagline { font-size: 8px; letter-spacing: 1.5px; }
+    header h1 { font-size: 14px; letter-spacing: 4px; color: #c8a85a; }
+    .header-tagline { font-size: 8px; letter-spacing: 1.5px; color: #7a6530; }
     .status-group { gap: 12px; }
     .status-item { flex-direction: row; display: flex; align-items: center; gap: 5px; }
 }

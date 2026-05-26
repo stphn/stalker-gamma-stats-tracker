@@ -29,13 +29,14 @@ export default function App() {
                     <div className="header-tagline">A S.T.A.L.K.E.R. Anomaly Companion</div>
                 </div>
                 <div className="status-group">
+                    <span className="status-super-label">Status</span>
                     <div className="status-item">
                         <span className={`status-dot ${connected ? 'green' : 'red'}`} />
-                        <span className="status-label">Server</span>
+                        <span className={`status-label ${connected ? 'green' : 'red'}`}>Server</span>
                     </div>
                     <div className="status-item">
                         <span className={`status-dot ${gameState === 'playing' ? 'green' : gameState === 'menu' ? 'amber' : 'red'}`} />
-                        <span className="status-label">Game</span>
+                        <span className={`status-label ${gameState === 'playing' ? 'green' : gameState === 'menu' ? 'amber' : 'red'}`}>Game</span>
                     </div>
                 </div>
             </header>
