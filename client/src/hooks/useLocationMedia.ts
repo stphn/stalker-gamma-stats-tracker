@@ -5,15 +5,11 @@ export interface LocationMedia {
 	type: 'video' | 'image';
 }
 
-function probeVideo(src: string): Promise<string | null> {
-	return new Promise((resolve) => {
-		const v = document.createElement('video');
-		v.preload = 'metadata';
-		v.onloadedmetadata = () => resolve(src);
-		v.onerror = () => resolve(null);
-		v.src = src;
-	});
-}
+// Locations that have at least one .mp4 file in /public/locations/<id>/.
+// Add an entry here whenever you drop a new video asset.
+const VIDEO_LOCATIONS: Record<string, number[]> = {
+	l06_rostok: [3],
+};
 
 function probeImage(src: string): Promise<string | null> {
 	return new Promise((resolve) => {
@@ -39,40 +35,36 @@ export function useLocationMedia(
 		let cancelled = false;
 
 		async function probe() {
-			const slots = [1, 2, 3];
-			const videos: string[] = [];
-			const images: string[] = [];
+			// If this location has known video slots, pick one at random — no probing needed.
+			const videoSlots = VIDEO_LOCATIONS[location as string];
+			if (videoSlots && videoSlots.length > 0) {
+				const slot = videoSlots[Math.floor(Math.random() * videoSlots.length)];
+				const pad = String(slot).padStart(2, '0');
+				if (!cancelled) {
+					setMedia({
+						src: `/locations/${location}/${location}_${pad}.mp4`,
+						type: 'video',
+					});
+				}
+				return;
+			}
 
+			// Otherwise probe for images (slots 1–3).
+			const found: string[] = [];
 			await Promise.all(
-				slots.map(async (i) => {
-					const pad = String(i).padStart(2, '0');
-					const base = `/locations/${location}/${location}_${pad}`;
-
-					// Check video first, then image
-					const vid = await probeVideo(`${base}.mp4`);
-					if (vid) {
-						videos[i - 1] = vid;
-					} else {
-						const img = await probeImage(`${base}.png`);
-						if (img) images[i - 1] = img;
-					}
+				[1, 2, 3].map(async (i) => {
+					const src = `/locations/${location}/${location}_${String(i).padStart(2, '0')}.png`;
+					const result = await probeImage(src);
+					if (result) found[i - 1] = result;
 				}),
 			);
 
 			if (cancelled) return;
 
-			const foundVideos = videos.filter(Boolean);
-			const foundImages = images.filter(Boolean);
-
-			if (foundVideos.length > 0) {
-				// Pick a random video
+			const images = found.filter(Boolean);
+			if (images.length > 0) {
 				setMedia({
-					src: foundVideos[Math.floor(Math.random() * foundVideos.length)],
-					type: 'video',
-				});
-			} else if (foundImages.length > 0) {
-				setMedia({
-					src: foundImages[Math.floor(Math.random() * foundImages.length)],
+					src: images[Math.floor(Math.random() * images.length)],
 					type: 'image',
 				});
 			}
