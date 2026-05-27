@@ -1,9 +1,10 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from './types';
 import { useStats } from './useStats';
 import { fmt_money, fmt_time } from './utils/formatters';
 import './App.css';
 
+import { BloodSplatter } from './components/BloodSplatter/BloodSplatter';
 import { Companions } from './components/Companions/Companions';
 import { Header } from './components/Header/Header';
 import { Location } from './components/Location/Location';
@@ -26,8 +27,28 @@ export default function App() {
 	if (data?.actor?.name) lastActorRef.current = data.actor;
 	const displayActor = data?.actor?.name ? data.actor : lastActorRef.current;
 
+	// Death detection — fires when last_run[0].start changes
+	const [deathTrigger, setDeathTrigger] = useState(0);
+	const [shaking, setShaking] = useState(false);
+	const prevRunStart = useRef<number | null>(null);
+	const latestDeathStart = data?.last_run?.[0]?.start ?? null;
+	useEffect(() => {
+		if (latestDeathStart == null) return;
+		if (prevRunStart.current == null) {
+			prevRunStart.current = latestDeathStart;
+			return;
+		}
+		if (latestDeathStart !== prevRunStart.current) {
+			prevRunStart.current = latestDeathStart;
+			setDeathTrigger(latestDeathStart);
+			setShaking(true);
+			setTimeout(() => setShaking(false), 500);
+		}
+	}, [latestDeathStart]);
+
 	return (
-		<div className="app">
+		<div style={{ overflow: 'hidden' }}>
+		<div className={shaking ? 'app death-shake' : 'app'}>
 			<Header connected={connected} gameState={gameState} />
 
 			{!data ? (
@@ -44,6 +65,14 @@ export default function App() {
 					style={stale ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
 				>
 					<div className="stage-row">
+						<BloodSplatter trigger={deathTrigger} key={deathTrigger} />
+						<button
+							className="dev-death-btn"
+							onClick={() => { setDeathTrigger(Date.now()); setShaking(true); setTimeout(() => setShaking(false), 500); }}
+							title="Test blood splatter"
+						>
+							💀 test death
+						</button>
 						<Stage
 							location={displayActor?.location}
 							left={
@@ -155,6 +184,7 @@ export default function App() {
 				className="foot-gamma"
 			/>
 			</footer>
+		</div>
 		</div>
 	);
 }
