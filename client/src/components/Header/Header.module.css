@@ -3,7 +3,7 @@
 	grid-template-columns: 1fr auto auto;
 	align-items: center;
 	gap: var(--pad-lg);
-	background: #1c1c1c;
+	background: var(--bg-surface);
 	border-bottom: none;
 	box-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
 	padding: var(--pad-sm) var(--pad-lg);
@@ -44,7 +44,7 @@
 	font-family: var(--font-display);
 	font-size: var(--text-2xs);
 	letter-spacing: 1.5px;
-	color: #6abf45;
+	color: var(--color-positive);
 	text-transform: uppercase;
 }
 
@@ -61,19 +61,19 @@
 	letter-spacing: 1.5px;
 	text-transform: uppercase;
 	text-decoration: none;
-	color: #5a4e2e;
+	color: var(--accent-dim);
 	transition: color 0.15s;
 }
 
 .navLink:hover {
 	color: var(--accent-base);
-	text-shadow: 0 0 10px rgba(200, 168, 90, 0.4);
+	text-shadow: 0 0 10px rgba(184, 148, 72, 0.4);
 }
 
 .navSep {
 	font-family: var(--font-display);
 	font-size: var(--text-2xs);
-	color: #2e2820;
+	color: var(--bg-default);
 	user-select: none;
 }
 
@@ -114,20 +114,20 @@
 @keyframes pulse-green {
 	0%,
 	100% {
-		box-shadow: 0 0 4px 1px #5a9e6a66;
+		box-shadow: 0 0 4px 1px color-mix(in srgb, var(--color-positive) 40%, transparent);
 	}
 	50% {
-		box-shadow: 0 0 10px 4px #5a9e6acc;
+		box-shadow: 0 0 10px 4px color-mix(in srgb, var(--color-positive) 80%, transparent);
 	}
 }
 
 @keyframes pulse-amber {
 	0%,
 	100% {
-		box-shadow: 0 0 4px 1px #e8a83866;
+		box-shadow: 0 0 4px 1px color-mix(in srgb, var(--color-warning) 40%, transparent);
 	}
 	50% {
-		box-shadow: 0 0 10px 4px #e8a838cc;
+		box-shadow: 0 0 10px 4px color-mix(in srgb, var(--color-warning) 80%, transparent);
 	}
 }
 
@@ -139,30 +139,30 @@
 }
 
 .dot.green {
-	background: #5a9e6a;
+	background: var(--color-positive);
 	animation: pulse-green 2s ease-in-out infinite;
 }
 .dot.amber {
-	background: #e8a838;
+	background: var(--color-warning);
 	animation: pulse-amber 2.4s ease-in-out infinite;
 }
 .dot.red {
-	background: #c85a5a;
-	box-shadow: 0 0 4px 1px #c85a5a55;
+	background: var(--color-danger);
+	box-shadow: 0 0 4px 1px color-mix(in srgb, var(--color-danger) 33%, transparent);
 }
 
 .pill.green {
-	color: #5a9e6a;
-	border-color: rgba(90, 158, 106, 0.3);
-	background: rgba(90, 158, 106, 0.08);
+	color: var(--color-positive);
+	border-color: color-mix(in srgb, var(--color-positive) 30%, transparent);
+	background: color-mix(in srgb, var(--color-positive) 8%, transparent);
 }
 .pill.amber {
-	color: #e8a838;
-	border-color: rgba(232, 168, 56, 0.3);
-	background: rgba(232, 168, 56, 0.08);
+	color: var(--color-warning);
+	border-color: color-mix(in srgb, var(--color-warning) 30%, transparent);
+	background: color-mix(in srgb, var(--color-warning) 8%, transparent);
 }
 .pill.red {
-	color: #c85a5a;
-	border-color: rgba(200, 90, 90, 0.3);
-	background: rgba(200, 90, 90, 0.08);
+	color: var(--color-danger);
+	border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
+	background: color-mix(in srgb, var(--color-danger) 8%, transparent);
 }

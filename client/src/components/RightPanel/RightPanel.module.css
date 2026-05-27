@@ -6,8 +6,8 @@
 }
 
 .panel {
-	background: #1c1c1c;
-	border: 1px solid #2a2a2a;
+	background: var(--bg-surface);
+	border: 1px solid var(--bg-subtle);
 	display: grid;
 	padding: 1px 2px;
 	gap: 1px;
@@ -32,8 +32,8 @@
 	align-items: center;
 	gap: 8px;
 	padding: 4px 8px;
-	background: #1c1c1c;
-	border-bottom: 1px solid #2a2a2a;
+	background: var(--bg-surface);
+	border-bottom: 1px solid var(--bg-subtle);
 }
 
 .killRow:last-child {
@@ -60,7 +60,7 @@
 	font-family: var(--font-display);
 	font-size: var(--text-sm);
 	font-weight: 700;
-	color: #c8a85a;
+	color: var(--accent-base);
 	text-align: right;
 }
 
@@ -71,7 +71,7 @@
 	align-items: center;
 	justify-content: center;
 	padding: var(--pad-sm) var(--pad-md);
-	background: #1c1c1c;
+	background: var(--bg-surface);
 }
 
 .donutCenter {
@@ -87,7 +87,7 @@
 	font-family: var(--font-display);
 	font-size: var(--text-xl);
 	font-weight: 700;
-	color: #e8e4d8;
+	color: var(--text-primary);
 	line-height: 1;
 }
 
@@ -96,7 +96,7 @@
 	font-size: var(--text-2xs);
 	letter-spacing: 1px;
 	text-transform: uppercase;
-	color: #8a807f;
+	color: var(--text-secondary);
 }
 
 /* Economy / Exploration row */
