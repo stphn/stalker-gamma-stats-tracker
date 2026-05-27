@@ -1,82 +1,3 @@
-/* ─────────────────────────────────────────────
-   Glitch keyframes — run on top of the WebGL canvas.
-   These don't need a background image: they flash
-   a tinted overlay over whatever the canvas renders.
-───────────────────────────────────────────── */
-
-/* Occasional full-panel flicker */
-@keyframes glitch-flicker {
-	0%,
-	92% {
-		opacity: 0;
-	}
-	93% {
-		opacity: 0.08;
-	}
-	94% {
-		opacity: 0;
-	}
-	96% {
-		opacity: 0.05;
-	}
-	97%,
-	100% {
-		opacity: 0;
-	}
-}
-
-/* Horizontal slice — top band, brief flash */
-@keyframes glitch-slice-a {
-	0%,
-	87% {
-		clip-path: inset(8% 0 86% 0);
-		transform: translateX(0);
-		opacity: 0;
-	}
-	88% {
-		clip-path: inset(8% 0 86% 0);
-		transform: translateX(7px);
-		opacity: 0.55;
-	}
-	89% {
-		clip-path: inset(52% 0 40% 0);
-		transform: translateX(-4px);
-		opacity: 0.55;
-	}
-	90%,
-	100% {
-		clip-path: inset(8% 0 86% 0);
-		transform: translateX(0);
-		opacity: 0;
-	}
-}
-
-/* Horizontal slice — mid band, different timing */
-@keyframes glitch-slice-b {
-	0%,
-	94% {
-		clip-path: inset(38% 0 52% 0);
-		transform: translateX(0);
-		opacity: 0;
-	}
-	95% {
-		clip-path: inset(38% 0 52% 0);
-		transform: translateX(-9px);
-		opacity: 0.5;
-	}
-	96% {
-		clip-path: inset(62% 0 28% 0);
-		transform: translateX(5px);
-		opacity: 0.5;
-	}
-	97%,
-	100% {
-		clip-path: inset(38% 0 52% 0);
-		transform: translateX(0);
-		opacity: 0;
-	}
-}
-
 /* ── Stage shell ── */
 .stage {
 	position: relative;
@@ -86,31 +7,6 @@
 	overflow: hidden;
 	background: #0d0d0d;
 	cursor: crosshair;
-}
-
-/* Full-panel glitch flicker — cyan tint */
-.stage::before {
-	content: "";
-	position: absolute;
-	inset: 0;
-	background: rgba(80, 220, 255, 0.15);
-	pointer-events: none;
-	z-index: 1;
-	opacity: 0;
-	animation: glitch-flicker 6s step-end infinite;
-}
-
-/* Slice glitch A — red tint, top band */
-.stage::after {
-	content: "";
-	position: absolute;
-	inset: 0;
-	background: rgba(255, 60, 60, 0.35);
-	pointer-events: none;
-	z-index: 1;
-	opacity: 0;
-	animation: glitch-slice-a 7s step-end infinite,
-		glitch-slice-b 11s step-end infinite;
 }
 
 /* ── Scanlines overlay ── */
@@ -125,7 +21,7 @@
 		rgba(0, 0, 0, 0.07) 4px
 	);
 	pointer-events: none;
-	z-index: 2;
+	z-index: 1;
 }
 
 /* ── Bottom gradient ── */
@@ -134,7 +30,7 @@
 	inset: 0;
 	background: linear-gradient(to top, #000 0%, transparent 40%);
 	pointer-events: none;
-	z-index: 3;
+	z-index: 2;
 }
 
 /* ── Content overlay ── */
@@ -146,5 +42,5 @@
 	justify-content: flex-end;
 	gap: var(--pad-xl);
 	padding: var(--pad-lg);
-	z-index: 4;
+	z-index: 3;
 }
