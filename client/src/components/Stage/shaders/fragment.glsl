@@ -35,5 +35,10 @@ void main() {
   vec4 gChannel = texture2D(uTexture, uv);
   vec4 bChannel = texture2D(uTexture, vec2(uv.x - split, uv.y));
 
-  gl_FragColor = vec4(rChannel.r, gChannel.g, bChannel.b, 1.0);
+  vec3 color = vec3(rChannel.r, gChannel.g, bChannel.b);
+
+  // Slight brightness boost so the image reads well behind the overlays
+  color *= 1.25;
+
+  gl_FragColor = vec4(color, 1.0);
 }
