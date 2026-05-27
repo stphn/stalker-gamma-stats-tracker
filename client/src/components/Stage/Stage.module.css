@@ -2,7 +2,7 @@
 	position: relative;
 	width: 100%;
 	flex: 1;
-	height: clamp(320px, 68vh, 960px);
+	height: clamp(320px, 68svh, 960px);
 	overflow: hidden;
 	background: #0d0d0d;
 	background-size: cover;
