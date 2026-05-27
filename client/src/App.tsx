@@ -119,36 +119,41 @@ export default function App() {
 			)}
 
 			<footer className="site-footer" aria-label="External links">
-				<a
-					className="foot-link"
-					href="https://www.stalkergamma.com/"
-					target="_blank"
-					rel="noreferrer"
-				>
-					STALKER GAMMA
-				</a>
-				<span className="foot-dot" aria-hidden="true">
-					·
-				</span>
-				<a
-					className="foot-link"
-					href="https://discord.gg/stalker-gamma"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Discord
-				</a>
-				<span className="foot-dot" aria-hidden="true">
-					·
-				</span>
-				<a
-					className="foot-link"
-					href="https://github.com/Grokitach/Stalker_GAMMA"
-					target="_blank"
-					rel="noreferrer"
-				>
-					GitHub
-				</a>
+				<div className="hud-frame" aria-hidden="true" />
+				<span className="foot-label" aria-hidden="true">◈ External Refs</span>
+				<div className="foot-links">
+					<a
+						className="foot-link"
+						href="https://www.stalkergamma.com/"
+						target="_blank"
+						rel="noreferrer"
+					>
+						STALKER GAMMA
+					</a>
+					<span className="foot-sep" aria-hidden="true">|</span>
+					<a
+						className="foot-link"
+						href="https://discord.gg/stalker-gamma"
+						target="_blank"
+						rel="noreferrer"
+					>
+						Discord
+					</a>
+					<span className="foot-sep" aria-hidden="true">|</span>
+					<a
+						className="foot-link"
+						href="https://github.com/Grokitach/Stalker_GAMMA"
+						target="_blank"
+						rel="noreferrer"
+					>
+						GitHub
+					</a>
+				</div>
+				<img
+				src="/stalker-gamma.webp"
+				alt="STALKER GAMMA"
+				className="foot-gamma"
+			/>
 			</footer>
 		</div>
 	);

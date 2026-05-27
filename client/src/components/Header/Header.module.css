@@ -1,7 +1,8 @@
 .header {
 	display: grid;
-	grid-template-columns: 1fr auto;
+	grid-template-columns: 1fr auto auto;
 	align-items: center;
+	gap: var(--pad-lg);
 	background: #1c1c1c;
 	border-bottom: none;
 	box-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
@@ -31,21 +32,49 @@
 	font-size: var(--text-md);
 	font-weight: 700;
 	letter-spacing: 4px;
-	color: #e8c46a;
 	text-transform: uppercase;
-	text-shadow:
-		0 1px 0 rgba(255, 255, 255, 0.1),
-		0 -1px 0 rgba(0, 0, 0, 0.8),
-		0 0 20px rgba(232, 196, 106, 0.5),
-		0 0 40px rgba(232, 196, 106, 0.2);
+	background: linear-gradient(to bottom, #f4f4f4 0%, #c8c8c8 45%, #686868 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.9));
 }
 
 .tagline {
 	font-family: var(--font-display);
 	font-size: var(--text-2xs);
 	letter-spacing: 1.5px;
-	color: #7a6530;
+	color: #6abf45;
 	text-transform: uppercase;
+}
+
+.nav {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.navLink {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	font-weight: 600;
+	letter-spacing: 1.5px;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: #5a4e2e;
+	transition: color 0.15s;
+}
+
+.navLink:hover {
+	color: var(--accent-base);
+	text-shadow: 0 0 10px rgba(200, 168, 90, 0.4);
+}
+
+.navSep {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	color: #2e2820;
+	user-select: none;
 }
 
 .statusGroup {

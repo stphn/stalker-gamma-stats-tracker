@@ -25,6 +25,13 @@ export function Header({ connected, gameState }: HeaderProps) {
 				<h1 className={styles.title}>T.R.A.C.K.E.R.</h1>
 				<p className={styles.tagline}>A S.T.A.L.K.E.R. Anomaly Companion</p>
 			</div>
+			<nav className={styles.nav} aria-label="Site navigation">
+				<a href="#" className={styles.navLink}>Mods</a>
+				<span className={styles.navSep} aria-hidden="true">|</span>
+				<a href="#" className={styles.navLink}>About</a>
+				<span className={styles.navSep} aria-hidden="true">|</span>
+				<a href="#" className={styles.navLink}>Credits</a>
+			</nav>
 			<output className={styles.statusGroup} aria-label="Connection status">
 				<div
 					className={`${styles.pill} ${styles[serverColor]}`}
