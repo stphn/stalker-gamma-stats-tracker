@@ -11,7 +11,7 @@ export function useLocationImage(location: string | undefined): string | null {
 		setSrc(null);
 		const found: string[] = [];
 		let done = 0;
-		const total = 5;
+		const total = 3;
 		for (let i = 1; i <= total; i++) {
 			const s = `/locations/${location}/${location}_${String(i).padStart(2, '0')}.png`;
 			const img = new Image();
