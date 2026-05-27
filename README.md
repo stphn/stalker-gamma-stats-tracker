@@ -1,54 +1,48 @@
 # T.R.A.C.K.E.R.
 
-**S.T.A.L.K.E.R. G.A.M.M.A. real-time stat tracker**
+A real-time companion dashboard for **STALKER GAMMA** — displays your current run stats, kill breakdown, economy, and death log as you play.
 
-Live dashboard showing kills, deaths, economy, artifacts, companions, location, and run history — updated every 5 seconds while you play.
+## How it works
 
-## Architecture
+A game-side mod writes stats to a Supabase table on every update. The web app subscribes to real-time Postgres changes and renders them instantly — no polling, no refresh.
 
 ```
-Lua mod → gamma_stats.json → Node.js WS server → React frontend
+Game mod → Supabase (postgres) → realtime subscription → browser
 ```
-
-- **Lua mod** — writes JSON every 5s and on kills/deaths/tasks
-- **Node.js server** — watches JSON via chokidar, broadcasts over WebSocket
-- **React frontend** — connects via WebSocket, hot-updates on every change
 
 ## Stack
 
-- Frontend: Vite + React + TypeScript + Recharts
-- Server: Bun + ws + chokidar
-- Fonts: Chakra Petch + IBM Plex Sans
+- **React 19 + TypeScript** — UI
+- **Vite** — build tooling
+- **Supabase** — real-time data transport
+- **CSS Modules + custom properties** — fluid, token-based styling (no UI library)
+- No charting library — kill donut is hand-rolled SVG
 
-## Local setup
+## Features
+
+- Player card: name, faction, rank, reputation, rubles
+- Squad companions with HP bars
+- Location + in-game clock
+- Kill breakdown by faction with SVG donut chart
+- Economy panel (earned, spent, artifacts)
+- Exploration panel (tasks, stashes, level changes)
+- Death log: last 3 runs with stats grid
+- Responsive: stats overlay the stage image on desktop, stack below on mobile
+
+## Setup
 
 ```bash
-# Install deps
+cd client
 bun install
+```
 
-# Run server + client together
+Create `client/.env.local`:
+
+```
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_KEY=your-anon-key
+```
+
+```bash
 bun run dev
 ```
-
-Copy `stats_tracker.script` into your GAMMA mod folder:
-```
-C:\GAMMA\mods\Stats Tracker\gamedata\scripts\stats_tracker.script
-```
-
-## Remote / Vercel deployment
-
-The frontend can be deployed to Vercel. The Node.js server must run locally on your game PC, exposed via Cloudflare Tunnel.
-
-**Vercel settings:**
-- Root directory: `client`
-- Build command: `npm run build`
-- Output directory: `dist`
-- Environment variable: `VITE_WS_URL=wss://your-tunnel.trycloudflare.com`
-
-**Cloudflare Tunnel (run on game PC):**
-```powershell
-winget install Cloudflare.cloudflared
-cloudflared tunnel --url http://localhost:3001
-```
-
-Set the printed URL (change `https://` → `wss://`) as `VITE_WS_URL` in Vercel.
