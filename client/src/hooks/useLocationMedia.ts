@@ -36,8 +36,6 @@ export function useLocationMedia(
 		let cancelled = false;
 
 		async function probe() {
-			if (import.meta.env.DEV) console.log('[useLocationMedia] location:', loc);
-
 			// If this location has known video slots, pick one at random — no probing needed.
 			const videoSlots = VIDEO_LOCATIONS[loc];
 			if (videoSlots && videoSlots.length > 0) {
