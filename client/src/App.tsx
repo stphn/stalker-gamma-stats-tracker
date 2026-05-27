@@ -7,6 +7,7 @@ import './App.css';
 import { Companions } from './components/Companions/Companions';
 import { Header } from './components/Header/Header';
 import { Location } from './components/Location/Location';
+import { PdaPanel } from './components/PdaPanel/PdaPanel';
 import { Player } from './components/Player/Player';
 import { RightPanel } from './components/RightPanel/RightPanel';
 import { Stage } from './components/Stage/Stage';
@@ -119,6 +120,8 @@ export default function App() {
 							})}
 						</div>
 					)}
+
+					{data.alltime_official && <PdaPanel pda={data.alltime_official} />}
 				</div>
 			)}
 
