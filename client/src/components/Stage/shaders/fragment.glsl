@@ -5,6 +5,7 @@ uniform vec2 uImageSize;    // original image natural size in px
 uniform float uTime;
 
 varying vec2 vUv;
+varying float vStrength;
 
 // background-size: cover equivalent
 vec2 coverUvs(vec2 uv, vec2 resolution, vec2 imageSize) {
@@ -29,32 +30,25 @@ float luma(vec3 c) {
 void main() {
   vec2 uv = coverUvs(vUv, uResolution, uImageSize);
 
-  // Sample GPGPU displacement strength
-  float strength = texture2D(uGpgpu, vUv).r;
+  // RGB chromatic aberration split driven by vertex displacement strength
+  float split = vStrength * 0.06;
 
-  // RGB chromatic aberration split — stronger when displaced
-  float split = strength * 0.06;
-
-  vec4 rSample = texture2D(uTexture, vec2(uv.x + split,        uv.y));
+  vec4 rSample = texture2D(uTexture, vec2(uv.x + split, uv.y));
   vec4 gSample = texture2D(uTexture, uv);
-  vec4 bSample = texture2D(uTexture, vec2(uv.x - split,        uv.y));
+  vec4 bSample = texture2D(uTexture, vec2(uv.x - split, uv.y));
 
-  // Desaturate each channel independently, then reassemble
-  // This keeps the RGB split visible as a luminance fringe rather
-  // than a colour fringe that blends into the photo
+  // Desaturate, blend back a touch of colour
   float rL = luma(rSample.rgb);
   float gL = luma(gSample.rgb);
   float bL = luma(bSample.rgb);
 
-  // Blend: mostly greyscale, a touch of original colour for depth
-  float tint = 0.12; // 0 = full B&W, 1 = full colour
+  float tint = 0.12;
   vec3 color = mix(
     vec3(rL, gL, bL),
     vec3(rSample.r, gSample.g, bSample.b),
     tint
   );
 
-  // Slight brightness lift
   color *= 1.2;
 
   gl_FragColor = vec4(color, 1.0);
