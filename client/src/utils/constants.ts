@@ -35,45 +35,65 @@ export const LEVELS: Record<string, string> = {
 }
 
 export const FACTIONS: Record<string, string> = {
-    stalker: 'Loner', actor_stalker: 'Loner', bandit: 'Bandit', army: 'Military', freedom: 'Freedom',
-    duty: 'Duty', ecolog: 'Ecologist', csky: 'Clear Sky', monolith: 'Monolith',
-    actor: 'Loner', independent: 'Independent', killer: 'Mercenary',
+    stalker: 'Loner', actor_stalker: 'Loner', actor: 'Loner',
+    bandit: 'Bandit',
+    army: 'Military', military: 'Military',
+    freedom: 'Freedom',
+    duty: 'Duty',
+    ecolog: 'Ecologist',
+    csky: 'Clear Sky',
+    monolith: 'Monolith',
+    killer: 'Mercenary',
+    renegade: 'Renegade',
+    mutant: 'Mutant',
+    helicopter: 'Helicopter',
+    other: 'Other',
+    independent: 'Independent',
 }
 
+// Faction text/label colors — from Figma Faction Icon component set
 export const FACTION_COLORS: Record<string, string> = {
-    stalker: '#4a9eff', actor_stalker: '#4a9eff', bandit: '#e8a838', army: '#5cb85c', freedom: '#9b59b6',
-    duty: '#e74c3c', ecolog: '#1abc9c', csky: '#3498db', monolith: '#8e44ad',
-    actor: '#4a9eff', killer: '#e67e22',
+    stalker: '#e8c46a', actor_stalker: '#e8c46a', actor: '#e8c46a',
+    bandit: '#c87a3a',
+    army: '#6a9e6a', military: '#6a9e6a',
+    freedom: '#5a8ab4',
+    duty: '#c85a5a',
+    ecolog: '#8ab45a',
+    csky: '#5ab4b4',
+    monolith: '#9a7ab4',
+    killer: '#c8a85a',
+    renegade: '#b4b45a',
+    mutant: '#c85a5a',
+    helicopter: '#c8a85a',
+    other: '#8a8070',
+    independent: '#8a8070',
+}
+
+// Icon background colors — from Figma Faction Icon component fills
+export const FACTION_BG_COLORS: Record<string, string> = {
+    stalker: '#3a2c08', actor_stalker: '#3a2c08', actor: '#3a2c08',
+    bandit: '#3a2010',
+    army: '#1a3a20', military: '#1a3a20',
+    freedom: '#152438',
+    duty: '#3a1212',
+    ecolog: '#1e2e0a',
+    csky: '#0f2e2e',
+    monolith: '#25143a',
+    killer: '#1a1a3a',
+    renegade: '#2a2a0e',
+    mutant: '#3a1212',
 }
 
 export const FACTION_ICONS: Record<string, string> = {
-    stalker: '/factions/faction_loners.png', actor_stalker: '/factions/faction_loners.png',
-    actor: '/factions/faction_loners.png',
+    stalker: '/factions/faction_loners.png', actor_stalker: '/factions/faction_loners.png', actor: '/factions/faction_loners.png',
     bandit: '/factions/faction_bandits.png',
-    army: '/factions/faction_military.png',
+    army: '/factions/faction_military.png', military: '/factions/faction_military.png',
     freedom: '/factions/faction_freedom.png',
     duty: '/factions/faction_duty.png',
     ecolog: '/factions/faction_ecologists.png',
     csky: '/factions/faction_clearsky.png',
     monolith: '/factions/faction_monolith.png',
     killer: '/factions/faction_mercenary.png',
+    renegade: '/factions/faction_renegades.png',
     independent: '/factions/faction_inisig.png',
 }
-
-export const DEATH_LINES = [
-    'The Zone claims another stalker.',
-    "Should've brought more medkits.",
-    'Every stalker meets the Zone eventually.',
-    "The Zone doesn't forgive mistakes.",
-    'One wrong step.',
-    'Suit up. Try again.',
-    'You pushed too far.',
-    'Better luck next run, stalker.',
-    'The anomalies had the last word.',
-    'Even legends bleed.',
-    'The Zone is unforgiving.',
-    'Another name for the memorial wall.',
-    "Rookie mistake. Won't happen again.",
-    'Death comes for us all out here.',
-    'The Zone giveth, the Zone taketh.',
-]

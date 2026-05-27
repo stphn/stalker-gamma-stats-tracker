@@ -41,21 +41,8 @@ export function rep_color(r: number) {
     return '#e74c3c'
 }
 
-export function ordinal(n: number) {
-    const s = ['th', 'st', 'nd', 'rd']
-    const v = n % 100
-    return n + (s[(v - 20) % 10] ?? s[v] ?? s[0])
-}
-
 export function hp_color(pct: number) {
     if (pct >= 60) return '#2ecc71'
     if (pct >= 30) return '#e8a838'
     return '#e74c3c'
-}
-
-export function day_period(h: number): { label: string; color: string } {
-    if (h >= 5  && h < 7)  return { label: 'Dawn',  color: '#e67e22' }
-    if (h >= 7  && h < 19) return { label: 'Day',   color: '#f1c40f' }
-    if (h >= 19 && h < 22) return { label: 'Dusk',  color: '#e8a838' }
-    return                         { label: 'Night', color: '#7f8fe4' }
 }

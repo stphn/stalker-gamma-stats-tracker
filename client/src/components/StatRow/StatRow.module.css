@@ -1,0 +1,29 @@
+.root {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: var(--pad-xs) var(--pad-sm);
+    background: #1c1c1c;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.root:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 400;
+    color: #8a807f;
+}
+
+.value {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: #e8e4d8;
+    text-align: right;
+    white-space: nowrap;
+}

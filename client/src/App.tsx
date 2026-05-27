@@ -1,15 +1,15 @@
 import { useRef } from 'react'
 import { useStats } from './useStats'
 import type { ActorInfo } from './types'
+import { fmt_time, fmt_money } from './utils/formatters'
 import './App.css'
 
-import { PlayerCard } from './components/PlayerCard/PlayerCard'
-import { DesktopLayout } from './components/DesktopLayout/DesktopLayout'
-import { CurrentRunPanel } from './components/CurrentRunPanel/CurrentRunPanel'
-import { LastRunPanel } from './components/LastRunPanel/LastRunPanel'
-import { StatsPanel } from './components/StatsPanel/StatsPanel'
-import { PdaStatsPanel } from './components/PdaStatsPanel/PdaStatsPanel'
-import { Achievements, GameAchievementsPanel } from './components/Achievements/Achievements'
+import { Header } from './components/Header/Header'
+import { Stage } from './components/Stage/Stage'
+import { Location } from './components/Location/Location'
+import { Player } from './components/Player/Player'
+import { Companions } from './components/Companions/Companions'
+import { RightPanel } from './components/RightPanel/RightPanel'
 
 export default function App() {
     const { data, connected, stale } = useStats()
@@ -22,47 +22,66 @@ export default function App() {
 
     return (
         <div className="app">
-            {/* ── Top bar ── */}
-            <header>
-                <div className="header-title">
-                    <h1>T.R.A.C.K.E.R.</h1>
-                    <div className="header-tagline">A S.T.A.L.K.E.R. Anomaly Companion</div>
-                </div>
-                <div className="status-group">
-                    <span className="status-super-label">Status</span>
-                    <div className="status-item">
-                        <span className={`status-dot ${connected ? 'green' : 'red'}`} />
-                        <span className={`status-label ${connected ? 'green' : 'red'}`}>Server</span>
-                    </div>
-                    <div className="status-item">
-                        <span className={`status-dot ${gameState === 'playing' ? 'green' : gameState === 'menu' ? 'amber' : 'red'}`} />
-                        <span className={`status-label ${gameState === 'playing' ? 'green' : gameState === 'menu' ? 'amber' : 'red'}`}>Game</span>
-                    </div>
-                </div>
-            </header>
-
-            {/* ── Mobile player card (hidden on desktop) ── */}
-            {displayActor && <PlayerCard actor={displayActor} money={displayActor.money} />}
+            <Header connected={connected} gameState={gameState} />
 
             {!data ? (
                 <div className="empty">
                     {connected ? 'Waiting for stats — load a save in-game.' : 'Connecting to server…'}
                 </div>
             ) : (
-                <>
-                    {/* Desktop layout */}
-                    <DesktopLayout data={data} displayActor={displayActor} gameState={gameState} stale={stale} />
+                <div className="layout" style={stale ? { opacity: 0.5, pointerEvents: 'none' } : undefined}>
+                    <div className="stage-row">
+                        <Stage
+                            location={displayActor?.location}
+                            left={displayActor && (
+                                <>
+                                    <Location
+                                        location={displayActor.location}
+                                        locationName={displayActor.location_name}
+                                        gameTime={displayActor.game_time}
+                                        gameState={gameState}
+                                    />
+                                    <div className="actors">
+                                        <Player actor={displayActor} />
+                                        {data.companions && data.companions.length > 0 && (
+                                            <Companions companions={data.companions} />
+                                        )}
+                                    </div>
+                                </>
+                            )}
+                        />
+                        <aside className="sidebar">
+                            <RightPanel data={data} />
+                        </aside>
+                    </div>
 
-                    {/* Mobile layout */}
-                    <main style={stale ? { opacity: 0.5, pointerEvents: 'none' } : undefined}>
-                        <CurrentRunPanel stats={data.session} location={displayActor?.location} locationName={displayActor?.location_name} gameTime={displayActor?.game_time} companions={data.companions} gameState={gameState} />
-                        {Array.isArray(data.last_run) && data.last_run.map((run, i) => <LastRunPanel key={run.start} run={run} index={i} />)}
-                        <StatsPanel title="All Time" stats={data.alltime} />
-                        {data.alltime_official && <PdaStatsPanel stats={data.alltime_official} />}
-                        {data.game_achievements && <GameAchievementsPanel ga={data.game_achievements} />}
-                        <Achievements achieved={data.achievements} />
-                    </main>
-                </>
+                    {Array.isArray(data.last_run) && data.last_run.length > 0 && (
+                        <div className="death-log">
+                            {data.last_run.slice(0, 3).map((run) => {
+                                const date = new Date(run.start * 1000)
+                                    .toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                                    .replace(/\//g, '.')
+                                return (
+                                    <div key={run.start} className="death-col">
+                                        <div className="death-col-header">
+                                            <span className="death-col-title">Death Log</span>
+                                            <span className="death-col-date">{date}</span>
+                                            <span className="death-col-time">{fmt_time(run.playtime)}</span>
+                                        </div>
+                                        <div className="death-col-stats">
+                                            <div className="death-stat"><span className="death-val">{run.kills.total}</span><span className="death-lbl">Kills</span></div>
+                                            <div className="death-stat"><span className="death-val">{run.tasks}</span><span className="death-lbl">Tasks</span></div>
+                                            <div className="death-stat"><span className="death-val">{fmt_money(run.rubles_earned)}</span><span className="death-lbl">Earned</span></div>
+                                            <div className="death-stat"><span className="death-val">{run.artifacts}</span><span className="death-lbl">Artifacts</span></div>
+                                            <div className="death-stat"><span className="death-val">{run.items}</span><span className="death-lbl">Items Looted</span></div>
+                                            <div className="death-stat"><span className="death-val">{run.stashes}</span><span className="death-lbl">Stashes</span></div>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    )}
+                </div>
             )}
 
             <footer className="site-footer">
