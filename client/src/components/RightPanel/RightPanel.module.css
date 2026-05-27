@@ -1,112 +1,112 @@
 .root {
-    display: grid;
-    gap: var(--pad-md);
-    padding: var(--pad-md);
-    align-content: end;
+	display: grid;
+	gap: var(--pad-md);
+	padding: var(--pad-md);
+	align-content: end;
 }
 
 .panel {
-    background: #1c1c1c;
-    border: 1px solid #2a2a2a;
-    display: grid;
-    padding: 1px 2px;
-    gap: 1px;
+	background: #1c1c1c;
+	border: 1px solid #2a2a2a;
+	display: grid;
+	padding: 1px 2px;
+	gap: 1px;
 }
 
 /* Kills panel */
 .killsContent {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1px;
 }
 
 .killRows {
-    display: grid;
-    align-content: start;
-    gap: 1px;
+	display: grid;
+	align-content: start;
+	gap: 1px;
 }
 
 .killRow {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 8px;
-    background: #1c1c1c;
-    border-bottom: 1px solid #2a2a2a;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	gap: 8px;
+	padding: 4px 8px;
+	background: #1c1c1c;
+	border-bottom: 1px solid #2a2a2a;
 }
 
 .killRow:last-child {
-    border-bottom: none;
+	border-bottom: none;
 }
 
 .killName {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-family: var(--font-display);
-    font-size: var(--text-sm);
-    font-weight: 400;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	font-family: var(--font-display);
+	font-size: var(--text-sm);
+	font-weight: 400;
 }
 
 .killDot {
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-    flex-shrink: 0;
+	width: 8px;
+	height: 8px;
+	border-radius: 2px;
+	flex-shrink: 0;
 }
 
 .killValue {
-    font-family: var(--font-display);
-    font-size: var(--text-sm);
-    font-weight: 700;
-    color: #c8a85a;
-    text-align: right;
+	font-family: var(--font-display);
+	font-size: var(--text-sm);
+	font-weight: 700;
+	color: #c8a85a;
+	text-align: right;
 }
 
 /* Donut */
 .donutWrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--pad-sm) var(--pad-md);
-    background: #1c1c1c;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--pad-sm) var(--pad-md);
+	background: #1c1c1c;
 }
 
 .donutCenter {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1px;
-    pointer-events: none;
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1px;
+	pointer-events: none;
 }
 
 .donutCount {
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-    font-weight: 700;
-    color: #e8e4d8;
-    line-height: 1;
+	font-family: var(--font-display);
+	font-size: var(--text-xl);
+	font-weight: 700;
+	color: #e8e4d8;
+	line-height: 1;
 }
 
 .donutLabel {
-    font-family: var(--font-display);
-    font-size: var(--text-2xs);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #8a807f;
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: #8a807f;
 }
 
 /* Economy / Exploration row */
 .bottomRow {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px;
 }
 
 .statRows {
-    display: grid;
-    gap: 1px;
+	display: grid;
+	gap: 1px;
 }

@@ -3,6 +3,5 @@ dist
 dist-ssr
 *.local
 *.log
-bun.lock
 
 .vercel

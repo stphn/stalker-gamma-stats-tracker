@@ -1,12 +1,12 @@
 .root {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border-radius: 2px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	border-radius: 2px;
 }
 
 .root img {
-    object-fit: contain;
-    display: block;
+	object-fit: contain;
+	display: block;
 }

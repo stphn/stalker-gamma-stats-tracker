@@ -1,27 +1,27 @@
 .stage {
-    position: relative;
-    width: 100%;
-    flex: 1;
-    height: clamp(320px, 68vh, 960px);
-    overflow: hidden;
-    background: #0d0d0d;
-    background-size: cover;
-    background-position: center;
+	position: relative;
+	width: 100%;
+	flex: 1;
+	height: clamp(320px, 68vh, 960px);
+	overflow: hidden;
+	background: #0d0d0d;
+	background-size: cover;
+	background-position: center;
 }
 
 .gradient {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, #000 0%, transparent 40%);
-    pointer-events: none;
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(to top, #000 0%, transparent 40%);
+	pointer-events: none;
 }
 
 .left {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    gap: var(--pad-xl);
-    padding: var(--pad-lg);
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	gap: var(--pad-xl);
+	padding: var(--pad-lg);
 }

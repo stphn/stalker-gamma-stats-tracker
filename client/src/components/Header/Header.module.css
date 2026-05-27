@@ -1,71 +1,89 @@
 .header {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    background: #1c1c1c;
-    border-bottom: 1px solid var(--border);
-    padding: var(--pad-sm) var(--pad-lg);
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	background: #1c1c1c;
+	border-bottom: 1px solid var(--border);
+	padding: var(--pad-sm) var(--pad-lg);
 }
 
-.logo { display: grid; gap: 1px; }
+.logo {
+	display: grid;
+	gap: 1px;
+}
 
 .title {
-    font-family: var(--font-display);
-    font-size: var(--text-md);
-    font-weight: 700;
-    letter-spacing: 4px;
-    color: #c8a85a;
-    text-transform: uppercase;
+	font-family: var(--font-display);
+	font-size: var(--text-md);
+	font-weight: 700;
+	letter-spacing: 4px;
+	color: #c8a85a;
+	text-transform: uppercase;
 }
 
 .tagline {
-    font-family: var(--font-display);
-    font-size: var(--text-2xs);
-    letter-spacing: 1.5px;
-    color: #7a6530;
-    text-transform: uppercase;
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 1.5px;
+	color: #7a6530;
+	text-transform: uppercase;
 }
 
 .statusGroup {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 3px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 3px;
 }
 
 .statusSuperLabel {
-    font-family: var(--font-display);
-    font-size: 6px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #fff;
+	font-family: var(--font-display);
+	font-size: 6px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: #fff;
 }
 
 .statusItem {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+	display: flex;
+	align-items: center;
+	gap: 5px;
 }
 
 .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	flex-shrink: 0;
 }
 
-.dot.green { background: #5a9e6a; box-shadow: 0 0 5px #5a9e6a88; }
-.dot.amber { background: #e8a838; box-shadow: 0 0 5px #e8a83888; }
-.dot.red   { background: #c85a5a; box-shadow: 0 0 5px #c85a5a88; }
+.dot.green {
+	background: #5a9e6a;
+	box-shadow: 0 0 5px #5a9e6a88;
+}
+.dot.amber {
+	background: #e8a838;
+	box-shadow: 0 0 5px #e8a83888;
+}
+.dot.red {
+	background: #c85a5a;
+	box-shadow: 0 0 5px #c85a5a88;
+}
 
 .statusLabel {
-    font-family: var(--font-display);
-    font-size: var(--text-xs);
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+	font-family: var(--font-display);
+	font-size: var(--text-xs);
+	font-weight: 700;
+	letter-spacing: 1px;
+	text-transform: uppercase;
 }
 
-.statusLabel.green { color: #5a9e6a; }
-.statusLabel.amber { color: #e8a838; }
-.statusLabel.red   { color: #c85a5a; }
+.statusLabel.green {
+	color: #5a9e6a;
+}
+.statusLabel.amber {
+	color: #e8a838;
+}
+.statusLabel.red {
+	color: #c85a5a;
+}
