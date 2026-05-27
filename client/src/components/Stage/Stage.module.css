@@ -1,3 +1,54 @@
+/* ── Glitch keyframes ── */
+
+/* Chromatic aberration pulse — occasional intensify */
+@keyframes glitch-ca {
+	0%,
+	89% {
+		filter: url(#glitch);
+	}
+	90% {
+		filter: url(#glitch) brightness(1.05);
+	}
+	91% {
+		filter: url(#glitch) brightness(0.95);
+	}
+	92%,
+	100% {
+		filter: url(#glitch);
+	}
+}
+
+/* Horizontal slice displacement */
+@keyframes glitch-slice {
+	0%,
+	92% {
+		clip-path: none;
+		transform: translateX(0);
+	}
+	93% {
+		clip-path: inset(30% 0 60% 0);
+		transform: translateX(-6px);
+	}
+	94% {
+		clip-path: inset(60% 0 20% 0);
+		transform: translateX(4px);
+	}
+	95% {
+		clip-path: none;
+		transform: translateX(0);
+	}
+	96% {
+		clip-path: inset(10% 0 80% 0);
+		transform: translateX(-3px);
+	}
+	97%,
+	100% {
+		clip-path: none;
+		transform: translateX(0);
+	}
+}
+
+/* ── Stage shell ── */
 .stage {
 	position: relative;
 	width: 100%;
@@ -5,19 +56,32 @@
 	height: clamp(420px, 42vw, 960px);
 	overflow: hidden;
 	background: #0d0d0d;
-	background-size: cover;
-	background-position: center;
 }
 
-.video {
+/* ── Background image with glitch filter ── */
+.image {
 	position: absolute;
 	inset: 0;
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	object-position: center;
+	background-size: cover;
+	background-position: center;
+	animation: glitch-ca 8s step-end infinite, glitch-slice 8s step-end infinite;
 }
 
+/* ── Scanlines overlay ── */
+.scanlines {
+	position: absolute;
+	inset: 0;
+	background: repeating-linear-gradient(
+		to bottom,
+		transparent 0px,
+		transparent 3px,
+		rgba(0, 0, 0, 0.08) 3px,
+		rgba(0, 0, 0, 0.08) 4px
+	);
+	pointer-events: none;
+}
+
+/* ── Bottom gradient ── */
 .gradient {
 	position: absolute;
 	inset: 0;
@@ -25,6 +89,7 @@
 	pointer-events: none;
 }
 
+/* ── Content overlay ── */
 .left {
 	position: absolute;
 	inset: 0;
@@ -33,4 +98,12 @@
 	justify-content: flex-end;
 	gap: var(--pad-xl);
 	padding: var(--pad-lg);
+}
+
+/* ── Hidden SVG filter container ── */
+.filterDefs {
+	position: absolute;
+	width: 0;
+	height: 0;
+	overflow: hidden;
 }
