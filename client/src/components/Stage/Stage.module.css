@@ -9,30 +9,6 @@
 	cursor: crosshair;
 }
 
-/* ── Scanlines overlay ── */
-.scanlines {
-	position: absolute;
-	inset: 0;
-	background: repeating-linear-gradient(
-		to bottom,
-		transparent 0px,
-		transparent 3px,
-		rgba(0, 0, 0, 0.07) 3px,
-		rgba(0, 0, 0, 0.07) 4px
-	);
-	pointer-events: none;
-	z-index: 1;
-}
-
-/* ── Bottom gradient ── */
-.gradient {
-	position: absolute;
-	inset: 0;
-	background: linear-gradient(to top, #000 0%, transparent 40%);
-	pointer-events: none;
-	z-index: 2;
-}
-
 /* ── Content overlay ── */
 .left {
 	position: absolute;
@@ -42,5 +18,5 @@
 	justify-content: flex-end;
 	gap: var(--pad-xl);
 	padding: var(--pad-lg);
-	z-index: 3;
+	z-index: 1;
 }

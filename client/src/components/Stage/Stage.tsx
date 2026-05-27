@@ -23,8 +23,6 @@ export function Stage({ location, left }: StageProps) {
 			aria-label={location ? `Zone location: ${location}` : 'Zone location'}
 		>
 			{/* WebGL canvas is injected by useStageGL at z-index 0 */}
-			<div className={styles.scanlines} aria-hidden="true" />
-			<div className={styles.gradient} aria-hidden="true" />
 			<div className={styles.left}>{left}</div>
 		</div>
 	);
