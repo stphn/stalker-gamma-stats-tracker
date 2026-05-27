@@ -1,39 +1,50 @@
 uniform sampler2D uTexture;
-uniform sampler2D uGpgpu;
-uniform vec2 uResolution;   // canvas size in px
-uniform vec2 uImageSize;    // original image natural size in px
-uniform float uTime;
+uniform sampler2D uGrid;
+uniform vec2 uContainerResolution;
+uniform vec2 uImageResolution;
 
 varying vec2 vUv;
 
-// background-size: cover equivalent
-vec2 coverUvs(vec2 uv, vec2 resolution, vec2 imageSize) {
-  float aspectCanvas = resolution.x / resolution.y;
-  float aspectImage  = imageSize.x  / imageSize.y;
+vec2 coverUvs(vec2 imageRes, vec2 containerRes) {
+  float imageAspectX = imageRes.x / imageRes.y;
+  float imageAspectY = imageRes.y / imageRes.x;
 
-  vec2 scale;
-  if (aspectCanvas > aspectImage) {
-    scale = vec2(1.0, aspectImage / aspectCanvas);
-  } else {
-    scale = vec2(aspectCanvas / aspectImage, 1.0);
-  }
+  float containerAspectX = containerRes.x / containerRes.y;
+  float containerAspectY = containerRes.y / containerRes.x;
 
-  return (uv - 0.5) * scale + 0.5;
+  vec2 ratio = vec2(
+    min(containerAspectX / imageAspectX, 1.0),
+    min(containerAspectY / imageAspectY, 1.0)
+  );
+
+  return vec2(
+    vUv.x * ratio.x + (1.0 - ratio.x) * 0.5,
+    vUv.y * ratio.y + (1.0 - ratio.y) * 0.5
+  );
 }
 
 void main() {
-  vec2 uv = coverUvs(vUv, uResolution, uImageSize);
+  vec2 newUvs = coverUvs(uImageResolution, uContainerResolution);
+  vec2 squareUvs = coverUvs(vec2(1.0), uContainerResolution);
 
-  // Sample GPGPU displacement — r = strength, g = direction hint
-  vec4 gpgpu    = texture2D(uGpgpu, vUv);
-  float strength = gpgpu.r;
+  vec4 displacement = texture2D(uGrid, squareUvs);
 
-  // RGB chromatic aberration split proportional to displacement strength
-  float split = strength * 0.025;
+  // Displace the UVs by the grid direction vector
+  vec2 finalUvs = newUvs - displacement.rg * 0.01;
 
-  vec4 rChannel = texture2D(uTexture, vec2(uv.x + split, uv.y));
-  vec4 gChannel = texture2D(uTexture, uv);
-  vec4 bChannel = texture2D(uTexture, vec2(uv.x - split, uv.y));
+  // Asymmetric RGB shift — each channel offset by a different amount
+  vec2 shift = displacement.rg * 0.001;
 
-  gl_FragColor = vec4(rChannel.r, gChannel.g, bChannel.b, 1.0);
+  float displacementStrength = length(displacement.rg);
+  displacementStrength = clamp(displacementStrength, 0.0, 2.0);
+
+  vec2 redUvs   = finalUvs + shift * (1.0 + displacementStrength * 0.25);
+  vec2 greenUvs = finalUvs + shift * (1.0 + displacementStrength * 2.0);
+  vec2 blueUvs  = finalUvs + shift * (1.0 + displacementStrength * 1.5);
+
+  float r = texture2D(uTexture, redUvs).r;
+  float g = texture2D(uTexture, greenUvs).g;
+  float b = texture2D(uTexture, blueUvs).b;
+
+  gl_FragColor = vec4(r, g, b, 1.0);
 }

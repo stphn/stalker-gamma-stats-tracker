@@ -1,24 +1,22 @@
-uniform vec2  uMouse;       // mouse UV [0,1]
-uniform float uMouseMoved;  // 1.0 when mouse is moving, 0.0 otherwise
-uniform float uDeltaTime;
+uniform vec2 uMouse;
+uniform vec2 uDeltaMouse;
+uniform float uMouseMove;
+uniform float uGridSize;
+uniform float uRelaxation;
+uniform float uDistance;
 
 void main() {
   vec2 uv = gl_FragCoord.xy / resolution.xy;
 
-  vec4 current = texture2D(uCurrentPosition, uv);
+  vec4 color = texture(uGrid, uv);
 
-  // Distance from this fragment to the mouse in UV space
   float dist = distance(uv, uMouse);
+  dist = 1.0 - smoothstep(0.0, uDistance / uGridSize, dist);
 
-  // Accumulate influence when mouse is nearby
-  float radius    = 0.15;
-  float influence = smoothstep(radius, 0.0, dist) * uMouseMoved;
+  vec2 delta = uDeltaMouse;
 
-  // Relax back toward 0 over time
-  float relaxation = 3.5;
-  float decay      = exp(-relaxation * uDeltaTime);
+  color.rg += delta * dist;
+  color.rg *= min(uRelaxation, uMouseMove);
 
-  float strength = current.r * decay + influence * (1.0 - decay);
-
-  gl_FragColor = vec4(strength, 0.0, 0.0, 1.0);
+  gl_FragColor = color;
 }

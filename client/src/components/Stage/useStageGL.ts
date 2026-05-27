@@ -1,33 +1,33 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import * as THREE from 'three';
 import { GPUComputationRenderer } from 'three/addons/misc/GPUComputationRenderer.js';
 import fragmentShader from './shaders/fragment.glsl';
 import gpgpuShader from './shaders/gpgpu/gpgpu.glsl';
 import vertexShader from './shaders/vertex.glsl';
 
-/**
- * Attaches a Three.js WebGL canvas overlay onto `containerRef`.
- * The canvas is positioned absolute, fills the container, and renders
- * the location image with a GPGPU mouse-displacement + RGB-split effect.
- */
+// Match J0SUKE's defaults
+const PARAMS = {
+	relaxation: 0.965,
+	size: 700, // number of GPGPU cells (sqrt → grid dimension)
+	distance: 0.6, // mouse influence radius (multiplied by 10 for shader)
+	strength: 0.8, // mouse delta multiplier
+};
+
 export function useStageGL(
 	containerRef: React.RefObject<HTMLDivElement | null>,
 	src: string | null,
 ) {
-	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
 	useEffect(() => {
 		const container = containerRef.current;
 		if (!container) return;
 
-		// ── Canvas ──────────────────────────────────────────────────────────
+		// ── Canvas ────────────────────────────────────────────────────────────
 		const canvas = document.createElement('canvas');
 		canvas.style.cssText =
 			'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;';
 		container.appendChild(canvas);
-		canvasRef.current = canvas;
 
-		// ── Renderer ─────────────────────────────────────────────────────────
+		// ── Renderer ──────────────────────────────────────────────────────────
 		const renderer = new THREE.WebGLRenderer({
 			canvas,
 			antialias: false,
@@ -35,41 +35,59 @@ export function useStageGL(
 		});
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-		// ── Scene / Camera ────────────────────────────────────────────────────
+		// ── Scene / Camera (orthographic — fills canvas exactly) ──────────────
 		const scene = new THREE.Scene();
 		const camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 10);
 		camera.position.z = 1;
 
-		// ── Geometry ──────────────────────────────────────────────────────────
-		const geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+		// ── Raycaster for UV picking ───────────────────────────────────────────
+		const raycaster = new THREE.Raycaster();
+		const mouseNDC = new THREE.Vector2();
 
-		// ── Texture ───────────────────────────────────────────────────────────
+		// ── Geometry / Texture ────────────────────────────────────────────────
+		const geometry = new THREE.PlaneGeometry(1, 1);
 		const loader = new THREE.TextureLoader();
+
 		let texture: THREE.Texture | null = null;
+		const imageRes = new THREE.Vector2(1, 1);
+
 		if (src) {
-			texture = loader.load(src);
+			texture = loader.load(src, (tex) => {
+				const img = tex.image as HTMLImageElement | ImageBitmap;
+				const w = 'naturalWidth' in img ? img.naturalWidth : img.width;
+				const h = 'naturalHeight' in img ? img.naturalHeight : img.height;
+				imageRes.set(w, h);
+				material.uniforms.uImageResolution.value = imageRes;
+			});
 			texture.colorSpace = THREE.SRGBColorSpace;
 		}
 
 		// ── GPGPU ─────────────────────────────────────────────────────────────
-		const GPGPU_SIZE = 128; // resolution of the displacement texture
-		const gpgpu = new GPUComputationRenderer(GPGPU_SIZE, GPGPU_SIZE, renderer);
+		const gpgpuSize = Math.ceil(Math.sqrt(PARAMS.size)); // ~27
+		const gpgpu = new GPUComputationRenderer(gpgpuSize, gpgpuSize, renderer);
 
-		const positionTexture = gpgpu.createTexture();
-		const positionVar = gpgpu.addVariable(
-			'uCurrentPosition',
-			gpgpuShader,
-			positionTexture,
+		const dataTexture = gpgpu.createTexture();
+		const variable = gpgpu.addVariable('uGrid', gpgpuShader, dataTexture);
+
+		variable.material.uniforms.uTime = new THREE.Uniform(0);
+		variable.material.uniforms.uRelaxation = new THREE.Uniform(
+			PARAMS.relaxation,
 		);
-		positionVar.material.uniforms.uMouse = {
-			value: new THREE.Vector2(0.5, 0.5),
-		};
-		positionVar.material.uniforms.uMouseMoved = { value: 0 };
-		positionVar.material.uniforms.uDeltaTime = { value: 0 };
-		gpgpu.setVariableDependencies(positionVar, [positionVar]);
+		variable.material.uniforms.uGridSize = new THREE.Uniform(gpgpuSize);
+		variable.material.uniforms.uMouse = new THREE.Uniform(
+			new THREE.Vector2(0, 0),
+		);
+		variable.material.uniforms.uDeltaMouse = new THREE.Uniform(
+			new THREE.Vector2(0, 0),
+		);
+		variable.material.uniforms.uMouseMove = new THREE.Uniform(0);
+		variable.material.uniforms.uDistance = new THREE.Uniform(
+			PARAMS.distance * 10,
+		);
 
-		const gpgpuError = gpgpu.init();
-		if (gpgpuError) console.error('GPGPU init error:', gpgpuError);
+		gpgpu.setVariableDependencies(variable, [variable]);
+		const gpgpuErr = gpgpu.init();
+		if (gpgpuErr) console.error('GPGPU init:', gpgpuErr);
 
 		// ── Material ──────────────────────────────────────────────────────────
 		const material = new THREE.ShaderMaterial({
@@ -77,78 +95,72 @@ export function useStageGL(
 			fragmentShader,
 			uniforms: {
 				uTexture: { value: texture },
-				uGpgpu: { value: null },
-				uResolution: { value: new THREE.Vector2() },
-				uImageSize: { value: new THREE.Vector2(1, 1) },
-				uTime: { value: 0 },
+				uGrid: { value: null },
+				uContainerResolution: { value: new THREE.Vector2() },
+				uImageResolution: { value: imageRes },
 			},
 		});
 
 		const mesh = new THREE.Mesh(geometry, material);
 		scene.add(mesh);
 
-		// Update image natural size via TextureLoader callback
-		if (src) {
-			loader.load(src, (tex) => {
-				const img = tex.image as HTMLImageElement | ImageBitmap | null;
-				if (img) {
-					const w =
-						'naturalWidth' in img
-							? img.naturalWidth
-							: (img as ImageBitmap).width;
-					const h =
-						'naturalHeight' in img
-							? img.naturalHeight
-							: (img as ImageBitmap).height;
-					material.uniforms.uImageSize.value.set(w, h);
-				}
-			});
-		}
-
 		// ── Resize ────────────────────────────────────────────────────────────
 		function resize() {
 			const w = container?.clientWidth ?? 0;
 			const h = container?.clientHeight ?? 0;
-			if (w === 0 || h === 0) return;
+			if (!w || !h) return;
 			renderer.setSize(w, h, false);
-			material.uniforms.uResolution.value.set(w, h);
+			material.uniforms.uContainerResolution.value.set(w, h);
 		}
 		resize();
 		const ro = new ResizeObserver(resize);
 		ro.observe(container);
 
-		// ── Mouse ─────────────────────────────────────────────────────────────
-		let mouseMoveTimeout = 0;
+		// ── Mouse — raycaster picks UV on the mesh ────────────────────────────
 		function onMouseMove(e: MouseEvent) {
 			const rect = container?.getBoundingClientRect();
 			if (!rect) return;
-			const x = (e.clientX - rect.left) / rect.width;
-			const y = 1 - (e.clientY - rect.top) / rect.height; // flip Y for GL
-			positionVar.material.uniforms.uMouse.value.set(x, y);
-			positionVar.material.uniforms.uMouseMoved.value = 1;
-			clearTimeout(mouseMoveTimeout);
-			mouseMoveTimeout = window.setTimeout(() => {
-				positionVar.material.uniforms.uMouseMoved.value = 0;
-			}, 100);
+
+			// NDC [-1, 1] relative to canvas
+			mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+			mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+			raycaster.setFromCamera(mouseNDC, camera);
+			const hits = raycaster.intersectObject(mesh);
+			if (!hits.length || !hits[0].uv) return;
+
+			const uv = hits[0].uv;
+			const current = variable.material.uniforms.uMouse.value as THREE.Vector2;
+
+			// Delta = how far the mouse moved in UV space, scaled by strength
+			const delta = new THREE.Vector2().subVectors(uv, current);
+			delta.multiplyScalar(PARAMS.strength * 100);
+
+			variable.material.uniforms.uDeltaMouse.value = delta;
+			variable.material.uniforms.uMouse.value = uv.clone();
+			variable.material.uniforms.uMouseMove.value = 1;
 		}
 		container.addEventListener('mousemove', onMouseMove);
 
 		// ── Render loop ───────────────────────────────────────────────────────
 		let animId = 0;
-		let last = performance.now();
+		let time = 0;
+		const clock = new THREE.Clock();
 
 		function tick() {
 			animId = requestAnimationFrame(tick);
-			const now = performance.now();
-			const delta = Math.min((now - last) / 1000, 0.05); // cap at 50ms
-			last = now;
+			time = clock.getElapsedTime();
 
-			positionVar.material.uniforms.uDeltaTime.value = delta;
+			// Per-frame decay — exactly as in J0SUKE's GPGPU.render()
+			variable.material.uniforms.uTime.value = time;
+			variable.material.uniforms.uMouseMove.value *= 0.95;
+			(
+				variable.material.uniforms.uDeltaMouse.value as THREE.Vector2
+			).multiplyScalar(variable.material.uniforms.uRelaxation.value as number);
+
 			gpgpu.compute();
-
-			material.uniforms.uGpgpu.value =
-				gpgpu.getCurrentRenderTarget(positionVar).texture;
-			material.uniforms.uTime.value += delta;
+			material.uniforms.uGrid.value =
+				gpgpu.getCurrentRenderTarget(variable).texture;
 
 			renderer.render(scene, camera);
 		}
@@ -159,14 +171,12 @@ export function useStageGL(
 			cancelAnimationFrame(animId);
 			ro.disconnect();
 			container.removeEventListener('mousemove', onMouseMove);
-			clearTimeout(mouseMoveTimeout);
 			mesh.geometry.dispose();
 			material.dispose();
 			texture?.dispose();
 			gpgpu.dispose();
 			renderer.dispose();
 			canvas.remove();
-			canvasRef.current = null;
 		};
 	}, [containerRef, src]);
 }
