@@ -32,17 +32,20 @@ export function useLocationMedia(
 		}
 		setMedia(null);
 
+		const loc = location; // capture for use inside async fn (TS narrowing)
 		let cancelled = false;
 
 		async function probe() {
+			if (import.meta.env.DEV) console.log('[useLocationMedia] location:', loc);
+
 			// If this location has known video slots, pick one at random — no probing needed.
-			const videoSlots = VIDEO_LOCATIONS[location as string];
+			const videoSlots = VIDEO_LOCATIONS[loc];
 			if (videoSlots && videoSlots.length > 0) {
 				const slot = videoSlots[Math.floor(Math.random() * videoSlots.length)];
 				const pad = String(slot).padStart(2, '0');
 				if (!cancelled) {
 					setMedia({
-						src: `/locations/${location}/${location}_${pad}.mp4`,
+						src: `/locations/${loc}/${loc}_${pad}.mp4`,
 						type: 'video',
 					});
 				}
@@ -53,7 +56,7 @@ export function useLocationMedia(
 			const found: string[] = [];
 			await Promise.all(
 				[1, 2, 3].map(async (i) => {
-					const src = `/locations/${location}/${location}_${String(i).padStart(2, '0')}.png`;
+					const src = `/locations/${loc}/${loc}_${String(i).padStart(2, '0')}.png`;
 					const result = await probeImage(src);
 					if (result) found[i - 1] = result;
 				}),
