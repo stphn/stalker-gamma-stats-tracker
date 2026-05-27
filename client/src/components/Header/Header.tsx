@@ -20,36 +20,32 @@ export function Header({ connected, gameState }: HeaderProps) {
 
 	return (
 		<header className={styles.header}>
+			<div className="hud-frame" aria-hidden="true" />
 			<div className={styles.logo}>
 				<h1 className={styles.title}>T.R.A.C.K.E.R.</h1>
 				<p className={styles.tagline}>A S.T.A.L.K.E.R. Anomaly Companion</p>
 			</div>
 			<output className={styles.statusGroup} aria-label="Connection status">
-				<span className={styles.statusSuperLabel} aria-hidden="true">
-					Status
-				</span>
-				<div className={styles.statusItem}>
-					<span
-						className={`${styles.dot} ${styles[serverColor]}`}
-						aria-hidden="true"
-					/>
-					<span
-						className={`${styles.statusLabel} ${styles[serverColor]}`}
-						aria-label={serverLabel}
-					>
-						Server
+				<div
+					className={`${styles.pill} ${styles[serverColor]}`}
+					aria-label={serverLabel}
+				>
+					<span className={styles.dot} aria-hidden="true" />
+					<span className={styles.pillLabel}>SRV</span>
+					<span className={styles.pillSep} aria-hidden="true">·</span>
+					<span className={styles.pillStatus}>
+						{connected ? 'Connected' : 'Offline'}
 					</span>
 				</div>
-				<div className={styles.statusItem}>
-					<span
-						className={`${styles.dot} ${styles[gameColor]}`}
-						aria-hidden="true"
-					/>
-					<span
-						className={`${styles.statusLabel} ${styles[gameColor]}`}
-						aria-label={gameLabel}
-					>
-						Game
+				<div
+					className={`${styles.pill} ${styles[gameColor]}`}
+					aria-label={gameLabel}
+				>
+					<span className={styles.dot} aria-hidden="true" />
+					<span className={styles.pillLabel}>GAME</span>
+					<span className={styles.pillSep} aria-hidden="true">·</span>
+					<span className={styles.pillStatus}>
+						{gameState === 'playing' ? 'In Session' : gameState === 'menu' ? 'In Menu' : 'Offline'}
 					</span>
 				</div>
 			</output>

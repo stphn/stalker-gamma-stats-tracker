@@ -20,12 +20,12 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 
 	return (
 		<section className={styles.root}>
-			<CardHeader label="PDA — All-Time Stats" accentColor="#c8a85a" />
+			<CardHeader label="PDA — All-Time Stats" accentColor="transparent" />
 
 			<div className={styles.grid}>
 				{/* Combat */}
 				<div className={styles.group}>
-					<span className={styles.groupLabel}>Combat</span>
+					<span className={styles.groupLabel}><span aria-hidden="true">⠿</span> Combat</span>
 					<div className={styles.panel}>
 						<StatRow label="Kills" value={n(pda.kills?.total)} />
 						<StatRow label="Deaths" value={n(pda.deaths)} />
@@ -38,7 +38,7 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 
 				{/* Economy */}
 				<div className={styles.group}>
-					<span className={styles.groupLabel}>Economy</span>
+					<span className={styles.groupLabel}><span aria-hidden="true">⠿</span> Economy</span>
 					<div className={styles.panel}>
 						<StatRow label="Earned" value={fmt_money(earned)} />
 						<StatRow label="Spent" value={fmt_money(spent)} />
@@ -54,7 +54,7 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 
 				{/* Zone events */}
 				<div className={styles.group}>
-					<span className={styles.groupLabel}>Zone</span>
+					<span className={styles.groupLabel}><span aria-hidden="true">⠿</span> Zone</span>
 					<div className={styles.panel}>
 						<StatRow label="Emissions Survived" value={n(pda.emissions)} />
 						<StatRow label="Psi-Storms Survived" value={n(pda.psi_storms)} />
@@ -64,7 +64,7 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 
 				{/* Deeds */}
 				<div className={styles.group}>
-					<span className={styles.groupLabel}>Deeds</span>
+					<span className={styles.groupLabel}><span aria-hidden="true">⠿</span> Deeds</span>
 					<div className={styles.panel}>
 						<StatRow label="Wounded Helped" value={n(pda.wounded_helped)} />
 						<StatRow
@@ -78,7 +78,7 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 
 				{/* Exploration */}
 				<div className={styles.group}>
-					<span className={styles.groupLabel}>Exploration</span>
+					<span className={styles.groupLabel}><span aria-hidden="true">⠿</span> Exploration</span>
 					<div className={styles.panel}>
 						<StatRow label="Tasks Completed" value={n(pda.tasks)} />
 						<StatRow label="Tasks Failed" value={n(pda.tasks_failed)} />
@@ -89,7 +89,7 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 
 				{/* Knowledge */}
 				<div className={styles.group}>
-					<span className={styles.groupLabel}>Knowledge</span>
+					<span className={styles.groupLabel}><span aria-hidden="true">⠿</span> Knowledge</span>
 					<div className={styles.panel}>
 						<StatRow label="Articles Read" value={n(pda.articles)} />
 						<StatRow label="Artifacts Found" value={n(pda.artifacts)} />

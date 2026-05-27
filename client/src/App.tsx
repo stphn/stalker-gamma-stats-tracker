@@ -71,8 +71,20 @@ export default function App() {
 					</div>
 
 					{Array.isArray(data.last_run) && data.last_run.length > 0 && (
+						<div className="death-log-wrap">
 						<section className="death-log" aria-label="Death log">
-							{data.last_run.slice(0, 3).map((run) => {
+							<div className="death-header" aria-hidden="true">
+								<span />
+								<span>Date</span>
+								<span>Run</span>
+								<span>Time</span>
+								<span>Kills</span>
+								<span>Earned</span>
+								<span>Artifacts</span>
+								<span>Tasks</span>
+								<span>Stashes</span>
+							</div>
+							{data.last_run.slice(0, 3).map((run, i) => {
 								const date = new Date(run.start * 1000)
 									.toLocaleDateString('en-GB', {
 										day: '2-digit',
@@ -83,55 +95,23 @@ export default function App() {
 								return (
 									<article
 										key={run.start}
-										className="death-col"
-										aria-label={`Run on ${date}`}
+										className="death-row"
+										aria-label={`Run ${i + 1} on ${date}`}
 									>
-										<div className="death-col-header">
-											<span className="death-col-title" aria-hidden="true">
-												Death Log
-											</span>
-											<time
-												className="death-col-date"
-												dateTime={new Date(run.start * 1000).toISOString()}
-											>
-												{date}
-											</time>
-											<span className="death-col-time">
-												{fmt_time(run.playtime)}
-											</span>
-										</div>
-										<dl className="death-col-stats">
-											<div className="death-stat">
-												<dd className="death-val">{run.kills.total}</dd>
-												<dt className="death-lbl">Kills</dt>
-											</div>
-											<div className="death-stat">
-												<dd className="death-val">{run.tasks}</dd>
-												<dt className="death-lbl">Tasks</dt>
-											</div>
-											<div className="death-stat">
-												<dd className="death-val">
-													{fmt_money(run.rubles_earned)}
-												</dd>
-												<dt className="death-lbl">Earned</dt>
-											</div>
-											<div className="death-stat">
-												<dd className="death-val">{run.artifacts}</dd>
-												<dt className="death-lbl">Artifacts</dt>
-											</div>
-											<div className="death-stat">
-												<dd className="death-val">{run.items}</dd>
-												<dt className="death-lbl">Items Looted</dt>
-											</div>
-											<div className="death-stat">
-												<dd className="death-val">{run.stashes}</dd>
-												<dt className="death-lbl">Stashes</dt>
-											</div>
-										</dl>
+										<span className="death-skull" aria-hidden="true">💀</span>
+										<time className="death-date" dateTime={new Date(run.start * 1000).toISOString()}>{date}</time>
+										<span className="death-run">#{i + 1}</span>
+										<span>{fmt_time(run.playtime)}</span>
+										<span>{run.kills.total}</span>
+										<span>{fmt_money(run.rubles_earned)}</span>
+										<span>{run.artifacts}</span>
+										<span>{run.tasks}</span>
+										<span>{run.stashes}</span>
 									</article>
 								);
 							})}
 						</section>
+						</div>
 					)}
 
 					{data.alltime_official && <PdaPanel pda={data.alltime_official} />}

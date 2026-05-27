@@ -105,12 +105,17 @@ export function useStageGL(
 		scene.add(mesh);
 
 		// ── Resize ────────────────────────────────────────────────────────────
+		let resizeId: ReturnType<typeof setTimeout> | null = null;
 		function resize() {
-			const w = container?.clientWidth ?? 0;
-			const h = container?.clientHeight ?? 0;
-			if (!w || !h) return;
-			renderer.setSize(w, h, false);
-			material.uniforms.uContainerResolution.value.set(w, h);
+			if (resizeId) clearTimeout(resizeId);
+			resizeId = setTimeout(() => {
+				const w = container?.clientWidth ?? 0;
+				const h = container?.clientHeight ?? 0;
+				if (!w || !h) return;
+				renderer.setSize(w, h, false);
+				material.uniforms.uContainerResolution.value.set(w, h);
+				resizeId = null;
+			}, 150);
 		}
 		resize();
 		const ro = new ResizeObserver(resize);
@@ -169,6 +174,7 @@ export function useStageGL(
 		// ── Cleanup ───────────────────────────────────────────────────────────
 		return () => {
 			cancelAnimationFrame(animId);
+			if (resizeId) clearTimeout(resizeId);
 			ro.disconnect();
 			container.removeEventListener('mousemove', onMouseMove);
 			mesh.geometry.dispose();

@@ -23,7 +23,7 @@
 
 .card {
 	background: rgba(42, 42, 42, 0.6);
-	padding: 4px;
+	padding: 8px 12px;
 	display: grid;
 	gap: 4px;
 }

@@ -21,12 +21,15 @@ export function fmt_money(n: number | undefined) {
 	return `${n.toLocaleString('en-US')} ₽`;
 }
 
+// Thresholds from GAMMA game_relations.ltx (161- Improved player and NPCs ranks)
 export function rank_label(r: number) {
-	if (r >= 7200) return 'Legend';
-	if (r >= 3600) return 'Master';
-	if (r >= 1800) return 'Expert';
-	if (r >= 900) return 'Veteran';
-	if (r >= 300) return 'Experienced';
+	if (r >= 50000) return 'Legend';
+	if (r >= 35000) return 'Master';
+	if (r >= 24000) return 'Expert';
+	if (r >= 16000) return 'Veteran';
+	if (r >= 10000) return 'Professional';
+	if (r >= 6000) return 'Experienced';
+	if (r >= 4000) return 'Trainee';
 	return 'Novice';
 }
 

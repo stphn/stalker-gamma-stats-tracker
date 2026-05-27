@@ -46,8 +46,8 @@ void main() {
   float g = texture2D(uTexture, greenUvs).g;
   float b = texture2D(uTexture, blueUvs).b;
 
-  // Brightness lift — compensates for WebGL gamma vs CSS background-image
-  vec3 color = vec3(r, g, b) * 1.3;
+  // Gamma correction — linear → sRGB so WebGL matches CSS background-image rendering
+  vec3 color = pow(vec3(r, g, b), vec3(1.0 / 2.2));
 
   gl_FragColor = vec4(color, 1.0);
 }

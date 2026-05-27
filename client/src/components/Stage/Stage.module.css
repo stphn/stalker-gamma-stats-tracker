@@ -7,6 +7,32 @@
 	overflow: hidden;
 	background: #0d0d0d;
 	cursor: crosshair;
+	--hud-inset: 6px;
+}
+
+
+/* ── Scanline sweep ── */
+.scanline {
+	position: absolute;
+	left: 0;
+	right: 0;
+	height: 2px;
+	background: linear-gradient(to right, transparent, rgba(200, 168, 90, 0.25), transparent);
+	animation: stage-scan 8s ease-in-out infinite;
+	pointer-events: none;
+	z-index: 2;
+}
+
+@keyframes stage-scan {
+	0%   { top: 0%;   opacity: 0; }
+	5%   { opacity: 1; }
+	95%  { opacity: 1; }
+	100% { top: 100%; opacity: 0; }
+}
+
+/* Reset cursor on UI panels — bare image area keeps crosshair */
+.left > * {
+	cursor: default;
 }
 
 /* ── Content overlay ── */
@@ -20,3 +46,4 @@
 	padding: var(--pad-lg);
 	z-index: 1;
 }
+

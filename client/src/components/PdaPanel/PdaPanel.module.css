@@ -1,6 +1,5 @@
 .root {
-	border-top: 2px solid var(--accent-base);
-	background: color-mix(in srgb, var(--accent-base) 3%, var(--bg-base));
+	background: var(--bg-base);
 }
 
 /* Header matches the grid's horizontal inset */
@@ -42,7 +41,7 @@
 	letter-spacing: 1.5px;
 	text-transform: uppercase;
 	color: var(--accent-base);
-	padding: 0 var(--pad-xs);
+	gap: 6px;
 }
 
 .panel {
