@@ -23,7 +23,7 @@
 	--color-warning: #d4782a;
 	--color-info: #5a8ab4;
 
-	/* ── Type scale — fluid, baseline 1440px ── */
+	/* ── Type scale — vw fallback (overridden by .app with cqi) ── */
 	--text-display: clamp(34px, 4.03vw, 58px);
 	--text-3xl: clamp(23px, 2.64vw, 38px);
 	--text-2xl: clamp(19px, 2.08vw, 30px);
@@ -66,6 +66,18 @@ body {
 .app {
 	container-type: inline-size;
 	container-name: app;
+
+	/* Re-declare type scale using cqi so clamp() resolves against container width */
+	--text-display: clamp(34px, 4.03cqi, 58px);
+	--text-3xl: clamp(23px, 2.64cqi, 38px);
+	--text-2xl: clamp(19px, 2.08cqi, 30px);
+	--text-xl: clamp(17px, 1.81cqi, 26px);
+	--text-lg: clamp(15px, 1.53cqi, 22px);
+	--text-md: clamp(13px, 1.39cqi, 20px);
+	--text-base: clamp(12px, 1.25cqi, 18px);
+	--text-sm: clamp(11px, 1.11cqi, 16px);
+	--text-xs: clamp(10px, 0.97cqi, 14px);
+	--text-2xs: clamp(9px, 0.83cqi, 12px);
 }
 
 @container app (max-width: 400px) {
