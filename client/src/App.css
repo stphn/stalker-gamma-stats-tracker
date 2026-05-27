@@ -1,27 +1,52 @@
 :root {
-	/* ── Surfaces ── */
-	--bg-base: #111111;
-	--bg-surface: #1c1c1c;
-	--bg-raised: #242424;
-	--bg-overlay: #2e2e2e;
-	--bg-subtle: #2a2a2a;
-	--bg-default: #333333;
+	/* ══════════════════════════════════════════════
+	   STALKER (1979) — Tarkovsky palette
+	   ── Backup of previous palette below ──
+	   ══════════════════════════════════════════════ */
 
-	/* ── Text ── */
-	--text-primary: #e8e4d8;
-	--text-secondary: #8a8070;
-	--text-disabled: #4a4640;
+	/* ── Surfaces — Zone concrete & marsh dark ── */
+	--bg-base: #0c0e0d;        /* near-black with a faint green cast */
+	--bg-surface: #151913;     /* dark moss-concrete */
+	--bg-raised: #1d2218;      /* dim interior wall */
+	--bg-overlay: #252b1e;     /* raised panel */
+	--bg-subtle: #1a1f15;      /* subtle divide */
+	--bg-default: #2e3526;     /* mid surface */
 
-	/* ── Accent ── */
-	--accent-base: #c8a85a;
-	--accent-dim: #7a6530;
-	--accent-bright: #e8c46a;
+	/* ── Text — aged sepia paper & fog ── */
+	--text-primary: #d8d0b4;   /* warm parchment, desaturated */
+	--text-secondary: #7a8060; /* olive-grey, like Zone fog */
+	--text-disabled: #3e4434;  /* deep muted green-grey */
+
+	/* ── Accent — amber marshwater & rust ── */
+	--accent-base: #b89448;    /* Tarkovsky sepia amber */
+	--accent-dim: #6a5428;     /* deep marsh gold */
+	--accent-bright: #d4b05a;  /* sunlit water glint */
 
 	/* ── Semantic ── */
-	--color-positive: #5a9e6a;
-	--color-danger: #c85a5a;
-	--color-warning: #d4782a;
-	--color-info: #5a8ab4;
+	--color-positive: #6a9458;    /* overgrown Zone green */
+	--color-danger: #8c3c20;      /* rust-blood, not bright red */
+	--color-warning: #b87830;     /* decay orange */
+	--color-info: #5a8880;        /* celadon mist, Zone interior pool */
+
+	/* ══════════════════════════════════════════════
+	   BACKUP — previous dark neutral palette
+	   --bg-base: #111111;
+	   --bg-surface: #1c1c1c;
+	   --bg-raised: #242424;
+	   --bg-overlay: #2e2e2e;
+	   --bg-subtle: #2a2a2a;
+	   --bg-default: #333333;
+	   --text-primary: #e8e4d8;
+	   --text-secondary: #8a8070;
+	   --text-disabled: #4a4640;
+	   --accent-base: #c8a85a;
+	   --accent-dim: #7a6530;
+	   --accent-bright: #e8c46a;
+	   --color-positive: #5a9e6a;
+	   --color-danger: #c85a5a;
+	   --color-warning: #d4782a;
+	   --color-info: #5a8ab4;
+	   ══════════════════════════════════════════════ */
 
 	/* ── Type scale — fluid, min bumped for mobile readability ── */
 	--text-display: clamp(34px, 4.03vw, 58px);
@@ -352,7 +377,7 @@ body {
 	font-size: var(--text-2xs);
 	letter-spacing: 1.5px;
 	text-transform: uppercase;
-	color: #3a3020;
+	color: #2e3220;
 	white-space: nowrap;
 }
 
@@ -370,7 +395,7 @@ body {
 	letter-spacing: 1.5px;
 	text-transform: uppercase;
 	text-decoration: none;
-	color: #5a4e2e;
+	color: #4e5c38;
 	transition: color 0.15s;
 }
 
@@ -382,7 +407,7 @@ body {
 .foot-sep {
 	font-family: var(--font-display);
 	font-size: var(--text-2xs);
-	color: #2e2820;
+	color: #252e1c;
 	user-select: none;
 }
 
