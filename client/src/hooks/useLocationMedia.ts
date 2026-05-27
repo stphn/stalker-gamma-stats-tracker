@@ -8,7 +8,7 @@ export interface LocationMedia {
 // Locations that have at least one .mp4 file in /public/locations/<id>/.
 // Add an entry here whenever you drop a new video asset.
 const VIDEO_LOCATIONS: Record<string, number[]> = {
-	l06_rostok: [3],
+	l05_bar: [3],
 };
 
 function probeImage(src: string): Promise<string | null> {
