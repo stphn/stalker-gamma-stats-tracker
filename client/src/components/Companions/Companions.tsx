@@ -9,15 +9,17 @@ interface CompanionsProps {
 
 export function Companions({ companions }: CompanionsProps) {
 	return (
-		<div className={styles.root}>
-			<div className={styles.label}>Squad</div>
-			<div className={styles.grid}>
+		<section className={styles.root} aria-label="Squad companions">
+			<div className={styles.label} aria-hidden="true">
+				Squad
+			</div>
+			<ul className={styles.grid}>
 				{companions.map((c) => {
 					const factionColor = FACTION_COLORS[c.faction] ?? '#e8c46a';
 					const factionName = FACTIONS[c.faction] ?? c.faction;
 					const hpColor = hp_color(c.health);
 					return (
-						<div key={c.name} className={styles.card}>
+						<li key={c.name} className={styles.card}>
 							<div className={styles.name}>{c.name}</div>
 							<div className={styles.bottom}>
 								<span
@@ -26,17 +28,24 @@ export function Companions({ companions }: CompanionsProps) {
 								>
 									{factionName}
 								</span>
-								<div className={styles.hpTrack}>
+								<div
+									className={styles.hpTrack}
+									role="meter"
+									aria-label={`${c.name} health`}
+									aria-valuenow={c.health}
+									aria-valuemin={0}
+									aria-valuemax={100}
+								>
 									<div
 										className={styles.hpFill}
 										style={{ width: `${c.health}%`, background: hpColor }}
 									/>
 								</div>
 							</div>
-						</div>
+						</li>
 					);
 				})}
-			</div>
-		</div>
+			</ul>
+		</section>
 	);
 }

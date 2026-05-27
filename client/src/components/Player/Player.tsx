@@ -18,8 +18,10 @@ export function Player({ actor }: PlayerProps) {
 	const factionName = FACTIONS[actor.faction] ?? actor.faction;
 
 	return (
-		<div className={styles.root}>
-			<div className={styles.superLabel}>Stalker</div>
+		<section className={styles.root} aria-label={`Player: ${actor.name}`}>
+			<div className={styles.superLabel} aria-hidden="true">
+				Stalker
+			</div>
 			<div className={styles.card}>
 				<div className={styles.nameSection}>
 					<div className={styles.name}>{actor.name}</div>
@@ -33,32 +35,32 @@ export function Player({ actor }: PlayerProps) {
 						</span>
 					</div>
 				</div>
-				<div className={styles.statsRow}>
+				<dl className={styles.statsRow}>
 					<div className={styles.stat}>
-						<span className={styles.statLabel}>Rank</span>
-						<span className={styles.statValue} style={{ color: '#c8a85a' }}>
+						<dt className={styles.statLabel}>Rank</dt>
+						<dd className={styles.statValue} style={{ color: '#c8a85a' }}>
 							{rank_label(actor.rank)}
-						</span>
+						</dd>
 					</div>
-					<div className={styles.separator} />
+					<div className={styles.separator} aria-hidden="true" />
 					<div className={styles.stat}>
-						<span className={styles.statLabel}>Experience</span>
-						<span
+						<dt className={styles.statLabel}>Experience</dt>
+						<dd
 							className={styles.statValue}
 							style={{ color: rep_color(actor.reputation) }}
 						>
 							{rep_label(actor.reputation)}
-						</span>
+						</dd>
 					</div>
-					<div className={styles.separator} />
+					<div className={styles.separator} aria-hidden="true" />
 					<div className={styles.stat}>
-						<span className={styles.statLabel}>Rubles</span>
-						<span className={styles.statValue} style={{ color: '#c8a85a' }}>
+						<dt className={styles.statLabel}>Rubles</dt>
+						<dd className={styles.statValue} style={{ color: '#c8a85a' }}>
 							{fmt_money(actor.money)}
-						</span>
+						</dd>
 					</div>
-				</div>
+				</dl>
 			</div>
-		</div>
+		</section>
 	);
 }

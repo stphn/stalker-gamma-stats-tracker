@@ -14,8 +14,10 @@ export function Stage({ location, left }: StageProps) {
 		<div
 			className={styles.stage}
 			style={src ? { backgroundImage: `url(${src})` } : undefined}
+			role="img"
+			aria-label={location ? `Zone location: ${location}` : 'Zone location'}
 		>
-			<div className={styles.gradient} />
+			<div className={styles.gradient} aria-hidden="true" />
 			<div className={styles.left}>{left}</div>
 		</div>
 	);

@@ -1,4 +1,8 @@
-import { FACTION_BG_COLORS, FACTION_ICONS } from '../../utils/constants';
+import {
+	FACTIONS,
+	FACTION_BG_COLORS,
+	FACTION_ICONS,
+} from '../../utils/constants';
 import styles from './FactionIcon.module.css';
 
 const SIZES = {
@@ -22,13 +26,15 @@ export function FactionIcon({
 	const { box, img } = SIZES[size];
 	const bg = FACTION_BG_COLORS[faction] ?? '#1c1c1c';
 	const icon = FACTION_ICONS[faction];
+	const factionName = FACTIONS[faction] ?? faction;
 
 	return (
 		<div
 			className={`${styles.root}${className ? ` ${className}` : ''}`}
 			style={{ width: box, height: box, background: bg }}
+			aria-hidden="true"
 		>
-			{icon && <img src={icon} width={img} height={img} alt="" />}
+			{icon && <img src={icon} width={img} height={img} alt={factionName} />}
 		</div>
 	);
 }

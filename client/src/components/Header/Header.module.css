@@ -51,13 +51,23 @@
 }
 
 @keyframes pulse-green {
-	0%, 100% { box-shadow: 0 0 4px 1px #5a9e6a66; }
-	50%       { box-shadow: 0 0 10px 4px #5a9e6acc; }
+	0%,
+	100% {
+		box-shadow: 0 0 4px 1px #5a9e6a66;
+	}
+	50% {
+		box-shadow: 0 0 10px 4px #5a9e6acc;
+	}
 }
 
 @keyframes pulse-amber {
-	0%, 100% { box-shadow: 0 0 4px 1px #e8a83866; }
-	50%       { box-shadow: 0 0 10px 4px #e8a838cc; }
+	0%,
+	100% {
+		box-shadow: 0 0 4px 1px #e8a83866;
+	}
+	50% {
+		box-shadow: 0 0 10px 4px #e8a838cc;
+	}
 }
 
 .dot {

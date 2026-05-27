@@ -31,14 +31,16 @@ export default function App() {
 			<Header connected={connected} gameState={gameState} />
 
 			{!data ? (
-				<div className="empty">
+				<output className="empty">
 					{connected
 						? 'Waiting for stats — load a save in-game.'
 						: 'Connecting to server…'}
-				</div>
+				</output>
 			) : (
-				<div
+				<main
 					className="layout"
+					aria-label="Stats dashboard"
+					aria-busy={stale}
 					style={stale ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
 				>
 					<div className="stage-row">
@@ -63,13 +65,13 @@ export default function App() {
 								)
 							}
 						/>
-						<aside className="sidebar">
+						<aside className="sidebar" aria-label="Session stats">
 							<RightPanel data={data} />
 						</aside>
 					</div>
 
 					{Array.isArray(data.last_run) && data.last_run.length > 0 && (
-						<div className="death-log">
+						<section className="death-log" aria-label="Death log">
 							{data.last_run.slice(0, 3).map((run) => {
 								const date = new Date(run.start * 1000)
 									.toLocaleDateString('en-GB', {
@@ -79,53 +81,64 @@ export default function App() {
 									})
 									.replace(/\//g, '.');
 								return (
-									<div key={run.start} className="death-col">
+									<article
+										key={run.start}
+										className="death-col"
+										aria-label={`Run on ${date}`}
+									>
 										<div className="death-col-header">
-											<span className="death-col-title">Death Log</span>
-											<span className="death-col-date">{date}</span>
+											<span className="death-col-title" aria-hidden="true">
+												Death Log
+											</span>
+											<time
+												className="death-col-date"
+												dateTime={new Date(run.start * 1000).toISOString()}
+											>
+												{date}
+											</time>
 											<span className="death-col-time">
 												{fmt_time(run.playtime)}
 											</span>
 										</div>
-										<div className="death-col-stats">
+										<dl className="death-col-stats">
 											<div className="death-stat">
-												<span className="death-val">{run.kills.total}</span>
-												<span className="death-lbl">Kills</span>
+												<dd className="death-val">{run.kills.total}</dd>
+												<dt className="death-lbl">Kills</dt>
 											</div>
 											<div className="death-stat">
-												<span className="death-val">{run.tasks}</span>
-												<span className="death-lbl">Tasks</span>
+												<dd className="death-val">{run.tasks}</dd>
+												<dt className="death-lbl">Tasks</dt>
 											</div>
 											<div className="death-stat">
-												<span className="death-val">
+												<dd className="death-val">
 													{fmt_money(run.rubles_earned)}
-												</span>
-												<span className="death-lbl">Earned</span>
+												</dd>
+												<dt className="death-lbl">Earned</dt>
 											</div>
 											<div className="death-stat">
-												<span className="death-val">{run.artifacts}</span>
-												<span className="death-lbl">Artifacts</span>
+												<dd className="death-val">{run.artifacts}</dd>
+												<dt className="death-lbl">Artifacts</dt>
 											</div>
 											<div className="death-stat">
-												<span className="death-val">{run.items}</span>
-												<span className="death-lbl">Items Looted</span>
+												<dd className="death-val">{run.items}</dd>
+												<dt className="death-lbl">Items Looted</dt>
 											</div>
 											<div className="death-stat">
-												<span className="death-val">{run.stashes}</span>
-												<span className="death-lbl">Stashes</span>
+												<dd className="death-val">{run.stashes}</dd>
+												<dt className="death-lbl">Stashes</dt>
 											</div>
-										</div>
-									</div>
+										</dl>
+									</article>
 								);
 							})}
-						</div>
+						</section>
 					)}
 
 					{data.alltime_official && <PdaPanel pda={data.alltime_official} />}
-				</div>
+				</main>
 			)}
 
-			<footer className="site-footer">
+			<footer className="site-footer" aria-label="External links">
 				<a
 					className="foot-link"
 					href="https://www.stalkergamma.com/"
@@ -134,7 +147,9 @@ export default function App() {
 				>
 					STALKER GAMMA
 				</a>
-				<span className="foot-dot">·</span>
+				<span className="foot-dot" aria-hidden="true">
+					·
+				</span>
 				<a
 					className="foot-link"
 					href="https://discord.gg/stalker-gamma"
@@ -143,7 +158,9 @@ export default function App() {
 				>
 					Discord
 				</a>
-				<span className="foot-dot">·</span>
+				<span className="foot-dot" aria-hidden="true">
+					·
+				</span>
 				<a
 					className="foot-link"
 					href="https://github.com/Grokitach/Stalker_GAMMA"

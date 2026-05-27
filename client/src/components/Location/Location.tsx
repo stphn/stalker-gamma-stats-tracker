@@ -29,11 +29,18 @@ export function Location({
 
 	return (
 		<div className={styles.root}>
-			<div className={styles.name}>{name}</div>
+			<div className={styles.name} aria-label={`Current location: ${name}`}>
+				{name}
+			</div>
 			{clock && (
 				<div className={styles.timeRow}>
-					<span className={styles.clock}>{clock}</span>
-					<span className={`${styles.badge} ${styles[badge.className]}`}>
+					<time className={styles.clock} aria-label={`In-game time: ${clock}`}>
+						{clock}
+					</time>
+					<span
+						className={`${styles.badge} ${styles[badge.className]}`}
+						aria-label={`Game status: ${badge.label}`}
+					>
 						{badge.label}
 					</span>
 				</div>
