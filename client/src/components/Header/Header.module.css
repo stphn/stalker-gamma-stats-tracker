@@ -50,6 +50,16 @@
 	gap: 5px;
 }
 
+@keyframes pulse-green {
+	0%, 100% { box-shadow: 0 0 4px 1px #5a9e6a66; }
+	50%       { box-shadow: 0 0 10px 4px #5a9e6acc; }
+}
+
+@keyframes pulse-amber {
+	0%, 100% { box-shadow: 0 0 4px 1px #e8a83866; }
+	50%       { box-shadow: 0 0 10px 4px #e8a838cc; }
+}
+
 .dot {
 	width: 8px;
 	height: 8px;
@@ -59,15 +69,15 @@
 
 .dot.green {
 	background: #5a9e6a;
-	box-shadow: 0 0 5px #5a9e6a88;
+	animation: pulse-green 2s ease-in-out infinite;
 }
 .dot.amber {
 	background: #e8a838;
-	box-shadow: 0 0 5px #e8a83888;
+	animation: pulse-amber 2.4s ease-in-out infinite;
 }
 .dot.red {
 	background: #c85a5a;
-	box-shadow: 0 0 5px #c85a5a88;
+	box-shadow: 0 0 4px 1px #c85a5a55;
 }
 
 .statusLabel {
