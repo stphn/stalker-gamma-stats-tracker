@@ -15,59 +15,13 @@ export function Stage({ location, left }: StageProps) {
 			className={styles.stage}
 			role="img"
 			aria-label={location ? `Zone location: ${location}` : 'Zone location'}
+			// Forward the image src as a CSS custom property so ::before/::after can use it
+			style={
+				src
+					? ({ '--stage-img': `url(${src})` } as React.CSSProperties)
+					: undefined
+			}
 		>
-			{/* SVG filter definitions */}
-			<svg
-				width="0"
-				height="0"
-				aria-hidden="true"
-				className={styles.filterDefs}
-			>
-				<defs>
-					<filter
-						id="glitch"
-						x="0%"
-						y="0%"
-						width="100%"
-						height="100%"
-						color-interpolation-filters="sRGB"
-					>
-						{/* Chromatic aberration — split R channel left, B channel right */}
-						<feColorMatrix
-							type="matrix"
-							values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"
-							result="red"
-						/>
-						<feOffset in="red" dx="-3" dy="0" result="redShift" />
-						<feColorMatrix
-							in="SourceGraphic"
-							type="matrix"
-							values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0"
-							result="green"
-						/>
-						<feColorMatrix
-							in="SourceGraphic"
-							type="matrix"
-							values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"
-							result="blue"
-						/>
-						<feOffset in="blue" dx="3" dy="0" result="blueShift" />
-						{/* Merge channels back */}
-						<feBlend in="redShift" in2="green" mode="screen" result="rg" />
-						<feBlend in="rg" in2="blueShift" mode="screen" result="rgb" />
-						{/* Slight desaturate for Zone atmosphere */}
-						<feColorMatrix in="rgb" type="saturate" values="0.72" />
-					</filter>
-				</defs>
-			</svg>
-
-			{src && (
-				<div
-					className={styles.image}
-					style={{ backgroundImage: `url(${src})` }}
-					aria-hidden="true"
-				/>
-			)}
 			<div className={styles.scanlines} aria-hidden="true" />
 			<div className={styles.gradient} aria-hidden="true" />
 			<div className={styles.left}>{left}</div>
