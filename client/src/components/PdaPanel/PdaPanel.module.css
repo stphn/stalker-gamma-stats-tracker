@@ -3,9 +3,12 @@
 	background: color-mix(in srgb, var(--accent-base) 3%, var(--bg-base));
 }
 
-/* Full-width header spanning the whole section */
+/* Header matches the grid's horizontal inset */
 .root > :first-child {
 	width: 100%;
+	box-sizing: border-box;
+	padding-left: var(--pad-lg);
+	padding-right: var(--pad-lg);
 }
 
 .grid {
