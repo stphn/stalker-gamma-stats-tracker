@@ -8,8 +8,15 @@ interface PdaPanelProps {
 	pda: PdaStats;
 }
 
+// Guard against fields the mod hasn't written yet
+function n(v: number | undefined): number {
+	return v ?? 0;
+}
+
 export function PdaPanel({ pda }: PdaPanelProps) {
-	const net = pda.rubles_earned - pda.rubles_spent;
+	const earned = n(pda.rubles_earned);
+	const spent = n(pda.rubles_spent);
+	const net = earned - spent;
 
 	return (
 		<section className={styles.root}>
@@ -20,11 +27,11 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 				<div className={styles.group}>
 					<span className={styles.groupLabel}>Combat</span>
 					<div className={styles.panel}>
-						<StatRow label="Kills" value={pda.kills.total} />
-						<StatRow label="Deaths" value={pda.deaths} />
+						<StatRow label="Kills" value={n(pda.kills?.total)} />
+						<StatRow label="Deaths" value={n(pda.deaths)} />
 						<StatRow
 							label="Enemies Surrendered"
-							value={pda.enemies_surrendered}
+							value={n(pda.enemies_surrendered)}
 						/>
 					</div>
 				</div>
@@ -33,8 +40,8 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 				<div className={styles.group}>
 					<span className={styles.groupLabel}>Economy</span>
 					<div className={styles.panel}>
-						<StatRow label="Earned" value={fmt_money(pda.rubles_earned)} />
-						<StatRow label="Spent" value={fmt_money(pda.rubles_spent)} />
+						<StatRow label="Earned" value={fmt_money(earned)} />
+						<StatRow label="Spent" value={fmt_money(spent)} />
 						<StatRow
 							label="Net"
 							value={fmt_money(net)}
@@ -49,9 +56,9 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 				<div className={styles.group}>
 					<span className={styles.groupLabel}>Zone</span>
 					<div className={styles.panel}>
-						<StatRow label="Emissions Survived" value={pda.emissions} />
-						<StatRow label="Psi-Storms Survived" value={pda.psi_storms} />
-						<StatRow label="Levels Visited" value={pda.levels_visited} />
+						<StatRow label="Emissions Survived" value={n(pda.emissions)} />
+						<StatRow label="Psi-Storms Survived" value={n(pda.psi_storms)} />
+						<StatRow label="Levels Visited" value={n(pda.levels_visited)} />
 					</div>
 				</div>
 
@@ -59,10 +66,13 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 				<div className={styles.group}>
 					<span className={styles.groupLabel}>Deeds</span>
 					<div className={styles.panel}>
-						<StatRow label="Wounded Helped" value={pda.wounded_helped} />
-						<StatRow label="Field Dressings Used" value={pda.field_dressings} />
-						<StatRow label="PDAs Delivered" value={pda.pdas_delivered} />
-						<StatRow label="Boxes Smashed" value={pda.boxes_smashed} />
+						<StatRow label="Wounded Helped" value={n(pda.wounded_helped)} />
+						<StatRow
+							label="Field Dressings Used"
+							value={n(pda.field_dressings)}
+						/>
+						<StatRow label="PDAs Delivered" value={n(pda.pdas_delivered)} />
+						<StatRow label="Boxes Smashed" value={n(pda.boxes_smashed)} />
 					</div>
 				</div>
 
@@ -70,10 +80,10 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 				<div className={styles.group}>
 					<span className={styles.groupLabel}>Exploration</span>
 					<div className={styles.panel}>
-						<StatRow label="Tasks Completed" value={pda.tasks} />
-						<StatRow label="Tasks Failed" value={pda.tasks_failed} />
-						<StatRow label="Tasks Cancelled" value={pda.tasks_cancelled} />
-						<StatRow label="Stashes Found" value={pda.stashes} />
+						<StatRow label="Tasks Completed" value={n(pda.tasks)} />
+						<StatRow label="Tasks Failed" value={n(pda.tasks_failed)} />
+						<StatRow label="Tasks Cancelled" value={n(pda.tasks_cancelled)} />
+						<StatRow label="Stashes Found" value={n(pda.stashes)} />
 					</div>
 				</div>
 
@@ -81,8 +91,8 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 				<div className={styles.group}>
 					<span className={styles.groupLabel}>Knowledge</span>
 					<div className={styles.panel}>
-						<StatRow label="Articles Read" value={pda.articles} />
-						<StatRow label="Artifacts Found" value={pda.artifacts} />
+						<StatRow label="Articles Read" value={n(pda.articles)} />
+						<StatRow label="Artifacts Found" value={n(pda.artifacts)} />
 						<StatRow label="Playtime" value={fmt_time(pda.playtime)} />
 					</div>
 				</div>

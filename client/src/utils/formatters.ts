@@ -8,14 +8,16 @@ export function fmt_location(raw: string, name?: string) {
 	);
 }
 
-export function fmt_time(seconds: number) {
+export function fmt_time(seconds: number | undefined) {
+	if (!seconds) return '0h 0m 0s';
 	const h = Math.floor(seconds / 3600);
 	const m = Math.floor((seconds % 3600) / 60);
 	const s = seconds % 60;
 	return `${h}h ${m}m ${s}s`;
 }
 
-export function fmt_money(n: number) {
+export function fmt_money(n: number | undefined) {
+	if (n == null) return '— ₽';
 	return `${n.toLocaleString('en-US')} ₽`;
 }
 
