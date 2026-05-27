@@ -10,12 +10,12 @@ void main() {
   // Distance from this fragment to the mouse in UV space
   float dist = distance(uv, uMouse);
 
-  // Wider influence radius — easier to see on a flat plane
-  float radius    = 0.25;
+  // Accumulate influence when mouse is nearby
+  float radius    = 0.15;
   float influence = smoothstep(radius, 0.0, dist) * uMouseMoved;
 
-  // Slower relaxation so the trail lingers a bit
-  float relaxation = 2.0;
+  // Relax back toward 0 over time
+  float relaxation = 3.5;
   float decay      = exp(-relaxation * uDeltaTime);
 
   float strength = current.r * decay + influence * (1.0 - decay);

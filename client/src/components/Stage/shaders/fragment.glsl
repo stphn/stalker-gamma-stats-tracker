@@ -5,7 +5,6 @@ uniform vec2 uImageSize;    // original image natural size in px
 uniform float uTime;
 
 varying vec2 vUv;
-varying float vStrength;
 
 // background-size: cover equivalent
 vec2 coverUvs(vec2 uv, vec2 resolution, vec2 imageSize) {
@@ -22,34 +21,19 @@ vec2 coverUvs(vec2 uv, vec2 resolution, vec2 imageSize) {
   return (uv - 0.5) * scale + 0.5;
 }
 
-// Luminance weights (Rec. 709)
-float luma(vec3 c) {
-  return dot(c, vec3(0.2126, 0.7152, 0.0722));
-}
-
 void main() {
   vec2 uv = coverUvs(vUv, uResolution, uImageSize);
 
-  // RGB chromatic aberration split driven by vertex displacement strength
-  float split = vStrength * 0.06;
+  // Sample GPGPU displacement — r = strength, g = direction hint
+  vec4 gpgpu    = texture2D(uGpgpu, vUv);
+  float strength = gpgpu.r;
 
-  vec4 rSample = texture2D(uTexture, vec2(uv.x + split, uv.y));
-  vec4 gSample = texture2D(uTexture, uv);
-  vec4 bSample = texture2D(uTexture, vec2(uv.x - split, uv.y));
+  // RGB chromatic aberration split proportional to displacement strength
+  float split = strength * 0.025;
 
-  // Desaturate, blend back a touch of colour
-  float rL = luma(rSample.rgb);
-  float gL = luma(gSample.rgb);
-  float bL = luma(bSample.rgb);
+  vec4 rChannel = texture2D(uTexture, vec2(uv.x + split, uv.y));
+  vec4 gChannel = texture2D(uTexture, uv);
+  vec4 bChannel = texture2D(uTexture, vec2(uv.x - split, uv.y));
 
-  float tint = 0.12;
-  vec3 color = mix(
-    vec3(rL, gL, bL),
-    vec3(rSample.r, gSample.g, bSample.b),
-    tint
-  );
-
-  color *= 1.2;
-
-  gl_FragColor = vec4(color, 1.0);
+  gl_FragColor = vec4(rChannel.r, gChannel.g, bChannel.b, 1.0);
 }

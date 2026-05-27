@@ -41,8 +41,7 @@ export function useStageGL(
 		camera.position.z = 1;
 
 		// ── Geometry ──────────────────────────────────────────────────────────
-		// 128x128 segments so the vertex shader has enough geometry to deform
-		const geometry = new THREE.PlaneGeometry(1, 1, 128, 128);
+		const geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
 
 		// ── Texture ───────────────────────────────────────────────────────────
 		const loader = new THREE.TextureLoader();
