@@ -8,6 +8,7 @@ import { BloodSplatter } from './components/BloodSplatter/BloodSplatter';
 import { Companions } from './components/Companions/Companions';
 import { Header } from './components/Header/Header';
 import { Location } from './components/Location/Location';
+import { GameAchievementsPanel } from './components/GameAchievements/GameAchievements';
 import { PdaPanel } from './components/PdaPanel/PdaPanel';
 import { Player } from './components/Player/Player';
 import { RightPanel } from './components/RightPanel/RightPanel';
@@ -144,6 +145,12 @@ export default function App() {
 					)}
 
 					{data.alltime_official && <PdaPanel pda={data.alltime_official} />}
+					{data.alltime_official && data.game_achievements && (
+						<GameAchievementsPanel
+							pda={data.alltime_official}
+							gameAchievements={data.game_achievements}
+						/>
+					)}
 				</main>
 			)}
 

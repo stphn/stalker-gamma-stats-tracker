@@ -1,0 +1,115 @@
+.root {
+	background: var(--bg-base);
+}
+
+.root > :first-child {
+	width: 100%;
+	box-sizing: border-box;
+	padding-left: var(--pad-lg);
+	padding-right: var(--pad-lg);
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: var(--pad-sm);
+	padding: var(--pad-md) var(--pad-lg);
+}
+
+@container layout (max-width: 1100px) {
+	.grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@container layout (max-width: 750px) {
+	.grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@container layout (max-width: 450px) {
+	.grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.card {
+	background: var(--bg-surface);
+	border: 1px solid var(--border);
+	border-left: 3px solid transparent;
+	padding: var(--pad-sm);
+	display: grid;
+	gap: 4px;
+	opacity: 0.52;
+}
+
+.card.unlocked {
+	opacity: 1;
+	border-left-color: var(--accent-dim);
+	background: var(--bg-raised);
+}
+
+.name {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	font-weight: 600;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--text-secondary);
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.card.unlocked .name {
+	color: var(--accent-bright);
+}
+
+.icon {
+	flex-shrink: 0;
+	font-size: var(--text-2xs);
+}
+
+.req {
+	margin: 0;
+	font-size: var(--text-2xs);
+	color: var(--text-secondary);
+	line-height: 1.4;
+}
+
+.reward {
+	margin: 0;
+	font-size: var(--text-2xs);
+	color: var(--color-positive);
+	line-height: 1.4;
+	opacity: 0.85;
+}
+
+.card.unlocked .reward {
+	opacity: 1;
+}
+
+.barWrap {
+	height: 3px;
+	background: var(--bg-overlay);
+	margin-top: 6px;
+	border-radius: 1px;
+	overflow: hidden;
+}
+
+.bar {
+	height: 100%;
+	background: var(--accent-dim);
+	border-radius: 1px;
+	transition: width 0.4s ease;
+}
+
+.barLabel {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	color: var(--text-disabled);
+	text-align: right;
+	display: block;
+	margin-top: 2px;
+}
