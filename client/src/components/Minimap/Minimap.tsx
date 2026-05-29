@@ -1,5 +1,6 @@
 import type { ActorInfo } from '../../types';
 import mapLevels from '../../data/map-levels.json';
+import { mapUrl } from '../../utils/mapsBase';
 import styles from './Minimap.module.css';
 
 interface WorldBounds { minX: number; maxX: number; minZ: number; maxZ: number }
@@ -28,7 +29,7 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 	const uv     = hasPosition && levelData?.worldBounds
 		? worldToUV(actor!.pos_x!, actor!.pos_z!, levelData.worldBounds)
 		: null;
-	const imgSrc = isUnderground || !levelId ? null : `/maps/${levelId}.png`;
+	const imgSrc = isUnderground || !levelId ? null : mapUrl(`${levelId}.png`);
 
 	if (!levelId) return null;
 

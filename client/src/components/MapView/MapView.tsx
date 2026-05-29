@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from '../../types';
 import mapLevelsData from '../../data/map-levels.json';
+import { mapUrl } from '../../utils/mapsBase';
 import styles from './MapView.module.css';
 
 // World coordinate space (from rawRect in map-levels.json)
@@ -217,7 +218,7 @@ export function MapView({ actor, onClose }: MapViewProps) {
 						{/* Global backdrop — single downscaled image covering the whole
 						    1024×2634 world space (context behind the current level). */}
 						<img
-							src="/maps/global-web.jpg"
+							src={mapUrl('global-web.jpg')}
 							className={styles.globalImg}
 							alt=""
 							draggable={false}
@@ -227,7 +228,7 @@ export function MapView({ actor, onClose }: MapViewProps) {
 						    Positioned at its rawRect in world space. */}
 						{levelData?.rawRect && !levelData.underground && (
 							<img
-								src={`/maps/${levelId}.png`}
+								src={mapUrl(`${levelId}.png`)}
 								className={styles.levelImg}
 								style={{
 									left:   `${levelData.rawRect.x1 / WORLD_W * 100}%`,
