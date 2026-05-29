@@ -20,8 +20,8 @@
 	grid-template-rows: auto 1fr auto;
 	background: rgba(12, 14, 13, 0.97);
 	border: 1px solid rgba(184, 148, 72, 0.28);
-	width: min(94vw, 540px);
-	height: min(92vh, 800px);
+	width: min(94vw, 560px);
+	height: min(94vh, 900px);
 	--hud-inset: 5px;
 	--hud-size: 14px;
 	--hud-color: var(--accent-dim);
@@ -36,13 +36,21 @@
 	}
 
 	.panel {
-		width: clamp(380px, 36vw, 520px);
+		width: clamp(440px, 44vw, 720px);
 		height: 100%;
 		border-top: none;
 		border-bottom: none;
 		border-right: none;
 		border-left: 1px solid rgba(184, 148, 72, 0.28);
 		animation: drawer-in 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	}
+}
+
+/* ── Large screens: wider drawer so even the widest map (CNPP 2.06:1)
+   and big portrait maps get a generous view ── */
+@media (min-width: 1440px) {
+	.panel {
+		width: clamp(640px, 42vw, 860px);
 	}
 }
 
@@ -178,25 +186,50 @@
 	image-rendering: auto; /* high-quality GPU scaling */
 }
 
-/* ── Player dot ── */
-.dot {
+/* ── Player marker overlay — screen-space, sibling of .world (keeps the
+   vector marker crisp instead of magnifying it from the scaled world) ── */
+.playerOverlay {
 	position: absolute;
-	width: 14px;
-	height: 14px;
-	border-radius: 50%;
-	background: var(--color-positive);
-	box-shadow: 0 0 8px 3px rgba(106, 148, 88, 0.8);
-	/* transform set inline with counter-scale */
-	animation: dot-pulse 2s ease-in-out infinite;
+	width: 0;
+	height: 0;
 	z-index: 10;
 	pointer-events: none;
 }
 
-@keyframes dot-pulse {
-	0%   { box-shadow: 0 0 6px 2px rgba(106, 148, 88, 0.9); }
-	50%  { box-shadow: 0 0 14px 6px rgba(106, 148, 88, 0.45); }
-	100% { box-shadow: 0 0 6px 2px rgba(106, 148, 88, 0.9); }
+/* ── Debug: exact computed map point (magenta crosshair) ── */
+.calibCross {
+	position: absolute;
+	width: 0;
+	height: 0;
+	z-index: 11;
+	pointer-events: none;
 }
+.calibCross::before,
+.calibCross::after {
+	content: '';
+	position: absolute;
+	background: magenta;
+	box-shadow: 0 0 2px black;
+}
+.calibCross::before { left: -8px; top: -1px; width: 16px; height: 2px; }
+.calibCross::after  { left: -1px; top: -8px; width: 2px; height: 16px; }
+
+/* ── Debug readout box ── */
+.debugBox {
+	position: absolute;
+	left: var(--pad-md);
+	bottom: 52px;
+	z-index: 40;
+	background: rgba(0, 0, 0, 0.8);
+	border: 1px solid magenta;
+	padding: 8px 10px;
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 0.5px;
+	color: var(--text-primary);
+	line-height: 1.5;
+}
+.debugHint { color: var(--text-disabled); margin-top: 4px; }
 
 /* ── Footer ── */
 .footer {

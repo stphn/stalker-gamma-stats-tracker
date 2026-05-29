@@ -7,6 +7,7 @@ import './App.css';
 
 import { BloodSplatter } from './components/BloodSplatter/BloodSplatter';
 import { Companions } from './components/Companions/Companions';
+import { DebugPanel } from './components/DebugPanel/DebugPanel';
 import { Header } from './components/Header/Header';
 import { Location } from './components/Location/Location';
 import { GameAchievementsPanel } from './components/GameAchievements/GameAchievements';
@@ -38,6 +39,35 @@ export default function App() {
 	const [deathTrigger, setDeathTrigger] = useState(0);
 	const [shaking, setShaking] = useState(false);
 	const [mapOpen, setMapOpen] = useState(false);
+
+	// Player marker style — shared by minimap + full map, persisted
+	const [markerStyle, setMarkerStyle] = useState<'character' | 'arrow'>(
+		() => (localStorage.getItem('tracker_marker_style') as 'character' | 'arrow') || 'character',
+	);
+	const toggleMarkerStyle = () =>
+		setMarkerStyle(s => {
+			const next = s === 'character' ? 'arrow' : 'character';
+			try { localStorage.setItem('tracker_marker_style', next); } catch {}
+			return next;
+		});
+
+	// Site-wide debug panel, toggled with D
+	const [debug, setDebug] = useState(false);
+	useEffect(() => {
+		const onKey = (e: KeyboardEvent) => {
+			const el = e.target as HTMLElement;
+			if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) return;
+			if (e.key === 'd' || e.key === 'D') setDebug(v => !v);
+		};
+		window.addEventListener('keydown', onKey);
+		return () => window.removeEventListener('keydown', onKey);
+	}, []);
+
+	const triggerDeath = () => {
+		setDeathTrigger(Date.now());
+		setShaking(true);
+		setTimeout(() => setShaking(false), 500);
+	};
 	const prevRunStart = useRef<number | null>(null);
 	const latestDeathStart = data?.last_run?.[0]?.start ?? null;
 	useEffect(() => {
@@ -58,8 +88,26 @@ export default function App() {
 		<div style={{ overflow: 'hidden' }}>
 		<div className={shaking ? 'app death-shake' : 'app'}>
 			<Header connected={connected} gameState={gameState} onMapOpen={() => setMapOpen(true)} />
+			{debug && (
+				<DebugPanel
+					data={data}
+					connected={connected}
+					gameState={gameState}
+					stale={stale}
+					markerStyle={markerStyle}
+					onToggleMarkerStyle={toggleMarkerStyle}
+					onTestDeath={triggerDeath}
+					onClose={() => setDebug(false)}
+				/>
+			)}
 			{mapOpen && (
-				<MapView actor={displayActor} onClose={() => setMapOpen(false)} />
+				<MapView
+					actor={displayActor}
+					onClose={() => setMapOpen(false)}
+					markerStyle={markerStyle}
+					onToggleMarkerStyle={toggleMarkerStyle}
+					debug={debug}
+				/>
 			)}
 
 			{!data ? (
@@ -77,18 +125,8 @@ export default function App() {
 				>
 					<div className="stage-row">
 						<BloodSplatter trigger={deathTrigger} key={deathTrigger} />
-						<button
-							className="dev-death-btn"
-							onClick={() => { setDeathTrigger(Date.now()); setShaking(true); setTimeout(() => setShaking(false), 500); }}
-							title="Test blood splatter"
-						>
-							💀 test death
-						</button>
 						<Stage
 							location={displayActor?.location}
-							overlay={
-								<Minimap actor={displayActor} onExpand={() => setMapOpen(true)} />
-							}
 							left={
 								displayActor && (
 									<>
@@ -98,6 +136,7 @@ export default function App() {
 											gameTime={displayActor.game_time}
 											gameState={gameState}
 										/>
+										<Minimap actor={displayActor} onExpand={() => setMapOpen(true)} markerStyle={markerStyle} />
 										<div className="actors">
 											<Player actor={displayActor} />
 											{data.companions && data.companions.length > 0 && (

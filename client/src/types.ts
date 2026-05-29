@@ -80,6 +80,7 @@ export interface ActorInfo {
 	game_time?: { h: number; m: number };
 	pos_x?: number;
 	pos_z?: number;
+	heading?: number; // facing in degrees, 0 = north, clockwise
 }
 
 export interface StatsData {

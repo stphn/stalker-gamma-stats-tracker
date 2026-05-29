@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from '../../types';
 import mapLevelsData from '../../data/map-levels.json';
 import { mapUrl } from '../../utils/mapsBase';
+import { PlayerMarker, type MarkerStyle } from '../PlayerMarker/PlayerMarker';
 import styles from './MapView.module.css';
 
 // World coordinate space (from rawRect in map-levels.json)
@@ -34,9 +35,12 @@ const ZOOM_STEP = 1.3;
 interface MapViewProps {
 	actor: ActorInfo | null;
 	onClose: () => void;
+	markerStyle: MarkerStyle;
+	onToggleMarkerStyle: () => void;
+	debug?: boolean;
 }
 
-export function MapView({ actor, onClose }: MapViewProps) {
+export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debug = false }: MapViewProps) {
 	const panelRef   = useRef<HTMLDivElement>(null);
 	const mapAreaRef = useRef<HTMLDivElement>(null);
 
@@ -44,11 +48,13 @@ export function MapView({ actor, onClose }: MapViewProps) {
 	const [pan,  setPan]                  = useState({ x: 0, y: 0 });
 	const [areaW, setAreaW]               = useState(480);
 	const [areaH, setAreaH]               = useState(800);
-	const [follow, setFollow]             = useState(false);
+	const [follow, setFollow]             = useState(true); // lock to player by default
 
 	const drag = useRef({ active: false, startX: 0, startY: 0, panX: 0, panY: 0 });
+	// True once the user has zoomed/panned/followed — suppresses auto re-fit on resize
+	const adjusted = useRef(false);
 
-	// Track mapArea size for tile visibility calculation
+	// Track mapArea size so the view can re-fit responsively
 	useEffect(() => {
 		const area = mapAreaRef.current;
 		if (!area) return;
@@ -68,7 +74,11 @@ export function MapView({ actor, onClose }: MapViewProps) {
 		? worldToMapPos(actor!.pos_x!, actor!.pos_z!, levelData)
 		: null;
 
-	// Compute initial zoom+pan to show current level + context
+	// Tight-fit the current level to the viewport: focus it, fill the area as
+	// large as possible while fully visible (small margin), centered. Fitting a
+	// 2048–4096px source into the drawer is always a downscale → stays sharp.
+	const FIT_MARGIN = 0.07; // 7% breathing room around the level
+	const OPEN_ZOOM  = 1.8;  // open/reset zoomed in past the whole-level fit (focused on player)
 	const resetView = useCallback((level: LevelEntry | null) => {
 		const area = mapAreaRef.current;
 		if (!area || !level?.rawRect) return;
@@ -76,30 +86,35 @@ export function MapView({ actor, onClose }: MapViewProps) {
 		const ch = area.clientHeight || areaH;
 		const mapW = cw;
 
-		const rr   = level.rawRect;
-		const padX = (rr.x2 - rr.x1) * 0.9;
-		const padY = (rr.y2 - rr.y1) * 0.9;
-		const x1   = Math.max(0,       rr.x1 - padX);
-		const y1   = Math.max(0,       rr.y1 - padY);
-		const x2   = Math.min(WORLD_W, rr.x2 + padX);
-		const y2   = Math.min(WORLD_H, rr.y2 + padY);
+		const rr = level.rawRect;
+		// Level bounds in canvas pixels (at scale 1) — 1 WU = mapW/WORLD_W px (both axes)
+		const rw = (rr.x2 - rr.x1) / WORLD_W * mapW;
+		const rh = (rr.y2 - rr.y1) / WORLD_W * mapW;
 
-		// Region in canvas pixels (at scale 1)
-		const rw = (x2 - x1) / WORLD_W * mapW;
-		const rh = (y2 - y1) / WORLD_W * mapW; // same denominator — 1 WU = mapW/WORLD_W px
-		const nz = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Math.min(cw / rw, ch / rh) * 0.92));
+		// Fit to viewport with margin, then zoom in a bit so it opens focused on
+		// the player's area rather than the whole level; clamp to zoom range.
+		const fit = Math.min(cw / rw, ch / rh) * (1 - FIT_MARGIN);
+		const nz  = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, fit * OPEN_ZOOM));
 
-		const cx = (x1 + x2) / 2 / WORLD_W * mapW;
-		const cy = (y1 + y2) / 2 / WORLD_W * mapW;
+		const cx = (rr.x1 + rr.x2) / 2 / WORLD_W * mapW;
+		const cy = (rr.y1 + rr.y2) / 2 / WORLD_W * mapW;
 
 		setZoom(nz);
 		setPan({ x: cw / (2 * nz) - cx, y: ch / (2 * nz) - cy });
+		adjusted.current = false; // back to a clean fit
 	}, [areaW, areaH]);
 
+	// Re-fit on level change (fresh fit even if the previous level was adjusted)
 	useEffect(() => {
 		const t = setTimeout(() => resetView(levelData), 40);
 		return () => clearTimeout(t);
 	}, [levelId, resetView]);
+
+	// Re-fit on viewport resize / orientation change — only if the user hasn't
+	// taken over the view (don't yank a manual zoom/pan).
+	useEffect(() => {
+		if (!adjusted.current) resetView(levelData);
+	}, [areaW, areaH, resetView, levelData]);
 
 	// Center the view on a world-space map position at the current zoom
 	const centerOn = useCallback((mp: { x: number; y: number }, z: number) => {
@@ -122,6 +137,7 @@ export function MapView({ actor, onClose }: MapViewProps) {
 		if (!area) return;
 		const onWheel = (e: WheelEvent) => {
 			e.preventDefault();
+			adjusted.current = true;
 			const rect   = area.getBoundingClientRect();
 			const cx     = e.clientX - rect.left;
 			const cy     = e.clientY - rect.top;
@@ -140,6 +156,7 @@ export function MapView({ actor, onClose }: MapViewProps) {
 	const onMouseDown = (e: React.MouseEvent) => {
 		if (e.button !== 0) return;
 		e.preventDefault();
+		adjusted.current = true;
 		if (follow) setFollow(false);
 		drag.current = { active: true, startX: e.clientX, startY: e.clientY, panX: pan.x, panY: pan.y };
 	};
@@ -163,8 +180,8 @@ export function MapView({ actor, onClose }: MapViewProps) {
 
 	useEffect(() => {
 		const onKey = (e: KeyboardEvent) => {
-			if (e.key === 'Escape')             close();
-			if (e.key === 'r' || e.key === 'R') resetView(levelData);
+			if (e.key === 'Escape')             { close(); return; }
+			if (e.key === 'r' || e.key === 'R') { resetView(levelData); return; }
 		};
 		window.addEventListener('keydown', onKey);
 		return () => window.removeEventListener('keydown', onKey);
@@ -174,7 +191,20 @@ export function MapView({ actor, onClose }: MapViewProps) {
 		if (panelRef.current && !panelRef.current.contains(e.target as Node)) close();
 	};
 
-	const dotScale = `translate(-50%, -50%) scale(${1 / zoom})`;
+	// Marker size peaks gently around the single-level overview (~4×) so the
+	// player is easy to spot, tapering to base (24px) both zoomed into the
+	// streets (~32×) and zoomed way out (≤0.5×). Peak ≈ 1.6× (≈38px).
+	const markerGrow = Math.min(1.6, Math.max(1, 1.6 - 0.2 * Math.abs(Math.log2(zoom / 4))));
+
+	// Player position in SCREEN pixels (so the marker can be rendered outside the
+	// scaled .world layer → vector stays crisp at any zoom instead of being
+	// magnified from a sub-pixel render). 1 world-unit = areaW/WORLD_W px both axes.
+	const screenPos = mapPos
+		? {
+			x: zoom * (mapPos.x / WORLD_W * areaW + pan.x),
+			y: zoom * (mapPos.y / WORLD_W * areaW + pan.y),
+		}
+		: null;
 
 	return (
 		<div className={styles.backdrop} role="dialog" aria-modal aria-label="Full map" onMouseDown={onBackdropClick}>
@@ -186,17 +216,24 @@ export function MapView({ actor, onClose }: MapViewProps) {
 					<span className={styles.zoneName}>{levelData?.name ?? levelId ?? '—'}</span>
 					<div className={styles.headerRight}>
 						<button
+							className={styles.resetBtn}
+							onClick={onToggleMarkerStyle}
+							title="Toggle player marker style"
+						>
+							{markerStyle === 'character' ? '◭ Arrow' : '☻ Char'}
+						</button>
+						<button
 							className={`${styles.followBtn} ${follow ? styles.followOn : ''}`}
 							onClick={() => {
 								const next = !follow;
 								setFollow(next);
-								if (next && mapPos) centerOn(mapPos, zoom);
+								if (next && mapPos) { adjusted.current = true; centerOn(mapPos, zoom); }
 							}}
 							disabled={!mapPos}
-							title={mapPos ? (follow ? 'Following player — click to free-pan' : 'Follow player') : 'Player position unavailable'}
+							title={mapPos ? (follow ? 'Locked on player — click to free-pan' : 'Lock view to player') : 'Player position unavailable'}
 							aria-pressed={follow}
 						>
-							📍 {follow ? 'Following' : 'Follow'}
+							{follow ? '🔒 Lock On' : '🔓 Lock Off'}
 						</button>
 						<button className={styles.resetBtn} onClick={() => resetView(levelData)} title="Reset view (R)">
 							{zoom.toFixed(1)}× · Reset
@@ -241,19 +278,37 @@ export function MapView({ actor, onClose }: MapViewProps) {
 							/>
 						)}
 
-						{/* Player dot */}
-						{mapPos && (
-							<div
-								className={styles.dot}
-								style={{
-									left:      `${mapPos.x / WORLD_W * 100}%`,
-									top:       `${mapPos.y / WORLD_H * 100}%`,
-									transform: dotScale,
-								}}
-								aria-label="Player position"
-							/>
-						)}
 					</div>
+
+					{/* Player marker — rendered in screen space (outside the scaled
+					    world) so the vector stays sharp at every zoom level. */}
+					{screenPos && (
+						<div
+							className={styles.playerOverlay}
+							style={{ left: screenPos.x, top: screenPos.y }}
+							aria-label="Player position"
+						>
+							<PlayerMarker
+								heading={actor?.heading}
+								size={29 * markerGrow}
+								ping={zoom >= 16}
+								variant={markerStyle}
+							/>
+						</div>
+					)}
+
+					{/* Debug: exact computed map point */}
+					{debug && screenPos && (
+						<div className={styles.calibCross} style={{ left: screenPos.x, top: screenPos.y }} />
+					)}
+
+					{debug && (
+						<div className={styles.debugBox}>
+							<div>zoom {zoom.toFixed(1)}×</div>
+							<div>map px {mapPos ? `${mapPos.x.toFixed(1)}, ${mapPos.y.toFixed(1)}` : '—'}</div>
+							<div className={styles.debugHint}>magenta = computed point</div>
+						</div>
+					)}
 				</div>
 
 				<div className={styles.footer}>
