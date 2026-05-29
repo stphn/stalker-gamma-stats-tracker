@@ -17,7 +17,7 @@
 	left: 0;
 	right: 0;
 	height: 2px;
-	background: linear-gradient(to right, transparent, rgba(200, 168, 90, 0.25), transparent);
+	background: linear-gradient(to right, transparent, var(--scanline-color), transparent);
 	animation: stage-scan 8s ease-in-out infinite;
 	pointer-events: none;
 	z-index: 2;

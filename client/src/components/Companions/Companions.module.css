@@ -22,7 +22,7 @@
 }
 
 .card {
-	background: rgba(42, 42, 42, 0.6);
+	background: var(--bg-glass);
 	padding: 8px 12px;
 	display: grid;
 	gap: 4px;
@@ -54,7 +54,7 @@
 .hpTrack {
 	flex: 1;
 	height: 5px;
-	background: rgba(217, 217, 217, 0.25);
+	background: var(--white-track);
 	border-radius: 1px;
 	overflow: hidden;
 }

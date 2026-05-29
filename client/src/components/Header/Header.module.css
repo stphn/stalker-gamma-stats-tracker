@@ -33,7 +33,7 @@
 	font-weight: 700;
 	letter-spacing: 4px;
 	text-transform: uppercase;
-	background: linear-gradient(to bottom, #f4f4f4 0%, #c8c8c8 45%, #686868 100%);
+	background: linear-gradient(to bottom, var(--title-grad-top) 0%, var(--title-grad-mid) 45%, var(--title-grad-bottom) 100%);
 	-webkit-background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
@@ -71,7 +71,7 @@
 
 .navLink:hover {
 	color: var(--accent-base);
-	text-shadow: 0 0 10px rgba(184, 148, 72, 0.4);
+	text-shadow: 0 0 10px var(--glow-nav-link);
 }
 
 .navSep {

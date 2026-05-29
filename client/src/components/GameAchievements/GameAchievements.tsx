@@ -90,7 +90,7 @@ const ACHIEVEMENTS: Def[] = [
 		name: 'Completionist',
 		requirement: 'Unlock all other achievements',
 		reward: 'The road has been long, but you\'ve arrived triumphant',
-		progress: (_, ga) => ({ value: ga.earned, max: ga.total }),
+		progress: (_, ga) => ({ value: ga.earned, max: ACHIEVEMENTS.length - 1 }),
 	},
 	{
 		id: 'wishful_thinking',
@@ -187,7 +187,8 @@ interface GameAchievementsPanelProps {
 }
 
 export function GameAchievementsPanel({ pda, gameAchievements }: GameAchievementsPanelProps) {
-	const { earned, total, unlocked } = gameAchievements;
+	const { earned, unlocked } = gameAchievements;
+	const total = ACHIEVEMENTS.length;
 
 	return (
 		<section className={styles.root}>

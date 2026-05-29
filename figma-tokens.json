@@ -1,0 +1,105 @@
+{
+  "global": {
+    "primitives": {
+      "green": {
+        "950": { "value": "hsl(120, 12%, 6%)",  "type": "color", "description": "near-black, faint green cast" },
+        "900": { "value": "hsl(120, 14%, 9%)",  "type": "color", "description": "dark moss-concrete" },
+        "850": { "value": "hsl(114, 15%, 10%)", "type": "color", "description": "subtle divide" },
+        "800": { "value": "hsl(112, 15%, 12%)", "type": "color", "description": "dim interior wall" },
+        "750": { "value": "hsl(110, 16%, 14%)", "type": "color", "description": "raised panel" },
+        "700": { "value": "hsl(112, 18%, 16%)", "type": "color", "description": "mid surface / foot chrome" },
+        "600": { "value": "hsl(108, 13%, 23%)", "type": "color", "description": "disabled text" },
+        "500": { "value": "hsl(90,  23%, 28%)", "type": "color", "description": "foot-link, muted active" },
+        "400": { "value": "hsl(80,  14%, 44%)", "type": "color", "description": "secondary text, Zone fog" },
+        "100": { "value": "hsl(44,  28%, 76%)", "type": "color", "description": "warm parchment text" }
+      },
+      "amber": {
+        "700": { "value": "hsl(38, 45%, 28%)", "type": "color", "description": "deep marsh gold" },
+        "500": { "value": "hsl(38, 45%, 50%)", "type": "color", "description": "Tarkovsky sepia amber" },
+        "400": { "value": "hsl(38, 60%, 59%)", "type": "color", "description": "sunlit water glint" }
+      },
+      "rust": {
+        "600": { "value": "hsl(15, 62%, 34%)", "type": "color", "description": "rust-blood danger" },
+        "400": { "value": "hsl(0,  52%, 57%)", "type": "color", "description": "dev/debug danger highlight" }
+      },
+      "orange": {
+        "500": { "value": "hsl(32, 59%, 45%)", "type": "color", "description": "decay orange, warning" }
+      },
+      "teal": {
+        "500": { "value": "hsl(172, 20%, 44%)", "type": "color", "description": "celadon mist, info" }
+      },
+      "zone": {
+        "500": { "value": "hsl(100, 20%, 47%)", "type": "color", "description": "overgrown Zone green, positive" }
+      },
+      "gray": {
+        "950": { "value": "hsl(0, 0%, 5%)",  "type": "color", "description": "deep scrim base" },
+        "800": { "value": "hsl(0, 0%, 11%)", "type": "color", "description": "footer bg" },
+        "600": { "value": "hsl(0, 0%, 16%)", "type": "color", "description": "glass card surface" }
+      },
+      "silver": {
+        "100": { "value": "hsl(0, 0%, 96%)", "type": "color", "description": "title gradient top" },
+        "300": { "value": "hsl(0, 0%, 78%)", "type": "color", "description": "title gradient mid" },
+        "600": { "value": "hsl(0, 0%, 41%)", "type": "color", "description": "title gradient bottom" }
+      }
+    },
+    "semantic": {
+      "surface": {
+        "base":    { "value": "{primitives.green.950}", "type": "color" },
+        "default": { "value": "{primitives.green.900}", "type": "color" },
+        "subtle":  { "value": "{primitives.green.850}", "type": "color" },
+        "raised":  { "value": "{primitives.green.800}", "type": "color" },
+        "overlay": { "value": "{primitives.green.750}", "type": "color" },
+        "mid":     { "value": "{primitives.green.700}", "type": "color" },
+        "glass":   { "value": "hsl(0, 0%, 16%, 0.60)",  "type": "color" },
+        "glassMobile": { "value": "hsl(0, 0%, 5%, 0.96)", "type": "color" },
+        "scrim":   { "value": "hsl(0, 0%, 0%, 0.55)",   "type": "color" },
+        "footer":  { "value": "{primitives.gray.800}",  "type": "color" }
+      },
+      "text": {
+        "primary":   { "value": "{primitives.green.100}", "type": "color" },
+        "secondary": { "value": "{primitives.green.400}", "type": "color" },
+        "disabled":  { "value": "{primitives.green.600}", "type": "color" },
+        "footLabel": { "value": "{primitives.green.700}", "type": "color" },
+        "footLink":  { "value": "{primitives.green.500}", "type": "color" },
+        "footSep":   { "value": "{primitives.green.750}", "type": "color" }
+      },
+      "accent": {
+        "base":   { "value": "{primitives.amber.500}", "type": "color" },
+        "dim":    { "value": "{primitives.amber.700}", "type": "color" },
+        "bright": { "value": "{primitives.amber.400}", "type": "color" }
+      },
+      "status": {
+        "positive": { "value": "{primitives.zone.500}",   "type": "color" },
+        "danger":   { "value": "{primitives.rust.600}",   "type": "color" },
+        "warning":  { "value": "{primitives.orange.500}", "type": "color" },
+        "info":     { "value": "{primitives.teal.500}",   "type": "color" }
+      },
+      "border": {
+        "default": { "value": "{primitives.green.850}",        "type": "color" },
+        "glass":   { "value": "hsl(0, 0%, 100%, 0.06)",        "type": "color" },
+        "footer":  { "value": "hsl(38, 45%, 50%, 0.12)",       "type": "color" },
+        "dev":     { "value": "hsl(0, 52%, 57%, 0.35)",        "type": "color" },
+        "devHover":{ "value": "hsl(0, 52%, 57%, 0.70)",        "type": "color" }
+      },
+      "glow": {
+        "navLink":  { "value": "hsl(38, 45%, 50%, 0.40)", "type": "color" },
+        "footLink": { "value": "hsl(38, 45%, 50%, 0.40)", "type": "color" }
+      },
+      "overlay": {
+        "whiteDivider": { "value": "hsl(0, 0%, 100%, 0.15)", "type": "color" },
+        "whiteTrack":   { "value": "hsl(0, 0%, 85%,  0.25)", "type": "color" },
+        "scanline":     { "value": "hsl(38, 45%, 50%, 0.25)", "type": "color" }
+      },
+      "title": {
+        "gradTop":    { "value": "{primitives.silver.100}", "type": "color" },
+        "gradMid":    { "value": "{primitives.silver.300}", "type": "color" },
+        "gradBottom": { "value": "{primitives.silver.600}", "type": "color" }
+      },
+      "dev": {
+        "color":      { "value": "{primitives.rust.400}",        "type": "color" },
+        "bg":         { "value": "hsl(0, 0%, 0%, 0.60)",         "type": "color" },
+        "bgHover":    { "value": "hsl(0, 52%, 57%, 0.15)",       "type": "color" }
+      }
+    }
+  }
+}

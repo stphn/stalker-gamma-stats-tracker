@@ -1,52 +1,119 @@
 :root {
 	/* ══════════════════════════════════════════════
-	   STALKER (1979) — Tarkovsky palette
-	   ── Backup of previous palette below ──
+	   LAYER 1 — PRIMITIVES
+	   HSL scale. Only edit values here.
 	   ══════════════════════════════════════════════ */
 
-	/* ── Surfaces — Zone concrete & marsh dark ── */
-	--bg-base: #0c0e0d;        /* near-black with a faint green cast */
-	--bg-surface: #151913;     /* dark moss-concrete */
-	--bg-raised: #1d2218;      /* dim interior wall */
-	--bg-overlay: #252b1e;     /* raised panel */
-	--bg-subtle: #1a1f15;      /* subtle divide */
-	--bg-default: #2e3526;     /* mid surface */
+	/* ── Green (Zone moss, concrete, dark surfaces) ── */
+	--green-950: hsl(120, 12%,  6%);   /* near-black, faint green */
+	--green-900: hsl(120, 14%,  9%);   /* dark moss-concrete */
+	--green-850: hsl(114, 15%, 10%);   /* subtle divide */
+	--green-800: hsl(112, 15%, 12%);   /* dim interior wall */
+	--green-750: hsl(110, 16%, 14%);   /* raised panel */
+	--green-700: hsl(112, 18%, 16%);   /* mid surface / foot chrome */
+	--green-600: hsl(108, 13%, 23%);   /* disabled text */
+	--green-500: hsl( 90, 23%, 28%);   /* foot-link, muted active */
+	--green-400: hsl( 80, 14%, 44%);   /* secondary text, fog */
+	--green-100: hsl( 44, 28%, 76%);   /* warm parchment text */
 
-	/* ── Text — aged sepia paper & fog ── */
-	--text-primary: #d8d0b4;   /* warm parchment, desaturated */
-	--text-secondary: #7a8060; /* olive-grey, like Zone fog */
-	--text-disabled: #3e4434;  /* deep muted green-grey */
+	/* ── Amber (marshwater, accent) ── */
+	--amber-700: hsl(38, 45%, 28%);    /* deep marsh gold */
+	--amber-500: hsl(38, 45%, 50%);    /* Tarkovsky sepia amber */
+	--amber-400: hsl(38, 60%, 59%);    /* sunlit water glint */
 
-	/* ── Accent — amber marshwater & rust ── */
-	--accent-base: #b89448;    /* Tarkovsky sepia amber */
-	--accent-dim: #6a5428;     /* deep marsh gold */
-	--accent-bright: #d4b05a;  /* sunlit water glint */
+	/* ── Rust (blood, danger) ── */
+	--rust-600: hsl(15, 62%, 34%);     /* rust-blood, not bright red */
+	--rust-400: hsl( 0, 52%, 57%);     /* dev/debug danger highlight */
 
-	/* ── Semantic ── */
-	--color-positive: #6a9458;    /* overgrown Zone green */
-	--color-danger: #8c3c20;      /* rust-blood, not bright red */
-	--color-warning: #b87830;     /* decay orange */
-	--color-info: #5a8880;        /* celadon mist, Zone interior pool */
+	/* ── Orange (decay, warning) ── */
+	--orange-500: hsl(32, 59%, 45%);
+
+	/* ── Teal (celadon mist, info) ── */
+	--teal-500: hsl(172, 20%, 44%);
+
+	/* ── Zone green (overgrown, positive) ── */
+	--zone-500: hsl(100, 20%, 47%);
+
+	/* ── Neutral grays (glass surfaces, chrome) ── */
+	--gray-950: hsl(0, 0%,  5%);       /* deep scrim base */
+	--gray-800: hsl(0, 0%, 11%);       /* footer bg */
+	--gray-600: hsl(0, 0%, 16%);       /* glass card surface */
+
+	/* ── Title gradient (pure silver-gray) ── */
+	--silver-100: hsl(0, 0%, 96%);
+	--silver-300: hsl(0, 0%, 78%);
+	--silver-600: hsl(0, 0%, 41%);
 
 	/* ══════════════════════════════════════════════
-	   BACKUP — previous dark neutral palette
-	   --bg-base: #111111;
-	   --bg-surface: #1c1c1c;
-	   --bg-raised: #242424;
-	   --bg-overlay: #2e2e2e;
-	   --bg-subtle: #2a2a2a;
-	   --bg-default: #333333;
-	   --text-primary: #e8e4d8;
-	   --text-secondary: #8a8070;
-	   --text-disabled: #4a4640;
-	   --accent-base: #c8a85a;
-	   --accent-dim: #7a6530;
-	   --accent-bright: #e8c46a;
-	   --color-positive: #5a9e6a;
-	   --color-danger: #c85a5a;
-	   --color-warning: #d4782a;
-	   --color-info: #5a8ab4;
+	   LAYER 2 — SEMANTIC TOKENS
+	   Map primitives to purpose. Components use these.
 	   ══════════════════════════════════════════════ */
+
+	/* Surfaces */
+	--bg-base:    var(--green-950);
+	--bg-surface: var(--green-900);
+	--bg-subtle:  var(--green-850);
+	--bg-raised:  var(--green-800);
+	--bg-overlay: var(--green-750);
+	--bg-default: var(--green-700);
+
+	/* Text */
+	--text-primary:   var(--green-100);
+	--text-secondary: var(--green-400);
+	--text-disabled:  var(--green-600);
+
+	/* Accent */
+	--accent-base:   var(--amber-500);
+	--accent-dim:    var(--amber-700);
+	--accent-bright: var(--amber-400);
+
+	/* Status */
+	--color-positive: var(--zone-500);
+	--color-danger:   var(--rust-600);
+	--color-warning:  var(--orange-500);
+	--color-info:     var(--teal-500);
+
+	/* Glass / translucent */
+	--bg-glass:        hsl(0, 0%, 16%, 0.60);
+	--bg-glass-mobile: hsl(0, 0%,  5%, 0.96);
+	--bg-scrim:        hsl(0, 0%,  0%, 0.55);
+
+	/* Footer chrome */
+	--bg-footer:        var(--gray-800);
+	--text-foot-label:  var(--green-700);
+	--text-foot-link:   var(--green-500);
+	--text-foot-sep:    var(--green-750);
+	--border-foot:      hsl(38, 45%, 50%, 0.12);
+	--glow-foot-link:   hsl(38, 45%, 50%, 0.40);
+
+	/* Header title gradient */
+	--title-grad-top:    var(--silver-100);
+	--title-grad-mid:    var(--silver-300);
+	--title-grad-bottom: var(--silver-600);
+
+	/* Nav glow */
+	--glow-nav-link: hsl(38, 45%, 50%, 0.40);
+
+	/* Dev danger button */
+	--color-dev:              var(--rust-400);
+	--bg-dev:                 hsl(0, 0%, 0%, 0.60);
+	--border-dev:             hsl(0, 52%, 57%, 0.35);
+	--bg-dev-hover:           hsl(0, 52%, 57%, 0.15);
+	--border-dev-hover:       hsl(0, 52%, 57%, 0.70);
+
+	/* Misc overlays */
+	--white-divider: hsl(0, 0%, 100%, 0.15);
+	--white-track:   hsl(0, 0%, 85%,  0.25);
+	--border-glass:  hsl(0, 0%, 100%, 0.06);
+	--scanline-color: hsl(38, 45%, 50%, 0.25);
+
+	/* ── Aliases (shorthand for common tokens) ── */
+	--bg:       var(--bg-base);
+	--surface:  var(--bg-surface);
+	--border:   var(--bg-subtle);
+	--text:     var(--text-primary);
+	--text-dim: var(--text-secondary);
+	--accent:   var(--accent-base);
 
 	/* ── Type scale — fluid, min bumped for mobile readability ── */
 	--text-display: clamp(34px, 4.03vw, 58px);
@@ -162,10 +229,10 @@ body {
 	z-index: 2;
 	width: clamp(300px, 26.4vw, 480px);
 	overflow-y: auto;
-	background: rgba(42, 42, 42, 0.6);
+	background: var(--bg-glass);
 	backdrop-filter: blur(6px);
 	-webkit-backdrop-filter: blur(6px);
-	border-left: 1px solid rgba(255, 255, 255, 0.06);
+	border-left: 1px solid var(--border-glass);
 }
 
 /* Mobile: sidebar drops below, full-width, opaque */
@@ -175,7 +242,7 @@ body {
 		width: 100%;
 		backdrop-filter: none;
 		-webkit-backdrop-filter: none;
-		background: rgba(14, 14, 14, 0.96);
+		background: var(--bg-glass-mobile);
 		border-left: none;
 		border-top: 1px solid var(--border);
 	}
@@ -215,7 +282,7 @@ body {
 		max-content   /* tasks */
 		max-content;  /* stashes */
 	padding: var(--pad-sm) clamp(80px, 12vw, 180px) var(--pad-sm) var(--pad-lg);
-	background: rgba(0, 0, 0, 0.55);
+	background: var(--bg-scrim);
 	backdrop-filter: blur(8px);
 	-webkit-backdrop-filter: blur(8px);
 	mask-image: linear-gradient(to right, black 70%, transparent 100%);
@@ -223,17 +290,17 @@ body {
 }
 
 @container layout (max-width: 900px) {
-	.death-log { background: rgba(0, 0, 0, 0.62); }
+	.death-log { background: hsl(0, 0%, 0%, 0.62); }
 }
 @container layout (max-width: 700px) {
-	.death-log { background: rgba(0, 0, 0, 0.70); }
+	.death-log { background: hsl(0, 0%, 0%, 0.70); }
 }
 @container layout (max-width: 550px) {
-	.death-log { background: rgba(0, 0, 0, 0.78); }
+	.death-log { background: hsl(0, 0%, 0%, 0.78); }
 }
 @container layout (max-width: 400px) {
 	.death-log {
-		background: rgba(0, 0, 0, 0.85);
+		background: hsl(0, 0%, 0%, 0.85);
 		overflow-x: auto;
 	}
 }
@@ -322,9 +389,9 @@ body {
 	font-size: var(--text-2xs);
 	letter-spacing: 1px;
 	text-transform: uppercase;
-	color: #c85a5a;
-	background: rgba(0, 0, 0, 0.6);
-	border: 1px solid rgba(200, 90, 90, 0.35);
+	color: var(--color-dev);
+	background: var(--bg-dev);
+	border: 1px solid var(--border-dev);
 	padding: 4px 12px;
 	cursor: pointer;
 	clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
@@ -332,8 +399,8 @@ body {
 }
 
 .dev-death-btn:hover {
-	background: rgba(200, 90, 90, 0.15);
-	border-color: rgba(200, 90, 90, 0.7);
+	background: var(--bg-dev-hover);
+	border-color: var(--border-dev-hover);
 }
 
 /* ── Empty state ── */
@@ -352,8 +419,8 @@ body {
 	grid-template-columns: auto 1fr auto;
 	align-items: center;
 	gap: var(--pad-lg);
-	background: #1c1c1c;
-	border-top: 1px solid rgba(200, 168, 90, 0.12);
+	background: var(--bg-footer);
+	border-top: 1px solid var(--border-foot);
 	padding: var(--pad-sm) var(--pad-lg);
 	position: relative;
 	box-shadow:
@@ -377,7 +444,7 @@ body {
 	font-size: var(--text-2xs);
 	letter-spacing: 1.5px;
 	text-transform: uppercase;
-	color: #2e3220;
+	color: var(--text-foot-label);
 	white-space: nowrap;
 }
 
@@ -395,19 +462,19 @@ body {
 	letter-spacing: 1.5px;
 	text-transform: uppercase;
 	text-decoration: none;
-	color: #4e5c38;
+	color: var(--text-foot-link);
 	transition: color 0.15s;
 }
 
 .foot-link:hover {
 	color: var(--accent-base);
-	text-shadow: 0 0 10px rgba(200, 168, 90, 0.4);
+	text-shadow: 0 0 10px var(--glow-foot-link);
 }
 
 .foot-sep {
 	font-family: var(--font-display);
 	font-size: var(--text-2xs);
-	color: #252e1c;
+	color: var(--text-foot-sep);
 	user-select: none;
 }
 
