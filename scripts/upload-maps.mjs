@@ -36,27 +36,36 @@ const env = Object.fromEntries(
 );
 
 const URL = env.SUPABASE_URL;
-const KEY = env.SUPABASE_SECRET_KEY;
+// Prefer a write-capable secret key; fall back to the publishable key, which
+// only works if the bucket has an RLS policy allowing anon inserts.
+const KEY = env.SUPABASE_SECRET_KEY || env.SUPABASE_KEY;
+const USING_SECRET = !!env.SUPABASE_SECRET_KEY;
 
 if (!URL || !KEY) {
-  console.error('Missing SUPABASE_URL or SUPABASE_SECRET_KEY in server/.env');
-  console.error('Add SUPABASE_SECRET_KEY (Supabase → Settings → API keys → secret key).');
+  console.error('Missing SUPABASE_URL / key in server/.env');
   process.exit(1);
 }
+console.log(USING_SECRET
+  ? 'Using secret key (full Storage write access)'
+  : 'Using publishable key (will only work if the bucket allows anon insert)');
 
 const supabase = createClient(URL, KEY, { auth: { persistSession: false } });
 
-// --- ensure public bucket ---
+// --- ensure public bucket (best-effort; may already exist or need dashboard) ---
 const { data: buckets } = await supabase.storage.listBuckets();
-if (!buckets?.some(b => b.name === BUCKET)) {
+if (buckets?.some(b => b.name === BUCKET)) {
+  console.log(`Bucket "${BUCKET}" exists`);
+} else {
   const { error } = await supabase.storage.createBucket(BUCKET, {
     public: true,
-    fileSizeLimit: '100MB',
+    fileSizeLimit: '50MB',
   });
-  if (error) { console.error('createBucket failed:', error.message); process.exit(1); }
-  console.log(`Created public bucket "${BUCKET}"`);
-} else {
-  console.log(`Bucket "${BUCKET}" already exists`);
+  if (error) {
+    console.warn(`Could not create bucket ("${error.message}") — will try uploading anyway`);
+    console.warn(`If uploads fail, create a PUBLIC bucket named "${BUCKET}" in the dashboard first.`);
+  } else {
+    console.log(`Created public bucket "${BUCKET}"`);
+  }
 }
 
 // --- files to upload ---
