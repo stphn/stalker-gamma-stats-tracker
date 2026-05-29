@@ -1,7 +1,7 @@
 .root {
 	display: grid;
-	gap: var(--pad-md);
-	padding: var(--pad-md);
+	gap: var(--pad-sm);
+	padding: var(--pad-sm);
 	align-content: end;
 }
 
@@ -9,7 +9,7 @@
 	background: var(--bg-surface);
 	border: 1px solid var(--bg-subtle);
 	display: grid;
-	padding: 1px 2px;
+	padding: 1px;
 	gap: 1px;
 }
 
@@ -103,7 +103,7 @@
 .bottomRow {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 8px;
+	gap: var(--pad-sm);
 }
 
 .statRows {

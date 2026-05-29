@@ -254,7 +254,12 @@ export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debu
 				>
 					<div
 						className={styles.world}
-						style={{ transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`, transformOrigin: '0 0' }}
+						style={{
+							transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`,
+							transformOrigin: '0 0',
+							// Glide to new positions (follow / resets); instant while dragging
+							transition: drag.current.active ? 'none' : 'transform 0.45s ease-out',
+						}}
 					>
 						{/* Global backdrop — single downscaled image covering the whole
 						    1024×2634 world space (context behind the current level). */}
@@ -289,7 +294,11 @@ export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debu
 					{screenPos && (
 						<div
 							className={styles.playerOverlay}
-							style={{ left: screenPos.x, top: screenPos.y }}
+							style={{
+								left: screenPos.x,
+								top: screenPos.y,
+								transition: drag.current.active ? 'none' : 'left 0.45s ease-out, top 0.45s ease-out',
+							}}
 							aria-label="Player position"
 						>
 							<PlayerMarker

@@ -29,7 +29,7 @@ async function push() {
 }
 
 chokidar
-    .watch(STATS_FILE, { persistent: true, awaitWriteFinish: { stabilityThreshold: 150 } })
+    .watch(STATS_FILE, { persistent: true, awaitWriteFinish: { stabilityThreshold: 80, pollInterval: 40 } })
     .on('add',    () => { console.log('Watching:', STATS_FILE); push() })
     .on('change', push)
 
