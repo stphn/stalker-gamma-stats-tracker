@@ -1,16 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from '../../types';
 import mapLevelsData from '../../data/map-levels.json';
 import styles from './MapView.module.css';
 
 // World coordinate space (from rawRect in map-levels.json)
-const WORLD_W   = 1024;
-const WORLD_H   = 2634;
-// Tile geometry helpers
-const tileWU   = (z: number) => WORLD_W / Math.pow(2, z);
-const tileCols = (z: number) => Math.pow(2, z);
-const tileRows = (z: number) => Math.ceil(WORLD_H / tileWU(z));
-
+const WORLD_W = 1024;
+const WORLD_H = 2634;
 
 interface RawRect     { x1: number; y1: number; x2: number; y2: number }
 interface WorldBounds { minX: number; maxX: number; minZ: number; maxZ: number }
@@ -29,60 +24,6 @@ function worldToMapPos(px: number, pz: number, level: LevelEntry) {
 		x: rr.x1 + normX * (rr.x2 - rr.x1),
 		y: rr.y2 - normZ * (rr.y2 - rr.y1), // Z inverted: south=y2, north=y1
 	};
-}
-
-// Screen pixels per world-unit at the current view — accounts for the
-// element width AND device pixel ratio (a 2× display needs 2× tile detail
-// to render crisply, which the naive zoom→Z mapping ignored).
-function screenPxPerWU(cssZoom: number, areaW: number): number {
-	const dpr = Math.min(typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1, 2);
-	return cssZoom * areaW / WORLD_W * dpr;
-}
-
-// Pick the smallest tile Z whose resolution (0.25·2^Z px/world-unit) meets or
-// exceeds the screen's pixel density — i.e. tiles are never upsampled on screen.
-function pickZ(cssZoom: number, areaW: number, minZ: number, maxZ: number): number {
-	const need = screenPxPerWU(cssZoom, areaW);
-	const z = Math.ceil(Math.log2(4 * need)); // 0.25·2^Z ≥ need  ⇒  Z ≥ log2(4·need)
-	return Math.max(minZ, Math.min(maxZ, z));
-}
-
-const GLOBAL_MIN_Z = 2, GLOBAL_MAX_Z = 4;
-
-function getGlobalZ(cssZoom: number, areaW: number): number {
-	return pickZ(cssZoom, areaW, GLOBAL_MIN_Z, GLOBAL_MAX_Z);
-}
-
-interface TileRef { Z: number; X: number; Y: number; WU: number }
-
-function visibleTileRange(
-	Z: number,
-	pan: { x: number; y: number },
-	zoom: number,
-	vw: number, // viewport width
-	vh: number, // viewport height
-	mapW: number, // world canvas CSS width at scale 1
-): TileRef[] {
-	// A world point at (wx,wy) has canvas-px (wx/W*mapW, wy/W*mapW) [same formula for both axes]
-	// After transform: screen = zoom*(canvas + pan)
-	// Visible world range:
-	const WU = tileWU(Z);
-	const wxMin = -pan.x * WORLD_W / mapW;
-	const wxMax = (vw / zoom - pan.x) * WORLD_W / mapW;
-	const wyMin = -pan.y * WORLD_W / mapW;
-	const wyMax = (vh / zoom - pan.y) * WORLD_W / mapW;
-
-	const buf  = 1;
-	const xMin = Math.max(0,            Math.floor(wxMin / WU) - buf);
-	const xMax = Math.min(tileCols(Z)-1, Math.ceil(wxMax  / WU) + buf);
-	const yMin = Math.max(0,            Math.floor(wyMin / WU) - buf);
-	const yMax = Math.min(tileRows(Z)-1, Math.ceil(wyMax  / WU) + buf);
-
-	const tiles: TileRef[] = [];
-	for (let X = xMin; X <= xMax; X++)
-		for (let Y = yMin; Y <= yMax; Y++)
-			tiles.push({ Z, X, Y, WU });
-	return tiles;
 }
 
 const MIN_ZOOM  = 0.3;
@@ -232,25 +173,6 @@ export function MapView({ actor, onClose }: MapViewProps) {
 		if (panelRef.current && !panelRef.current.contains(e.target as Node)) close();
 	};
 
-	// Tile selection — global and level are decoupled so level tiles appear early
-	const globalZ = useMemo(() => getGlobalZ(zoom, areaW), [zoom, areaW]);
-
-	const globalTiles = useMemo(
-		() => visibleTileRange(globalZ, pan, zoom, areaW, areaH, areaW),
-		[globalZ, pan, zoom, areaW, areaH],
-	);
-
-	// CSS % position for a tile in the world canvas
-	function tileStyle(t: TileRef): React.CSSProperties {
-		return {
-			position: 'absolute',
-			left:   `${t.X * t.WU / WORLD_W * 100}%`,
-			top:    `${t.Y * t.WU / WORLD_H * 100}%`,
-			width:  `${t.WU / WORLD_W * 100}%`,
-			height: `${t.WU / WORLD_H * 100}%`,
-		};
-	}
-
 	const dotScale = `translate(-50%, -50%) scale(${1 / zoom})`;
 
 	return (
@@ -292,20 +214,17 @@ export function MapView({ actor, onClose }: MapViewProps) {
 						className={styles.world}
 						style={{ transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`, transformOrigin: '0 0' }}
 					>
-						{/* Global background tiles (JPG) */}
-						{globalTiles.map(t => (
-							<img
-								key={`g${t.Z}-${t.X}-${t.Y}`}
-								src={`/tiles/${t.Z}/${t.X}/${t.Y}.jpg`}
-								className={styles.tile}
-								style={tileStyle(t)}
-								alt=""
-								draggable={false}
-							/>
-						))}
+						{/* Global backdrop — single downscaled image covering the whole
+						    1024×2634 world space (context behind the current level). */}
+						<img
+							src="/maps/global-web.jpg"
+							className={styles.globalImg}
+							alt=""
+							draggable={false}
+						/>
 
-						{/* Current level — full-resolution PNG, browser-scaled (max quality,
-						    no tile downsampling). Positioned at its rawRect in world space. */}
+						{/* Current level — full-resolution PNG, browser-scaled (max quality).
+						    Positioned at its rawRect in world space. */}
 						{levelData?.rawRect && !levelData.underground && (
 							<img
 								src={`/maps/${levelId}.png`}

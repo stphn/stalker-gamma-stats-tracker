@@ -157,16 +157,19 @@
 	   keeps the PNG crisp. */
 }
 
-/* Tile images — positioned absolutely within the world canvas */
-.tile {
+/* Global backdrop — fills the whole world canvas */
+.globalImg {
 	position: absolute;
-	display: block;
+	inset: 0;
+	width: 100%;
+	height: 100%;
 	object-fit: fill;
+	display: block;
 	pointer-events: none;
-	image-rendering: auto;
+	z-index: 1;
 }
 
-/* Current level — full-resolution image overlay, sits above global tiles */
+/* Current level — full-resolution image overlay, sits above the backdrop */
 .levelImg {
 	position: absolute;
 	object-fit: fill;

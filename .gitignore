@@ -7,10 +7,6 @@ dist-ssr
 .vercel
 .env
 
-# Generated map assets — reproducible from scripts/convert-maps.mjs + generate-tiles.mjs
-# (~1.4GB; host separately for deploy, like gamma-db does on S3/CDN)
+# Generated map images — reproducible from scripts/convert-maps.mjs
+# (~580MB of level PNGs + global backdrop; regenerate locally, host for deploy)
 client/public/maps/
-client/public/tiles/
-
-# Real-ESRGAN binary + model (abandoned — Lanczos used instead; huge, unused)
-scripts/realesrgan/

@@ -5,11 +5,12 @@
  *   1. C:/GAMMA/mods/26- High Res PDA Maps - Bazingarrey/gamedata/textures/map/
  *   2. C:/GAMMA/mods/358- Global Map Rework - DeadEnvoy/gamedata/textures/map/
  *
- * Output: client/public/maps/{levelId}.png
- *         client/public/maps/global.png  (ui_global_map)
+ * Output: client/public/maps/{levelId}.png   (full-res per-level overlay)
+ *         client/public/maps/global.png       (full-res global, archival)
+ *         client/public/maps/global-web.jpg   (2048px backdrop the app loads)
  *
  * Usage: node scripts/convert-maps.mjs
- * Requires: npm i -D parse-dds decode-dxt sharp  (in stralker root)
+ * Requires: parse-dds, decode-dxt, sharp  (devDependencies in stralker root)
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
@@ -94,9 +95,17 @@ const globalSrc = findDDS('ui', 'ui_global_map');
 if (globalSrc) {
   process.stdout.write(`  ${'global'.padEnd(24)} → `);
   const { width, height, data } = decodeDDSFile(globalSrc);
-  const outPath = join(OUT, 'global.png');
-  await sharp(data, { raw: { width, height, channels: 4 } }).png({ compressionLevel: 6 }).toFile(outPath);
-  console.log(`${width}×${height}  global.png`);
+  const rgba = sharp(data, { raw: { width, height, channels: 4 } });
+  await rgba.clone().png({ compressionLevel: 6 }).toFile(join(OUT, 'global.png'));
+  // Downscaled backdrop the app actually loads (the 4096px PNG is too heavy).
+  // 2048-wide JPG is plenty — it only shows as context behind the full-res
+  // current-level overlay.
+  await rgba.clone()
+    .resize(2048, null, { kernel: 'lanczos3' })
+    .flatten({ background: '#0c0e0d' })
+    .jpeg({ quality: 85, mozjpeg: true })
+    .toFile(join(OUT, 'global-web.jpg'));
+  console.log(`${width}×${height}  global.png + global-web.jpg`);
 } else {
   console.log('  SKIP  global map — ui_global_map.dds not found');
 }
