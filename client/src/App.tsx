@@ -9,6 +9,8 @@ import { Companions } from './components/Companions/Companions';
 import { Header } from './components/Header/Header';
 import { Location } from './components/Location/Location';
 import { GameAchievementsPanel } from './components/GameAchievements/GameAchievements';
+import { MapView } from './components/MapView/MapView';
+import { Minimap } from './components/Minimap/Minimap';
 import { PdaPanel } from './components/PdaPanel/PdaPanel';
 import { Player } from './components/Player/Player';
 import { RightPanel } from './components/RightPanel/RightPanel';
@@ -31,6 +33,7 @@ export default function App() {
 	// Death detection — fires when last_run[0].start changes
 	const [deathTrigger, setDeathTrigger] = useState(0);
 	const [shaking, setShaking] = useState(false);
+	const [mapOpen, setMapOpen] = useState(false);
 	const prevRunStart = useRef<number | null>(null);
 	const latestDeathStart = data?.last_run?.[0]?.start ?? null;
 	useEffect(() => {
@@ -50,7 +53,10 @@ export default function App() {
 	return (
 		<div style={{ overflow: 'hidden' }}>
 		<div className={shaking ? 'app death-shake' : 'app'}>
-			<Header connected={connected} gameState={gameState} />
+			<Header connected={connected} gameState={gameState} onMapOpen={() => setMapOpen(true)} />
+			{mapOpen && (
+				<MapView actor={displayActor} onClose={() => setMapOpen(false)} />
+			)}
 
 			{!data ? (
 				<output className="empty">
@@ -76,6 +82,9 @@ export default function App() {
 						</button>
 						<Stage
 							location={displayActor?.location}
+							overlay={
+								<Minimap actor={displayActor} onExpand={() => setMapOpen(true)} />
+							}
 							left={
 								displayActor && (
 									<>

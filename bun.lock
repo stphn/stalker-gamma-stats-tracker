@@ -6,6 +6,8 @@
       "name": "stralker",
       "devDependencies": {
         "concurrently": "^8.2.2",
+        "decode-dxt": "^1.0.1",
+        "parse-dds": "^1.2.1",
       },
     },
     "client": {
@@ -214,6 +216,8 @@
 
     "date-fns": ["date-fns@2.30.0", "", { "dependencies": { "@babel/runtime": "^7.21.0" } }, "sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw=="],
 
+    "decode-dxt": ["decode-dxt@1.0.1", "", {}, "sha512-sf+Jrp7l23K71gGrQPOvZReY12/sYEXKExx9kXtsKyosLqwQ/+ZhNvQLzAZLPqzdGLXcMQrTrEinYGtt36jFmA=="],
+
     "detect-libc": ["detect-libc@2.1.2", "", {}, "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="],
 
     "emoji-regex": ["emoji-regex@8.0.0", "", {}, "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="],
@@ -277,6 +281,8 @@
     "nanoid": ["nanoid@3.3.12", "", { "bin": { "nanoid": "bin/nanoid.cjs" } }, "sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ=="],
 
     "normalize-path": ["normalize-path@3.0.0", "", {}, "sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA=="],
+
+    "parse-dds": ["parse-dds@1.2.1", "", {}, "sha512-oE88N8mzUi9d26tAaKVc0clxi6AjeTSWpLwgtcEVjXTYY1MW58w8FctmM9gGgvFd6YGu1/eFFYVeDVnlMsKBtA=="],
 
     "picocolors": ["picocolors@1.1.1", "", {}, "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="],
 

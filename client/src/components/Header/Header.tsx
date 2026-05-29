@@ -3,9 +3,10 @@ import styles from './Header.module.css';
 interface HeaderProps {
 	connected: boolean;
 	gameState: 'playing' | 'menu' | 'off';
+	onMapOpen: () => void;
 }
 
-export function Header({ connected, gameState }: HeaderProps) {
+export function Header({ connected, gameState, onMapOpen }: HeaderProps) {
 	const serverColor = connected ? 'green' : 'red';
 	const gameColor =
 		gameState === 'playing' ? 'green' : gameState === 'menu' ? 'amber' : 'red';
@@ -26,11 +27,11 @@ export function Header({ connected, gameState }: HeaderProps) {
 				<p className={styles.tagline}>A S.T.A.L.K.E.R. Anomaly Companion</p>
 			</div>
 			<nav className={styles.nav} aria-label="Site navigation">
+				<button className={styles.navLink} onClick={onMapOpen}>Map</button>
+				<span className={styles.navSep} aria-hidden="true">|</span>
 				<a href="#" className={styles.navLink}>Mods</a>
 				<span className={styles.navSep} aria-hidden="true">|</span>
 				<a href="#" className={styles.navLink}>About</a>
-				<span className={styles.navSep} aria-hidden="true">|</span>
-				<a href="#" className={styles.navLink}>Credits</a>
 			</nav>
 			<output className={styles.statusGroup} aria-label="Connection status">
 				<div

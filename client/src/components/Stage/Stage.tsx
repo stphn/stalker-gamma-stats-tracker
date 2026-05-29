@@ -7,9 +7,10 @@ import { useStageGL } from './useStageGL';
 interface StageProps {
 	location?: string;
 	left?: ReactNode;
+	overlay?: ReactNode;
 }
 
-export function Stage({ location, left }: StageProps) {
+export function Stage({ location, left, overlay }: StageProps) {
 	const src = useLocationImage(location);
 	const containerRef = useRef<HTMLDivElement>(null);
 
@@ -26,6 +27,7 @@ export function Stage({ location, left }: StageProps) {
 			<div className="hud-frame" aria-hidden="true" />
 			<div className={styles.scanline} aria-hidden="true" />
 			<div className={styles.left}>{left}</div>
+			{overlay && <div className={styles.overlay}>{overlay}</div>}
 		</div>
 	);
 }

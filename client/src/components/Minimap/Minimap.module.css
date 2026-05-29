@@ -1,0 +1,189 @@
+/* ── Collapsed minimap shell ── */
+.root {
+	position: relative;
+	width: 180px;
+	background: rgba(12, 14, 13, 0.88);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	border: 1px solid rgba(184, 148, 72, 0.25);
+	--hud-inset: 4px;
+	--hud-size: 8px;
+	--hud-color: var(--accent-dim);
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 4px 8px;
+	border-bottom: 1px solid rgba(184, 148, 72, 0.15);
+}
+
+.zoneName {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--accent-dim);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 130px;
+}
+
+.expandBtn {
+	font-size: 13px;
+	color: var(--text-dim);
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0 0 0 6px;
+	line-height: 1;
+	transition: color 0.15s;
+	flex-shrink: 0;
+}
+
+.expandBtn:hover {
+	color: var(--accent-bright);
+}
+
+/* ── Map image area ── */
+.mapWrap {
+	width: 180px;
+	height: 180px;
+	overflow: hidden;
+	position: relative;
+}
+
+.mapImg {
+	width: 100%;
+	height: 100%;
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	position: relative;
+}
+
+/* ── Player dot ── */
+.dot {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: var(--color-positive);
+	box-shadow: 0 0 6px 2px rgba(106, 148, 88, 0.8);
+	transform: translate(-50%, -50%);
+	animation: dot-pulse 2s ease-in-out infinite;
+	z-index: 2;
+}
+
+@keyframes dot-pulse {
+	0%   { box-shadow: 0 0 4px 1px rgba(106, 148, 88, 0.9); }
+	50%  { box-shadow: 0 0 10px 4px rgba(106, 148, 88, 0.5); }
+	100% { box-shadow: 0 0 4px 1px rgba(106, 148, 88, 0.9); }
+}
+
+/* ── Underground fallback ── */
+.underground {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--bg-base);
+	color: var(--text-disabled);
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 2px;
+	text-transform: uppercase;
+}
+
+/* ── HUD corner brackets ── */
+.hud {
+	position: absolute;
+	inset: var(--hud-inset, 5px);
+	pointer-events: none;
+	z-index: 3;
+	background:
+		linear-gradient(to right,  var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 0    0    / var(--hud-size, 10px) 1px  no-repeat,
+		linear-gradient(to bottom, var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 0    0    / 1px  var(--hud-size, 10px) no-repeat,
+		linear-gradient(to left,   var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 100% 0    / var(--hud-size, 10px) 1px  no-repeat,
+		linear-gradient(to bottom, var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 100% 0    / 1px  var(--hud-size, 10px) no-repeat,
+		linear-gradient(to right,  var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 0    100% / var(--hud-size, 10px) 1px  no-repeat,
+		linear-gradient(to top,    var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 0    100% / 1px  var(--hud-size, 10px) no-repeat,
+		linear-gradient(to left,   var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 100% 100% / var(--hud-size, 10px) 1px  no-repeat,
+		linear-gradient(to top,    var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 100% 100% / 1px  var(--hud-size, 10px) no-repeat;
+}
+
+/* ── Expanded modal ── */
+.modalBackdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 100;
+	background: rgba(0, 0, 0, 0.75);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.modal {
+	position: relative;
+	background: rgba(12, 14, 13, 0.96);
+	border: 1px solid rgba(184, 148, 72, 0.3);
+	max-width: min(90vw, 800px);
+	max-height: 90vh;
+	display: flex;
+	flex-direction: column;
+	--hud-inset: 5px;
+	--hud-size: 12px;
+	--hud-color: var(--accent-dim);
+}
+
+.modalHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 16px;
+	border-bottom: 1px solid rgba(184, 148, 72, 0.15);
+	flex-shrink: 0;
+}
+
+.modalTitle {
+	font-family: var(--font-display);
+	font-size: var(--text-sm);
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: var(--accent-base);
+}
+
+.closeBtn {
+	font-size: 14px;
+	color: var(--text-dim);
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	transition: color 0.15s;
+}
+
+.closeBtn:hover {
+	color: var(--accent-bright);
+}
+
+.modalMapWrap {
+	flex: 1;
+	overflow: hidden;
+	min-height: 0;
+	aspect-ratio: 1;
+	max-height: calc(90vh - 60px);
+}
+
+.modalMapImg {
+	width: 100%;
+	height: 100%;
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	position: relative;
+}

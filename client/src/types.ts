@@ -78,6 +78,8 @@ export interface ActorInfo {
 	location: string;
 	location_name?: string;
 	game_time?: { h: number; m: number };
+	pos_x?: number;
+	pos_z?: number;
 }
 
 export interface StatsData {

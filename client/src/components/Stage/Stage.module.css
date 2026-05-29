@@ -35,6 +35,16 @@
 	cursor: default;
 }
 
+/* ── Minimap overlay anchor — bottom-center ── */
+.overlay {
+	position: absolute;
+	bottom: var(--pad-lg);
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 4;
+	cursor: default;
+}
+
 /* ── Content overlay ── */
 .left {
 	position: absolute;

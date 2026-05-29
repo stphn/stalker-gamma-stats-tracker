@@ -1,0 +1,220 @@
+/* ── Backdrop ── */
+.backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 200;
+	background: rgba(0, 0, 0, 0.72);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	display: flex;
+	/* Mobile default: centered modal */
+	align-items: center;
+	justify-content: center;
+	padding: var(--pad-lg);
+}
+
+/* ── Panel — mobile default: centered dialog ── */
+.panel {
+	position: relative;
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+	background: rgba(12, 14, 13, 0.97);
+	border: 1px solid rgba(184, 148, 72, 0.28);
+	width: min(94vw, 540px);
+	height: min(92vh, 800px);
+	--hud-inset: 5px;
+	--hud-size: 14px;
+	--hud-color: var(--accent-dim);
+}
+
+/* ── Desktop: right-side drawer ── */
+@media (min-width: 768px) {
+	.backdrop {
+		justify-content: flex-end;
+		align-items: stretch;
+		padding: 0;
+	}
+
+	.panel {
+		width: clamp(380px, 36vw, 520px);
+		height: 100%;
+		border-top: none;
+		border-bottom: none;
+		border-right: none;
+		border-left: 1px solid rgba(184, 148, 72, 0.28);
+		animation: drawer-in 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	}
+}
+
+@keyframes drawer-in {
+	from { transform: translateX(100%); opacity: 0; }
+	to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* ── Header ── */
+.header {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: var(--pad-md);
+	padding: 10px var(--pad-md);
+	border-bottom: 1px solid rgba(184, 148, 72, 0.15);
+}
+
+.label {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: var(--accent-dim);
+}
+
+.zoneName {
+	font-family: var(--font-display);
+	font-size: var(--text-sm);
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: var(--accent-base);
+}
+
+.headerRight {
+	display: flex;
+	align-items: center;
+	gap: var(--pad-sm);
+}
+
+.resetBtn,
+.followBtn {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 1px;
+	color: var(--accent-dim);
+	background: rgba(184, 148, 72, 0.08);
+	border: 1px solid rgba(184, 148, 72, 0.2);
+	padding: 2px 8px;
+	cursor: pointer;
+	transition: color 0.15s, background 0.15s;
+}
+
+.resetBtn:hover,
+.followBtn:hover {
+	color: var(--accent-bright);
+	background: rgba(184, 148, 72, 0.16);
+}
+
+.followBtn:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+/* Active follow — green to match the player dot */
+.followOn {
+	color: var(--color-positive);
+	border-color: color-mix(in srgb, var(--color-positive) 50%, transparent);
+	background: color-mix(in srgb, var(--color-positive) 14%, transparent);
+}
+
+.followOn:hover {
+	color: var(--color-positive);
+	background: color-mix(in srgb, var(--color-positive) 22%, transparent);
+}
+
+.closeBtn {
+	font-size: 14px;
+	color: var(--text-dim);
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	line-height: 1;
+	transition: color 0.15s;
+}
+
+.closeBtn:hover { color: var(--accent-bright); }
+
+/* ── Map area ── */
+.mapArea {
+	position: relative;
+	overflow: hidden;
+	min-height: 0;
+	user-select: none;
+	background: #050705; /* Zone darkness behind the map */
+}
+
+/* ── World canvas — represents full 1024×2634 coordinate space ──
+   Padding-bottom trick: height = 2634/1024 * 100% of width = 257.2%
+   Children use position:absolute and % of this box for correct placement. ── */
+.world {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 0;
+	padding-bottom: calc(2634 / 1024 * 100%);
+	/* No will-change: transform here — it promotes this to a GPU layer that
+	   rasterizes once at base size then scales the bitmap, blurring the
+	   full-res level image on zoom. Letting the browser re-paint per scale
+	   keeps the PNG crisp. */
+}
+
+/* Tile images — positioned absolutely within the world canvas */
+.tile {
+	position: absolute;
+	display: block;
+	object-fit: fill;
+	pointer-events: none;
+	image-rendering: auto;
+}
+
+/* Current level — full-resolution image overlay, sits above global tiles */
+.levelImg {
+	position: absolute;
+	object-fit: fill;
+	z-index: 2;
+	pointer-events: none;
+	image-rendering: auto; /* high-quality GPU scaling */
+}
+
+/* ── Player dot ── */
+.dot {
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: var(--color-positive);
+	box-shadow: 0 0 8px 3px rgba(106, 148, 88, 0.8);
+	/* transform set inline with counter-scale */
+	animation: dot-pulse 2s ease-in-out infinite;
+	z-index: 10;
+	pointer-events: none;
+}
+
+@keyframes dot-pulse {
+	0%   { box-shadow: 0 0 6px 2px rgba(106, 148, 88, 0.9); }
+	50%  { box-shadow: 0 0 14px 6px rgba(106, 148, 88, 0.45); }
+	100% { box-shadow: 0 0 6px 2px rgba(106, 148, 88, 0.9); }
+}
+
+/* ── Footer ── */
+.footer {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px var(--pad-md);
+	border-top: 1px solid rgba(184, 148, 72, 0.12);
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 1px;
+}
+
+.coordLabel { color: var(--accent-dim); text-transform: uppercase; }
+.coordVal   { color: var(--text-primary); min-width: 6ch; }
+.coordSep   { color: var(--text-disabled); padding: 0 4px; }
+.coordDim   { color: var(--text-disabled); }
+
+.footerHint {
+	margin-left: auto;
+	color: var(--text-disabled);
+	font-size: var(--text-2xs);
+	letter-spacing: 0.5px;
+}
