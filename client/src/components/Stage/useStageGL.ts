@@ -30,10 +30,13 @@ export function useStageGL(
 		// ── Renderer ──────────────────────────────────────────────────────────
 		const renderer = new THREE.WebGLRenderer({
 			canvas,
-			antialias: false,
+			antialias: true,
 			alpha: false,
 		});
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		// Render at ≥2× internally so non-Retina (DPR 1) displays look as crisp as
+		// Retina ones — the fluid shader samples per canvas pixel, so low DPR
+		// otherwise shows soft/aliased stage images. Capped at 2 for GPU budget.
+		renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio, 2), 2));
 
 		// ── Scene / Camera (orthographic — fills canvas exactly) ──────────────
 		const scene = new THREE.Scene();
@@ -58,6 +61,10 @@ export function useStageGL(
 				const h = 'naturalHeight' in img ? img.naturalHeight : img.height;
 				imageRes.set(w, h);
 				material.uniforms.uImageResolution.value = imageRes;
+				// Max anisotropic filtering — keeps the image sharp when the shader
+				// samples it displaced / minified (big quality win at low DPR).
+				tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+				tex.needsUpdate = true;
 			});
 			texture.colorSpace = THREE.SRGBColorSpace;
 		}
