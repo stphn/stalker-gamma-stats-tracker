@@ -5,9 +5,8 @@
  *   1. C:/GAMMA/mods/26- High Res PDA Maps - Bazingarrey/gamedata/textures/map/
  *   2. C:/GAMMA/mods/358- Global Map Rework - DeadEnvoy/gamedata/textures/map/
  *
- * Output: client/public/maps/{levelId}.png   (full-res per-level overlay)
- *         client/public/maps/global.png       (full-res global, archival)
- *         client/public/maps/global-web.jpg   (2048px backdrop the app loads)
+ * Output: client/public/maps/{levelId}.webp  (full-res per-level overlay, alpha)
+ *         client/public/maps/global-web.webp  (2048px backdrop the app loads)
  *
  * Usage: node scripts/convert-maps.mjs
  * Requires: parse-dds, decode-dxt, sharp  (devDependencies in stralker root)
@@ -78,36 +77,36 @@ function decodeDDSFile(path) {
 
 mkdirSync(OUT, { recursive: true });
 
-// Per-level maps
+// WebP keeps alpha (level maps are irregular shapes over transparency),
+// decodes fast for pan/zoom, and shrinks 4096px maps from ~25MB to ~2MB.
+const WEBP = { quality: 80, effort: 5, alphaQuality: 90 };
+
+// Per-level maps → webp (with alpha)
 for (const [levelId, ddsName] of Object.entries(LEVEL_MAP)) {
   const src = findDDS('map', ddsName);
   if (!src) { console.log(`  SKIP  ${levelId} — ${ddsName}.dds not found`); continue; }
 
   process.stdout.write(`  ${levelId.padEnd(24)} → `);
   const { width, height, data } = decodeDDSFile(src);
-  const outPath = join(OUT, `${levelId}.png`);
-  await sharp(data, { raw: { width, height, channels: 4 } }).png({ compressionLevel: 6 }).toFile(outPath);
-  console.log(`${width}×${height}  ${outPath.split('\\').pop()}`);
+  const outPath = join(OUT, `${levelId}.webp`);
+  await sharp(data, { raw: { width, height, channels: 4 } }).webp(WEBP).toFile(outPath);
+  console.log(`${width}×${height}  ${outPath.split(/[/\\]/).pop()}`);
 }
 
-// Global map (ui_global_map)
+// Global map (ui_global_map) → downscaled backdrop the app loads.
+// 2048-wide is plenty — it only shows as context behind the full-res overlay.
 const globalSrc = findDDS('ui', 'ui_global_map');
 if (globalSrc) {
   process.stdout.write(`  ${'global'.padEnd(24)} → `);
   const { width, height, data } = decodeDDSFile(globalSrc);
-  const rgba = sharp(data, { raw: { width, height, channels: 4 } });
-  await rgba.clone().png({ compressionLevel: 6 }).toFile(join(OUT, 'global.png'));
-  // Downscaled backdrop the app actually loads (the 4096px PNG is too heavy).
-  // 2048-wide JPG is plenty — it only shows as context behind the full-res
-  // current-level overlay.
-  await rgba.clone()
+  await sharp(data, { raw: { width, height, channels: 4 } })
     .resize(2048, null, { kernel: 'lanczos3' })
     .flatten({ background: '#0c0e0d' })
-    .jpeg({ quality: 85, mozjpeg: true })
-    .toFile(join(OUT, 'global-web.jpg'));
-  console.log(`${width}×${height}  global.png + global-web.jpg`);
+    .webp({ quality: 82, effort: 5 })
+    .toFile(join(OUT, 'global-web.webp'));
+  console.log(`${width}×${height} → global-web.webp`);
 } else {
   console.log('  SKIP  global map — ui_global_map.dds not found');
 }
 
-console.log('\nDone. PNGs written to client/public/maps/');
+console.log('\nDone. WebP images written to client/public/maps/');

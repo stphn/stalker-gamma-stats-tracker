@@ -218,7 +218,7 @@ export function MapView({ actor, onClose }: MapViewProps) {
 						{/* Global backdrop — single downscaled image covering the whole
 						    1024×2634 world space (context behind the current level). */}
 						<img
-							src={mapUrl('global-web.jpg')}
+							src={mapUrl('global-web.webp')}
 							className={styles.globalImg}
 							alt=""
 							draggable={false}
@@ -228,7 +228,7 @@ export function MapView({ actor, onClose }: MapViewProps) {
 						    Positioned at its rawRect in world space. */}
 						{levelData?.rawRect && !levelData.underground && (
 							<img
-								src={mapUrl(`${levelId}.png`)}
+								src={mapUrl(`${levelId}.webp`)}
 								className={styles.levelImg}
 								style={{
 									left:   `${levelData.rawRect.x1 / WORLD_W * 100}%`,

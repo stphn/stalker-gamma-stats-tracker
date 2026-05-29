@@ -29,7 +29,7 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 	const uv     = hasPosition && levelData?.worldBounds
 		? worldToUV(actor!.pos_x!, actor!.pos_z!, levelData.worldBounds)
 		: null;
-	const imgSrc = isUnderground || !levelId ? null : mapUrl(`${levelId}.png`);
+	const imgSrc = isUnderground || !levelId ? null : mapUrl(`${levelId}.webp`);
 
 	if (!levelId) return null;
 

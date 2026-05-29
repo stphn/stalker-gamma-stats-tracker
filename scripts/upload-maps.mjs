@@ -68,22 +68,32 @@ if (buckets?.some(b => b.name === BUCKET)) {
   }
 }
 
-// --- files to upload ---
-const files = readdirSync(MAPS).filter(f =>
-  (f.endsWith('.png') && f !== 'global.png') || f === 'global-web.jpg',
-);
+const TYPES = { '.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png' };
+
+// --- files to upload (only what the app loads: webp + global-web) ---
+const files = readdirSync(MAPS).filter(f => f.endsWith('.webp'));
 
 console.log(`Uploading ${files.length} files...`);
 let ok = 0;
 for (const f of files) {
   const body = readFileSync(join(MAPS, f));
-  const contentType = f.endsWith('.jpg') ? 'image/jpeg' : 'image/png';
+  const contentType = TYPES[f.slice(f.lastIndexOf('.'))] || 'application/octet-stream';
   const { error } = await supabase.storage
     .from(BUCKET)
     .upload(f, body, { contentType, upsert: true });
   if (error) { console.error(`  ✗ ${f}: ${error.message}`); continue; }
   ok++;
   process.stdout.write(`  ✓ ${ok}/${files.length}\r`);
+}
+
+// --- remove stale objects no longer produced locally (e.g. old .png) ---
+const local = new Set(files);
+const { data: remote } = await supabase.storage.from(BUCKET).list('', { limit: 1000 });
+const stale = (remote || []).map(o => o.name).filter(n => !local.has(n));
+if (stale.length) {
+  const { error } = await supabase.storage.from(BUCKET).remove(stale);
+  console.log(`\nRemoved ${stale.length} stale objects: ${stale.slice(0, 5).join(', ')}${stale.length > 5 ? '…' : ''}`);
+  if (error) console.error('  remove error:', error.message);
 }
 
 console.log(`\nDone — ${ok}/${files.length} uploaded.`);
