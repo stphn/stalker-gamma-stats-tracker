@@ -6,7 +6,3 @@ dist-ssr
 
 .vercel
 .env
-
-# Generated map images — reproducible from scripts/convert-maps.mjs
-# (~580MB of level PNGs + global backdrop; regenerate locally, host for deploy)
-client/public/maps/

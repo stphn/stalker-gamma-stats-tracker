@@ -26,7 +26,7 @@ const KILL_DEFS: {
 	{ name: 'Monolith', key: 'monolith' },
 	{ name: 'Mercs', key: 'killer' },
 	{ name: 'Renegades', key: 'renegade' },
-	{ name: 'Mutants', key: 'mutant', icon: '/factions/faction_mutant.png' },
+	{ name: 'Mutants', key: 'mutant', icon: '/factions/faction_mutant.webp' },
 	{ name: 'Helis', key: 'helicopter' },
 	{ name: 'Other', key: 'other' },
 ];

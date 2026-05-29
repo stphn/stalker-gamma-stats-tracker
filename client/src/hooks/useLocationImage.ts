@@ -13,7 +13,7 @@ export function useLocationImage(location: string | undefined): string | null {
 		let done = 0;
 		const total = 3;
 		for (let i = 1; i <= total; i++) {
-			const s = `/locations/${location}/${location}_${String(i).padStart(2, '0')}.png`;
+			const s = `/locations/${location}/${location}_${String(i).padStart(2, '0')}.webp`;
 			const img = new Image();
 			const finish = () => {
 				if (++done === total) {
