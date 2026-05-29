@@ -1,4 +1,5 @@
 import type { StatsData } from '../../types';
+import { useI18n } from '../../i18n/I18nContext';
 import {
 	FACTION_BG_COLORS,
 	FACTION_COLORS,
@@ -12,28 +13,29 @@ import styles from './RightPanel.module.css';
 
 // Faction kills use FactionIcon (insignia + bg). Non-faction kill categories use a plain icon.
 const KILL_DEFS: {
-	name: string;
+	labelKey: string;
 	key: keyof import('../../types').Kills;
 	icon?: string;
 }[] = [
-	{ name: 'Loners', key: 'stalker' },
-	{ name: 'Bandits', key: 'bandit' },
-	{ name: 'Military', key: 'military' },
-	{ name: 'Freedom', key: 'freedom' },
-	{ name: 'Duty', key: 'duty' },
-	{ name: 'Ecologists', key: 'ecolog' },
-	{ name: 'Clear Sky', key: 'csky' },
-	{ name: 'Monolith', key: 'monolith' },
-	{ name: 'Mercs', key: 'killer' },
-	{ name: 'Renegades', key: 'renegade' },
-	{ name: 'Mutants', key: 'mutant', icon: '/factions/faction_mutant.webp' },
-	{ name: 'Helis', key: 'helicopter' },
-	{ name: 'Other', key: 'other' },
+	{ labelKey: 'kills.loners', key: 'stalker' },
+	{ labelKey: 'kills.bandits', key: 'bandit' },
+	{ labelKey: 'kills.military', key: 'military' },
+	{ labelKey: 'kills.freedom', key: 'freedom' },
+	{ labelKey: 'kills.duty', key: 'duty' },
+	{ labelKey: 'kills.ecologists', key: 'ecolog' },
+	{ labelKey: 'kills.clearSky', key: 'csky' },
+	{ labelKey: 'kills.monolith', key: 'monolith' },
+	{ labelKey: 'kills.mercs', key: 'killer' },
+	{ labelKey: 'kills.renegades', key: 'renegade' },
+	{ labelKey: 'kills.mutants', key: 'mutant', icon: '/factions/faction_mutant.webp' },
+	{ labelKey: 'kills.helis', key: 'helicopter' },
+	{ labelKey: 'kills.other', key: 'other' },
 ];
 
 interface DonutProps {
 	segments: { color: string; count: number }[];
 	total: number;
+	label: string;
 	size?: number;
 	thickness?: number;
 }
@@ -41,6 +43,7 @@ interface DonutProps {
 function KillsDonut({
 	segments,
 	total,
+	label,
 	size = 96,
 	thickness = 14,
 }: DonutProps) {
@@ -91,7 +94,7 @@ function KillsDonut({
 			</svg>
 			<div className={styles.donutCenter}>
 				<span className={styles.donutCount}>{total}</span>
-				<span className={styles.donutLabel}>Kills</span>
+				<span className={styles.donutLabel}>{label}</span>
 			</div>
 		</div>
 	);
@@ -102,6 +105,7 @@ interface RightPanelProps {
 }
 
 export function RightPanel({ data }: RightPanelProps) {
+	const { t, locale } = useI18n();
 	const { session } = data;
 
 	const killData = KILL_DEFS.map((d) => ({
@@ -116,7 +120,7 @@ export function RightPanel({ data }: RightPanelProps) {
 		<div className={styles.root}>
 			{/* Kills */}
 			<div className={styles.panel}>
-				<CardHeader label="Kills" accentColor="#c85a5a" />
+				<CardHeader label={t('kills.title')} accentColor="#c85a5a" />
 				<div className={styles.killsContent}>
 					<div className={styles.killRows}>
 						{killData.map((k) => (
@@ -145,35 +149,35 @@ export function RightPanel({ data }: RightPanelProps) {
 											style={{ background: k.color }}
 										/>
 									)}
-									<span style={{ color: k.color }}>{k.name}</span>
+									<span style={{ color: k.color }}>{t(k.labelKey)}</span>
 								</div>
 								<span className={styles.killValue}>{k.count}</span>
 							</div>
 						))}
 						{killData.length === 0 && (
-							<StatRow label="No kills yet" value="—" />
+							<StatRow label={t('kills.none')} value="—" />
 						)}
 					</div>
-					<KillsDonut segments={killData} total={session.kills.total} />
+					<KillsDonut segments={killData} total={session.kills.total} label={t('kills.title')} />
 				</div>
 			</div>
 
 			{/* Economy + Exploration */}
 			<div className={styles.bottomRow}>
 				<div className={styles.panel}>
-					<CardHeader label="Economy" accentColor="#5a8ab4" />
+					<CardHeader label={t('panel.economy')} accentColor="#5a8ab4" />
 					<div className={styles.statRows}>
-						<StatRow label="Earned" value={fmt_money(session.rubles_earned)} />
-						<StatRow label="Spent" value={fmt_money(session.rubles_spent)} />
-						<StatRow label="Artifacts" value={session.artifacts} />
+						<StatRow label={t('panel.earned')} value={fmt_money(session.rubles_earned, locale)} />
+						<StatRow label={t('panel.spent')} value={fmt_money(session.rubles_spent, locale)} />
+						<StatRow label={t('panel.artifacts')} value={session.artifacts} />
 					</div>
 				</div>
 				<div className={styles.panel}>
-					<CardHeader label="Exploration" accentColor="#8ab45a" />
+					<CardHeader label={t('panel.exploration')} accentColor="#8ab45a" />
 					<div className={styles.statRows}>
-						<StatRow label="Tasks Done" value={session.tasks} />
-						<StatRow label="Stashes Found" value={session.stashes} />
-						<StatRow label="Level Changes" value={session.level_changes} />
+						<StatRow label={t('panel.tasksDone')} value={session.tasks} />
+						<StatRow label={t('panel.stashesFound')} value={session.stashes} />
+						<StatRow label={t('panel.levelChanges')} value={session.level_changes} />
 					</div>
 				</div>
 			</div>

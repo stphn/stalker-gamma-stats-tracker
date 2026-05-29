@@ -1,5 +1,6 @@
 import type { Companion } from '../../types';
-import { FACTIONS, FACTION_COLORS } from '../../utils/constants';
+import { useI18n } from '../../i18n/I18nContext';
+import { FACTION_COLORS } from '../../utils/constants';
 import { hp_color } from '../../utils/formatters';
 import styles from './Companions.module.css';
 
@@ -8,15 +9,17 @@ interface CompanionsProps {
 }
 
 export function Companions({ companions }: CompanionsProps) {
+	const { t } = useI18n();
 	return (
 		<section className={styles.root} aria-label="Squad companions">
 			<div className={styles.label} aria-hidden="true">
-				Squad
+				{t('companions.squad')}
 			</div>
 			<ul className={styles.grid}>
 				{companions.map((c) => {
 					const factionColor = FACTION_COLORS[c.faction] ?? '#e8c46a';
-					const factionName = FACTIONS[c.faction] ?? c.faction;
+					const fKey = `faction.${c.faction}`;
+					const factionName = t(fKey) !== fKey ? t(fKey) : c.faction;
 					const hpColor = hp_color(c.health);
 					return (
 						<li key={c.name} className={styles.card}>

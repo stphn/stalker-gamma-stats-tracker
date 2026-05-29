@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from '../../types';
+import { useI18n } from '../../i18n/I18nContext';
 import mapLevelsData from '../../data/map-levels.json';
 import { mapUrl } from '../../utils/mapsBase';
 import { PlayerMarker, type MarkerStyle } from '../PlayerMarker/PlayerMarker';
@@ -41,6 +42,7 @@ interface MapViewProps {
 }
 
 export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debug = false }: MapViewProps) {
+	const { t } = useI18n();
 	const panelRef   = useRef<HTMLDivElement>(null);
 	const mapAreaRef = useRef<HTMLDivElement>(null);
 
@@ -212,15 +214,17 @@ export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debu
 				<div className="hud-frame" aria-hidden="true" />
 
 				<div className={styles.header}>
-					<span className={styles.label}>◈ MAP</span>
-					<span className={styles.zoneName}>{levelData?.name ?? levelId ?? '—'}</span>
+					<span className={styles.label}>◈ {t('map.title')}</span>
+					<span className={styles.zoneName}>
+						{t(`level.${levelId}`) !== `level.${levelId}` ? t(`level.${levelId}`) : (levelData?.name ?? levelId ?? '—')}
+					</span>
 					<div className={styles.headerRight}>
 						<button
 							className={styles.resetBtn}
 							onClick={onToggleMarkerStyle}
-							title="Toggle player marker style"
+							title={t('map.markerTitle')}
 						>
-							{markerStyle === 'character' ? '◭ Arrow' : '☻ Char'}
+							{markerStyle === 'character' ? `◭ ${t('map.toArrow')}` : `☻ ${t('map.toChar')}`}
 						</button>
 						<button
 							className={`${styles.followBtn} ${follow ? styles.followOn : ''}`}
@@ -230,15 +234,15 @@ export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debu
 								if (next && mapPos) { adjusted.current = true; centerOn(mapPos, zoom); }
 							}}
 							disabled={!mapPos}
-							title={mapPos ? (follow ? 'Locked on player — click to free-pan' : 'Lock view to player') : 'Player position unavailable'}
+							title={mapPos ? (follow ? t('map.lockTitleOn') : t('map.lockTitleOff')) : t('map.lockTitleNoPos')}
 							aria-pressed={follow}
 						>
-							{follow ? '🔒 Lock On' : '🔓 Lock Off'}
+							{follow ? `🔒 ${t('map.lockOn')}` : `🔓 ${t('map.lockOff')}`}
 						</button>
-						<button className={styles.resetBtn} onClick={() => resetView(levelData)} title="Reset view (R)">
-							{zoom.toFixed(1)}× · Reset
+						<button className={styles.resetBtn} onClick={() => resetView(levelData)} title={t('map.resetTitle')}>
+							{zoom.toFixed(1)}× · {t('map.reset')}
 						</button>
-						<button className={styles.closeBtn} onClick={close} aria-label="Close map">✕</button>
+						<button className={styles.closeBtn} onClick={close} aria-label={t('map.close')}>✕</button>
 					</div>
 				</div>
 
@@ -306,7 +310,7 @@ export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debu
 						<div className={styles.debugBox}>
 							<div>zoom {zoom.toFixed(1)}×</div>
 							<div>map px {mapPos ? `${mapPos.x.toFixed(1)}, ${mapPos.y.toFixed(1)}` : '—'}</div>
-							<div className={styles.debugHint}>magenta = computed point</div>
+							<div className={styles.debugHint}>{t('map.debugCross')}</div>
 						</div>
 					)}
 				</div>
@@ -321,9 +325,9 @@ export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debu
 							<span className={styles.coordVal}>{actor!.pos_z!.toFixed(1)}</span>
 						</>
 					) : (
-						<span className={styles.coordDim}>Position unavailable — load a save in-game</span>
+						<span className={styles.coordDim}>{t('map.posUnavailable')}</span>
 					)}
-					<span className={styles.footerHint}>scroll · drag · R to reset</span>
+					<span className={styles.footerHint}>{t('map.hint')}</span>
 				</div>
 			</div>
 		</div>

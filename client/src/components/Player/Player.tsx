@@ -1,5 +1,6 @@
 import type { ActorInfo } from '../../types';
-import { FACTIONS, FACTION_COLORS } from '../../utils/constants';
+import { useI18n } from '../../i18n/I18nContext';
+import { FACTION_COLORS } from '../../utils/constants';
 import {
 	fmt_money,
 	rank_label,
@@ -14,13 +15,15 @@ interface PlayerProps {
 }
 
 export function Player({ actor }: PlayerProps) {
+	const { t, locale } = useI18n();
 	const factionColor = FACTION_COLORS[actor.faction] ?? '#e8c46a';
-	const factionName = FACTIONS[actor.faction] ?? actor.faction;
+	const factionKey = `faction.${actor.faction}`;
+	const factionName = t(factionKey) !== factionKey ? t(factionKey) : actor.faction;
 
 	return (
 		<section className={styles.root} aria-label={`Player: ${actor.name}`}>
 			<div className={styles.superLabel} aria-hidden="true">
-				Stalker
+				{t('player.super')}
 			</div>
 			<div className={styles.card}>
 				<div className={styles.nameSection}>
@@ -37,26 +40,26 @@ export function Player({ actor }: PlayerProps) {
 				</div>
 				<dl className={styles.statsRow}>
 					<div className={styles.stat}>
-						<dt className={styles.statLabel}>Rank</dt>
+						<dt className={styles.statLabel}>{t('player.rank')}</dt>
 						<dd className={styles.statValue} style={{ color: '#c8a85a' }}>
-							{rank_label(actor.rank)}
+							{t(rank_label(actor.rank))}
 						</dd>
 					</div>
 					<div className={styles.separator} aria-hidden="true" />
 					<div className={styles.stat}>
-						<dt className={styles.statLabel}>Experience</dt>
+						<dt className={styles.statLabel}>{t('player.experience')}</dt>
 						<dd
 							className={styles.statValue}
 							style={{ color: rep_color(actor.reputation) }}
 						>
-							{rep_label(actor.reputation)}
+							{t(rep_label(actor.reputation))}
 						</dd>
 					</div>
 					<div className={styles.separator} aria-hidden="true" />
 					<div className={styles.stat}>
-						<dt className={styles.statLabel}>Rubles</dt>
+						<dt className={styles.statLabel}>{t('player.rubles')}</dt>
 						<dd className={styles.statValue} style={{ color: '#c8a85a' }}>
-							{fmt_money(actor.money)}
+							{fmt_money(actor.money, locale)}
 						</dd>
 					</div>
 				</dl>

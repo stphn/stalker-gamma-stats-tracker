@@ -1,3 +1,5 @@
+import { useI18n } from '../../i18n/I18nContext';
+import { LanguageSwitcher } from '../LanguageSwitcher/LanguageSwitcher';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -7,54 +9,44 @@ interface HeaderProps {
 }
 
 export function Header({ connected, gameState, onMapOpen }: HeaderProps) {
+	const { t } = useI18n();
 	const serverColor = connected ? 'green' : 'red';
 	const gameColor =
 		gameState === 'playing' ? 'green' : gameState === 'menu' ? 'amber' : 'red';
 
-	const serverLabel = connected ? 'Server: connected' : 'Server: disconnected';
-	const gameLabel =
-		gameState === 'playing'
-			? 'Game: in session'
-			: gameState === 'menu'
-				? 'Game: in menu'
-				: 'Game: not running';
+	const gameStatus =
+		gameState === 'playing' ? t('status.inSession') : gameState === 'menu' ? t('status.inMenu') : t('status.offline');
 
 	return (
 		<header className={styles.header}>
 			<div className="hud-frame" aria-hidden="true" />
 			<div className={styles.logo}>
 				<h1 className={styles.title}>T.R.A.C.K.E.R.</h1>
-				<p className={styles.tagline}>A S.T.A.L.K.E.R. Anomaly Companion</p>
+				<p className={styles.tagline}>{t('header.tagline')}</p>
 			</div>
 			<nav className={styles.nav} aria-label="Site navigation">
-				<button className={styles.navLink} onClick={onMapOpen}>Map</button>
+				<button className={styles.navLink} onClick={onMapOpen}>{t('nav.map')}</button>
 				<span className={styles.navSep} aria-hidden="true">|</span>
-				<a href="#" className={styles.navLink}>Mods</a>
+				<a href="#" className={styles.navLink}>{t('nav.mods')}</a>
 				<span className={styles.navSep} aria-hidden="true">|</span>
-				<a href="#" className={styles.navLink}>About</a>
+				<a href="#" className={styles.navLink}>{t('nav.about')}</a>
+				<span className={styles.navSep} aria-hidden="true">|</span>
+				<LanguageSwitcher />
 			</nav>
 			<output className={styles.statusGroup} aria-label="Connection status">
-				<div
-					className={`${styles.pill} ${styles[serverColor]}`}
-					aria-label={serverLabel}
-				>
+				<div className={`${styles.pill} ${styles[serverColor]}`}>
 					<span className={styles.dot} aria-hidden="true" />
-					<span className={styles.pillLabel}>SRV</span>
+					<span className={styles.pillLabel}>{t('status.srv')}</span>
 					<span className={styles.pillSep} aria-hidden="true">·</span>
 					<span className={styles.pillStatus}>
-						{connected ? 'Connected' : 'Offline'}
+						{connected ? t('status.connected') : t('status.offline')}
 					</span>
 				</div>
-				<div
-					className={`${styles.pill} ${styles[gameColor]}`}
-					aria-label={gameLabel}
-				>
+				<div className={`${styles.pill} ${styles[gameColor]}`}>
 					<span className={styles.dot} aria-hidden="true" />
-					<span className={styles.pillLabel}>GAME</span>
+					<span className={styles.pillLabel}>{t('status.game')}</span>
 					<span className={styles.pillSep} aria-hidden="true">·</span>
-					<span className={styles.pillStatus}>
-						{gameState === 'playing' ? 'In Session' : gameState === 'menu' ? 'In Menu' : 'Offline'}
-					</span>
+					<span className={styles.pillStatus}>{gameStatus}</span>
 				</div>
 			</output>
 		</header>

@@ -16,29 +16,33 @@ export function fmt_time(seconds: number | undefined) {
 	return `${h}h ${m}m ${s}s`;
 }
 
-export function fmt_money(n: number | undefined) {
+const LOCALE_TAG: Record<string, string> = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', uk: 'uk-UA' };
+
+export function fmt_money(n: number | undefined, locale = 'en') {
 	if (n == null) return '— ₽';
-	return `${n.toLocaleString('en-US')} ₽`;
+	return `${n.toLocaleString(LOCALE_TAG[locale] ?? 'en-US')} ₽`;
 }
 
+// Returns an i18n KEY — caller wraps with t().
 // Thresholds from GAMMA game_relations.ltx (161- Improved player and NPCs ranks)
 export function rank_label(r: number) {
-	if (r >= 50000) return 'Legend';
-	if (r >= 35000) return 'Master';
-	if (r >= 24000) return 'Expert';
-	if (r >= 16000) return 'Veteran';
-	if (r >= 10000) return 'Professional';
-	if (r >= 6000) return 'Experienced';
-	if (r >= 4000) return 'Trainee';
-	return 'Novice';
+	if (r >= 50000) return 'rank.legend';
+	if (r >= 35000) return 'rank.master';
+	if (r >= 24000) return 'rank.expert';
+	if (r >= 16000) return 'rank.veteran';
+	if (r >= 10000) return 'rank.professional';
+	if (r >= 6000) return 'rank.experienced';
+	if (r >= 4000) return 'rank.trainee';
+	return 'rank.novice';
 }
 
+// Returns an i18n KEY — caller wraps with t().
 export function rep_label(r: number) {
-	if (r >= 2000) return 'Excellent';
-	if (r >= 500) return 'Good';
-	if (r >= -500) return 'Neutral';
-	if (r >= -2000) return 'Bad';
-	return 'Terrible';
+	if (r >= 2000) return 'rep.excellent';
+	if (r >= 500) return 'rep.good';
+	if (r >= -500) return 'rep.neutral';
+	if (r >= -2000) return 'rep.bad';
+	return 'rep.terrible';
 }
 
 export function rep_color(r: number) {

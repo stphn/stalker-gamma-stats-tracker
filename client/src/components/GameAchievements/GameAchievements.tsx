@@ -1,4 +1,5 @@
 import type { GameAchievements, PdaStats } from '../../types';
+import { useI18n } from '../../i18n/I18nContext';
 import { CardHeader } from '../CardHeader/CardHeader';
 import styles from './GameAchievements.module.css';
 
@@ -187,13 +188,14 @@ interface GameAchievementsPanelProps {
 }
 
 export function GameAchievementsPanel({ pda, gameAchievements }: GameAchievementsPanelProps) {
+	const { t } = useI18n();
 	const { earned, unlocked } = gameAchievements;
 	const total = ACHIEVEMENTS.length;
 
 	return (
 		<section className={styles.root}>
 			<CardHeader
-				label={`Official Achievements — ${earned} / ${total}`}
+				label={t('ach.title', { earned, total })}
 				accentColor="transparent"
 			/>
 			<div className={styles.grid}>
@@ -201,21 +203,22 @@ export function GameAchievementsPanel({ pda, gameAchievements }: GameAchievement
 					const isUnlocked = !!unlocked[def.id];
 					const prog = !isUnlocked && def.progress ? def.progress(pda, gameAchievements) : null;
 					const pct = prog ? Math.min(100, (prog.value / prog.max) * 100) : 0;
+					const name = t(`ach.${def.id}.name`);
 
 					return (
 						<article
 							key={def.id}
 							className={isUnlocked ? `${styles.card} ${styles.unlocked}` : styles.card}
-							aria-label={def.name}
+							aria-label={name}
 						>
 							<div className={styles.name}>
 								<span className={styles.icon} aria-hidden="true">
 									{isUnlocked ? '✓' : '○'}
 								</span>
-								{def.name}
+								{name}
 							</div>
-							<p className={styles.req}>{def.requirement}</p>
-							<p className={styles.reward}>{def.reward}</p>
+							<p className={styles.req}>{t(`ach.${def.id}.req`)}</p>
+							<p className={styles.reward}>{t(`ach.${def.id}.reward`)}</p>
 							{prog && (
 								<>
 									<div className={styles.barWrap} role="progressbar" aria-valuenow={prog.value} aria-valuemax={prog.max}>

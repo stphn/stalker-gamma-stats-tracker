@@ -1,4 +1,5 @@
 import type { ActorInfo } from '../../types';
+import { useI18n } from '../../i18n/I18nContext';
 import mapLevels from '../../data/map-levels.json';
 import { mapUrl } from '../../utils/mapsBase';
 import { PlayerMarker, type MarkerStyle } from '../PlayerMarker/PlayerMarker';
@@ -28,6 +29,7 @@ interface MinimapProps {
 /** Compass-style minimap: zoomed in, map rotates to the player's facing (always
  *  up), player fixed at center. Click anywhere to open the full map. */
 export function Minimap({ actor, onExpand, markerStyle }: MinimapProps) {
+	const { t } = useI18n();
 	const levelId       = actor?.location ?? '';
 	const levelData     = levelIndex.get(levelId) ?? null;
 	const isUnderground = levelData?.underground ?? false;
@@ -44,7 +46,7 @@ export function Minimap({ actor, onExpand, markerStyle }: MinimapProps) {
 
 	let body;
 	if (!imgSrc) {
-		body = <div className={styles.underground}><span>UNDERGROUND</span></div>;
+		body = <div className={styles.underground}><span>{t('minimap.underground')}</span></div>;
 	} else if (compassActive) {
 		const aspect = (wb!.maxX - wb!.minX) / (wb!.maxZ - wb!.minZ); // w/h
 		const dW = aspect >= 1 ? VIEW * COMPASS_ZOOM : VIEW * COMPASS_ZOOM * aspect;
@@ -78,8 +80,8 @@ export function Minimap({ actor, onExpand, markerStyle }: MinimapProps) {
 		<button
 			className={styles.root}
 			onClick={onExpand}
-			title="Open full map"
-			aria-label="Open full map"
+			title={t('minimap.openFull')}
+			aria-label={t('minimap.openFull')}
 		>
 			<div className={styles.mapWrap}>{body}</div>
 			<div className={styles.hud} aria-hidden="true" />

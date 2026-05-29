@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from './types';
+import { useI18n } from './i18n/I18nContext';
 import { useMapPreload } from './hooks/useMapPreload';
 import { useStats } from './useStats';
 import { fmt_money, fmt_time } from './utils/formatters';
@@ -19,6 +20,7 @@ import { RightPanel } from './components/RightPanel/RightPanel';
 import { Stage } from './components/Stage/Stage';
 
 export default function App() {
+	const { t, locale } = useI18n();
 	const { data, connected, stale } = useStats();
 	const gameLive =
 		connected && !!data && Date.now() / 1000 - data.last_updated < 15;
@@ -112,9 +114,7 @@ export default function App() {
 
 			{!data ? (
 				<output className="empty">
-					{connected
-						? 'Waiting for stats — load a save in-game.'
-						: 'Connecting to server…'}
+					{connected ? t('empty.waiting') : t('empty.connecting')}
 				</output>
 			) : (
 				<main
@@ -157,14 +157,14 @@ export default function App() {
 						<section className="death-log" aria-label="Death log">
 							<div className="death-header" aria-hidden="true">
 								<span />
-								<span>Date</span>
-								<span>Run</span>
-								<span>Time</span>
-								<span>Kills</span>
-								<span>Earned</span>
-								<span>Artifacts</span>
-								<span>Tasks</span>
-								<span>Stashes</span>
+								<span>{t('deathlog.date')}</span>
+								<span>{t('deathlog.run')}</span>
+								<span>{t('deathlog.time')}</span>
+								<span>{t('deathlog.kills')}</span>
+								<span>{t('deathlog.earned')}</span>
+								<span>{t('deathlog.artifacts')}</span>
+								<span>{t('deathlog.tasks')}</span>
+								<span>{t('deathlog.stashes')}</span>
 							</div>
 							{data.last_run.slice(0, 3).map((run, i) => {
 								const date = new Date(run.start * 1000)
@@ -185,7 +185,7 @@ export default function App() {
 										<span className="death-run">#{i + 1}</span>
 										<span>{fmt_time(run.playtime)}</span>
 										<span>{run.kills.total}</span>
-										<span>{fmt_money(run.rubles_earned)}</span>
+										<span>{fmt_money(run.rubles_earned, locale)}</span>
 										<span>{run.artifacts}</span>
 										<span>{run.tasks}</span>
 										<span>{run.stashes}</span>
@@ -208,7 +208,7 @@ export default function App() {
 
 			<footer className="site-footer" aria-label="External links">
 				<div className="hud-frame" aria-hidden="true" />
-				<span className="foot-label" aria-hidden="true">◈ External Refs</span>
+				<span className="foot-label" aria-hidden="true">◈ {t('footer.label')}</span>
 				<div className="foot-links">
 					<a
 						className="foot-link"
