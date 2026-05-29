@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from './types';
+import { useMapPreload } from './hooks/useMapPreload';
 import { useStats } from './useStats';
 import { fmt_money, fmt_time } from './utils/formatters';
 import './App.css';
@@ -29,6 +30,9 @@ export default function App() {
 	const lastActorRef = useRef<ActorInfo | null>(null);
 	if (data?.actor?.name) lastActorRef.current = data.actor;
 	const displayActor = data?.actor?.name ? data.actor : lastActorRef.current;
+
+	// Warm the cache for every map in the background (current level first)
+	useMapPreload(displayActor?.location);
 
 	// Death detection — fires when last_run[0].start changes
 	const [deathTrigger, setDeathTrigger] = useState(0);
