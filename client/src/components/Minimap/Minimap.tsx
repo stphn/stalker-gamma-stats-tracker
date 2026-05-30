@@ -89,7 +89,7 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 							height: 14,
 							left: 0,
 							top: 0,
-							transform: 'translate(-50%, -50%) rotate(-45deg)',
+							transform: 'translate(-50%, -50%) rotate(45deg)',
 							filter: `drop-shadow(0 0 3px rgba(0,0,0,1)) drop-shadow(0 0 2px ${color})`,
 						}}>
 							<NavigationArrow width="100%" height="100%" weight="fill" color={color} />
