@@ -9,7 +9,7 @@ export const en: Record<string, string> = {
 	'status.connected': 'Connected',
 	'status.offline': 'Offline',
 	'status.inSession': 'In Session',
-	'status.inMenu': 'In Menu',
+	'status.inMenu': 'Game Paused',
 	'status.dead': 'Dead',
 
 	// Empty / footer
@@ -30,7 +30,7 @@ export const en: Record<string, string> = {
 
 	// Location badges
 	'location.live': 'Live',
-	'location.inMenu': 'In Menu',
+	'location.inMenu': 'Paused',
 	'location.dead': 'K.I.A.',
 	'location.off': 'Not in Game',
 

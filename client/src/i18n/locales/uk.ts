@@ -9,7 +9,7 @@ export const uk: Record<string, string> = {
 	'status.connected': 'Підключено',
 	'status.offline': 'Офлайн',
 	'status.inSession': 'У грі',
-	'status.inMenu': 'У меню',
+	'status.inMenu': 'Пауза',
 	'status.dead': 'Загинув',
 
 	'empty.waiting': 'Очікування статистики — завантажте збереження у грі.',
@@ -27,7 +27,7 @@ export const uk: Record<string, string> = {
 	'deathlog.stashes': 'Схованки',
 
 	'location.live': 'Наживо',
-	'location.inMenu': 'У меню',
+	'location.inMenu': 'Пауза',
 	'location.dead': 'Загинув',
 	'location.off': 'Не у грі',
 

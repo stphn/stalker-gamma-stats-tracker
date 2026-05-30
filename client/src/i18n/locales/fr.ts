@@ -9,7 +9,7 @@ export const fr: Record<string, string> = {
 	'status.connected': 'Connecté',
 	'status.offline': 'Hors ligne',
 	'status.inSession': 'En partie',
-	'status.inMenu': 'Dans le menu',
+	'status.inMenu': 'En pause',
 	'status.dead': 'Mort',
 
 	'empty.waiting': 'En attente des stats — chargez une sauvegarde en jeu.',
@@ -27,7 +27,7 @@ export const fr: Record<string, string> = {
 	'deathlog.stashes': 'Caches',
 
 	'location.live': 'En direct',
-	'location.inMenu': 'Dans le menu',
+	'location.inMenu': 'Pause',
 	'location.dead': 'M.A.K.',
 	'location.off': 'Hors jeu',
 
