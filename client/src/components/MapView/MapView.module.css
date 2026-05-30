@@ -195,12 +195,6 @@
 	pointer-events: none;
 }
 
-.playerIcon {
-	position: absolute;
-	left: 0;
-	top: 0;
-	filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.9));
-}
 
 .ping {
 	position: absolute;

@@ -337,15 +337,25 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 							{zoom >= 16 && (
 								<span className={styles.ping} style={{ width: Math.round(24 * markerGrow), height: Math.round(24 * markerGrow) }} />
 							)}
-							<div
-								className={styles.playerIcon}
-								style={{ transform: `translate(-50%, -50%)${gameState === 'playing' ? ` rotate(${actor?.heading ?? 0}deg)` : ''}` }}
-							>
-								{gameState === 'playing'
-									? <NavigationArrow size={Math.round(24 * markerGrow)} weight="fill" color="#F17370" />
-									: <Skull size={Math.round(22 * markerGrow)} weight="fill" color="var(--color-danger)" />
-								}
-							</div>
+							{(() => {
+								const sz = Math.round(24 * markerGrow);
+								return (
+									<div style={{
+										position: 'absolute',
+										width: sz,
+										height: sz,
+										left: 0,
+										top: 0,
+										transform: `translate(-50%, -50%)${gameState === 'playing' ? ` rotate(${actor?.heading ?? 0}deg)` : ''}`,
+										filter: 'drop-shadow(0 0 3px rgba(0,0,0,0.9))',
+									}}>
+										{gameState === 'playing'
+											? <NavigationArrow width="100%" height="100%" weight="fill" color="#F17370" />
+											: <Skull width="100%" height="100%" weight="fill" color="var(--color-danger)" />
+										}
+									</div>
+								);
+							})()}
 						</div>
 					)}
 

@@ -64,7 +64,17 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 					/>
 				</div>
 				<div className={styles.compassPlayer}>
-					<NavigationArrow size={15} weight="fill" color="#F17370" style={{ filter: 'drop-shadow(0 0 2px rgba(0,0,0,0.9))' }} />
+					<div style={{
+						position: 'absolute',
+						width: 15,
+						height: 15,
+						left: 0,
+						top: 0,
+						transform: 'translate(-50%, -50%)',
+						filter: 'drop-shadow(0 0 2px rgba(0,0,0,0.9))',
+					}}>
+						<NavigationArrow width="100%" height="100%" weight="fill" color="#F17370" />
+					</div>
 				</div>
 			</>
 		);
