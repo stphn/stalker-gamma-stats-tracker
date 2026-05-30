@@ -6,13 +6,17 @@
 	flex-shrink: 0;
 	cursor: pointer;
 	margin-block: calc(var(--pad-md) * -1);
+	background: transparent;
+	border: none;
+	padding: 0;
 }
 
-/* ── Map + ring wrapper (fills root, clips nothing — ring must show outside) ── */
+/* ── Map + ring wrapper — position:relative so .rotor's inset:0 anchors here ── */
 .mapWrap {
 	width: 220px;
 	height: 220px;
 	position: relative;
+	background: transparent;
 }
 
 /* ── Rotating layer: both compass ring and map image spin together ── */
