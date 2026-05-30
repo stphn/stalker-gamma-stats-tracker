@@ -12,7 +12,6 @@ interface LevelEntry  { id: string; name: string; underground: boolean; worldBou
 const levels: LevelEntry[] = (mapLevels as { levels: LevelEntry[] }).levels;
 const levelIndex = new Map(levels.map(l => [l.id, l]));
 
-// Inner map circle size (matches .mapClip in CSS)
 const VIEW = 166;
 const COMPASS_ZOOM = 3;
 
@@ -44,69 +43,28 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 
 	const compassActive = imgSrc && uv && wb;
 
-	let body;
+	let mapContent: React.ReactNode;
 	if (!imgSrc) {
-		body = (
-			<>
-				<div className={styles.ringBg} />
-				<div className={styles.rotor} style={{ transform: `rotate(${-heading}deg)` }}>
-					<img src="/compass.webp" className={styles.compassRing} alt="" draggable={false} />
-					<div className={styles.mapClip}>
-						<div className={styles.underground}><span>{t('minimap.underground')}</span></div>
-					</div>
-				</div>
-			</>
-		);
+		mapContent = <div className={styles.underground}><span>{t('minimap.underground')}</span></div>;
 	} else if (compassActive) {
 		const aspect = (wb!.maxX - wb!.minX) / (wb!.maxZ - wb!.minZ);
 		const dW = aspect >= 1 ? VIEW * COMPASS_ZOOM : VIEW * COMPASS_ZOOM * aspect;
 		const dH = aspect >= 1 ? (VIEW * COMPASS_ZOOM) / aspect : VIEW * COMPASS_ZOOM;
 		const c  = VIEW / 2;
-		body = (
-			<>
-				<div className={styles.ringBg} />
-				<div className={styles.rotor} style={{ transform: `rotate(${-heading}deg)` }}>
-					<img src="/compass.webp" className={styles.compassRing} alt="" draggable={false} />
-					<div className={styles.mapClip}>
-						<div
-							className={styles.compassImg}
-							style={{
-								backgroundImage: `url(${imgSrc})`,
-								width: dW,
-								height: dH,
-								left: c - uv!.u * dW,
-								top: c - uv!.v * dH,
-							}}
-						/>
-					</div>
-				</div>
-				<div className={styles.compassPlayer}>
-					<div style={{
-						position: 'absolute',
-						width: 14,
-						height: 14,
-						left: 0,
-						top: 0,
-						transform: 'translate(-50%, -50%)',
-						filter: `drop-shadow(0 0 3px rgba(0,0,0,1)) drop-shadow(0 0 2px ${color})`,
-					}}>
-						<NavigationArrow width="100%" height="100%" weight="fill" color={color} />
-					</div>
-				</div>
-			</>
+		mapContent = (
+			<div
+				className={styles.compassImg}
+				style={{
+					backgroundImage: `url(${imgSrc})`,
+					width: dW,
+					height: dH,
+					left: c - uv!.u * dW,
+					top: c - uv!.v * dH,
+				}}
+			/>
 		);
 	} else {
-		body = (
-			<>
-				<div className={styles.ringBg} />
-				<div className={styles.rotor} style={{ transform: `rotate(${-heading}deg)` }}>
-					<img src="/compass.webp" className={styles.compassRing} alt="" draggable={false} />
-					<div className={styles.mapClip}>
-						<div className={styles.mapImg} style={{ backgroundImage: `url(${imgSrc})` }} />
-					</div>
-				</div>
-			</>
-		);
+		mapContent = <div className={styles.mapImg} style={{ backgroundImage: `url(${imgSrc})` }} />;
 	}
 
 	return (
@@ -116,7 +74,29 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 			title={t('minimap.openFull')}
 			aria-label={t('minimap.openFull')}
 		>
-			<div className={styles.mapWrap}>{body}</div>
+			<div className={styles.mapWrap}>
+				<div className={styles.rotor} style={{ transform: `rotate(${-heading}deg)` }}>
+					{/* mapClip first — its box-shadow spreads into ring area behind the ring img */}
+					<div className={styles.mapClip}>{mapContent}</div>
+					{/* compassRing renders on top of the shadow */}
+					<img src="/compass.webp" className={styles.compassRing} alt="" draggable={false} />
+				</div>
+				{compassActive && (
+					<div className={styles.compassPlayer}>
+						<div style={{
+							position: 'absolute',
+							width: 14,
+							height: 14,
+							left: 0,
+							top: 0,
+							transform: 'translate(-50%, -50%)',
+							filter: `drop-shadow(0 0 3px rgba(0,0,0,1)) drop-shadow(0 0 2px ${color})`,
+						}}>
+							<NavigationArrow width="100%" height="100%" weight="fill" color={color} />
+						</div>
+					</div>
+				)}
+			</div>
 		</button>
 	);
 }

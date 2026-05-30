@@ -19,19 +19,6 @@
 	background: transparent;
 }
 
-/* Dark blurry backdrop behind the ring text — sits below the rotor so it
-   blurs the stage background only (not the map). mask-image restricts it
-   to the annular ring area so the inner map is fully unaffected. */
-.ringBg {
-	position: absolute;
-	inset: 0;
-	pointer-events: none;
-	background: rgba(0, 0, 0, 0.58);
-	backdrop-filter: blur(7px);
-	-webkit-backdrop-filter: blur(7px);
-	mask-image: radial-gradient(circle at center, transparent 74%, black 77%);
-	-webkit-mask-image: radial-gradient(circle at center, transparent 74%, black 77%);
-}
 
 /* ── Rotating layer: both compass ring and map image spin together ── */
 .rotor {
@@ -62,6 +49,10 @@
 	border-radius: 50%;
 	overflow: hidden;
 	background: rgba(6, 8, 7, 0.9);
+	/* Shadow spreads outward into the ring area, sits behind the compass
+	   ring image (which renders after mapClip in the DOM). box-shadow is
+	   never clipped by overflow:hidden so it fills the 27px ring gap. */
+	box-shadow: 0 0 12px 27px rgba(0, 0, 0, 0.72);
 }
 
 .compassImg {
