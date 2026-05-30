@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from './types';
 import { useI18n } from './i18n/I18nContext';
 import { useMapPreload } from './hooks/useMapPreload';
+import { useRuns } from './useRuns';
 import { useStats } from './useStats';
 import { fmt_money, fmt_time } from './utils/formatters';
 import './App.css';
@@ -22,6 +23,7 @@ import { Stage } from './components/Stage/Stage';
 export default function App() {
 	const { t, locale } = useI18n();
 	const { data, connected, stale } = useStats();
+	const { runs } = useRuns();
 	const gameLive =
 		connected && !!data && Date.now() / 1000 - data.last_updated < 15;
 	const gameState = gameLive
@@ -152,7 +154,7 @@ export default function App() {
 						</aside>
 					</div>
 
-					{Array.isArray(data.last_run) && data.last_run.length > 0 && (
+					{runs.length > 0 && (
 						<div className="death-log-wrap">
 						<section className="death-log" aria-label="Death log">
 							<div className="death-header" aria-hidden="true">
@@ -166,7 +168,7 @@ export default function App() {
 								<span>{t('deathlog.tasks')}</span>
 								<span>{t('deathlog.stashes')}</span>
 							</div>
-							{data.last_run.slice(0, 3).map((run, i) => {
+							{runs.map((run, i) => {
 								const date = new Date(run.start * 1000)
 									.toLocaleDateString('en-GB', {
 										day: '2-digit',
@@ -183,12 +185,12 @@ export default function App() {
 										<span className="death-skull" aria-hidden="true">💀</span>
 										<time className="death-date" dateTime={new Date(run.start * 1000).toISOString()}>{date}</time>
 										<span className="death-run">#{i + 1}</span>
-										<span>{fmt_time(run.playtime)}</span>
-										<span>{run.kills.total}</span>
-										<span>{fmt_money(run.rubles_earned, locale)}</span>
-										<span>{run.artifacts}</span>
-										<span>{run.tasks}</span>
-										<span>{run.stashes}</span>
+										<span>{fmt_time(run.playtime ?? 0)}</span>
+										<span>{run.kills?.total ?? 0}</span>
+										<span>{fmt_money(run.rubles_earned ?? 0, locale)}</span>
+										<span>{run.artifacts ?? 0}</span>
+										<span>{run.tasks ?? 0}</span>
+										<span>{run.stashes ?? 0}</span>
 									</article>
 								);
 							})}

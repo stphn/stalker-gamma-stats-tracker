@@ -34,6 +34,21 @@ export interface SessionBlock extends StatsBlock {
 	death_location_name?: string;
 }
 
+/** Row from the `runs` Supabase table — one entry per death. */
+export interface Run {
+	id: number;
+	start: number;
+	playtime: number | null;
+	kills: Kills | null;
+	rubles_earned: number | null;
+	artifacts: number | null;
+	tasks: number | null;
+	stashes: number | null;
+	death_location: string | null;
+	death_location_name: string | null;
+	created_at: string;
+}
+
 export interface Achievement {
 	name: string;
 	desc: string;
