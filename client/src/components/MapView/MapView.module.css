@@ -165,6 +165,13 @@
 	   keeps the PNG crisp. */
 }
 
+/* Translate-only inner layer — fills the world canvas.
+   No scale → transition doesn't cause compositing-layer bitmap blur. */
+.worldInner {
+	position: absolute;
+	inset: 0;
+}
+
 /* Global backdrop — fills the whole world canvas */
 .globalImg {
 	position: absolute;

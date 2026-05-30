@@ -3,6 +3,7 @@ import { NavigationArrow } from '@phosphor-icons/react';
 import { useI18n } from '../../i18n/I18nContext';
 import mapLevels from '../../data/map-levels.json';
 import { mapUrl } from '../../utils/mapsBase';
+import { FACTION_COLORS } from '../../utils/constants';
 import styles from './Minimap.module.css';
 
 interface WorldBounds { minX: number; maxX: number; minZ: number; maxZ: number }
@@ -73,7 +74,7 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 						transform: 'translate(-50%, -50%)',
 						filter: 'drop-shadow(0 0 2px rgba(0,0,0,0.9))',
 					}}>
-						<NavigationArrow width="100%" height="100%" weight="fill" color="#F17370" />
+						<NavigationArrow width="100%" height="100%" weight="fill" color={FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a'} />
 					</div>
 				</div>
 			</>

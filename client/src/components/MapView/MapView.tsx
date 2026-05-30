@@ -286,41 +286,42 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 					onMouseDown={onMouseDown}
 					style={{ cursor: drag.current.active ? 'grabbing' : 'grab' }}
 				>
+					{/* Scale layer — zoom only, no transition (avoids compositing-layer
+					    bitmap blur: scale+transition rasterizes at initial size then
+					    upscales the pixels; translate-only animation doesn't have this). */}
 					<div
 						className={styles.world}
-						style={{
-							transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`,
-							transformOrigin: '0 0',
-							// Glide to new positions (follow / resets); instant while dragging
-							transition: drag.current.active ? 'none' : 'transform 0.45s ease-out',
-						}}
+						style={{ transform: `scale(${zoom})`, transformOrigin: '0 0' }}
 					>
-						{/* Global backdrop — single downscaled image covering the whole
-						    1024×2634 world space (context behind the current level). */}
-						<img
-							src={mapUrl('global-web.webp')}
-							className={styles.globalImg}
-							alt=""
-							draggable={false}
-						/>
-
-						{/* Current level — full-resolution PNG, browser-scaled (max quality).
-						    Positioned at its rawRect in world space. */}
-						{levelData?.rawRect && !levelData.underground && (
+						{/* Translate layer — pan only, transition safe here (no scale = no blur) */}
+						<div
+							className={styles.worldInner}
+							style={{
+								transform: `translate(${pan.x}px, ${pan.y}px)`,
+								transition: drag.current.active ? 'none' : 'transform 0.45s ease-out',
+							}}
+						>
 							<img
-								src={mapUrl(`${levelId}.webp`)}
-								className={styles.levelImg}
-								style={{
-									left:   `${levelData.rawRect.x1 / WORLD_W * 100}%`,
-									top:    `${levelData.rawRect.y1 / WORLD_H * 100}%`,
-									width:  `${(levelData.rawRect.x2 - levelData.rawRect.x1) / WORLD_W * 100}%`,
-									height: `${(levelData.rawRect.y2 - levelData.rawRect.y1) / WORLD_H * 100}%`,
-								}}
-								alt={levelData.name}
+								src={mapUrl('global-web.webp')}
+								className={styles.globalImg}
+								alt=""
 								draggable={false}
 							/>
-						)}
-
+							{levelData?.rawRect && !levelData.underground && (
+								<img
+									src={mapUrl(`${levelId}.webp`)}
+									className={styles.levelImg}
+									style={{
+										left:   `${levelData.rawRect.x1 / WORLD_W * 100}%`,
+										top:    `${levelData.rawRect.y1 / WORLD_H * 100}%`,
+										width:  `${(levelData.rawRect.x2 - levelData.rawRect.x1) / WORLD_W * 100}%`,
+										height: `${(levelData.rawRect.y2 - levelData.rawRect.y1) / WORLD_H * 100}%`,
+									}}
+									alt={levelData.name}
+									draggable={false}
+								/>
+							)}
+						</div>
 					</div>
 
 					{/* Player marker — rendered in screen space so the vector stays sharp */}
@@ -350,7 +351,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 										filter: 'drop-shadow(0 0 3px rgba(0,0,0,0.9))',
 									}}>
 										{gameState === 'playing'
-											? <NavigationArrow width="100%" height="100%" weight="fill" color="#F17370" />
+											? <NavigationArrow width="100%" height="100%" weight="fill" color={FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a'} />
 											: <Skull width="100%" height="100%" weight="fill" color="var(--color-danger)" />
 										}
 									</div>
