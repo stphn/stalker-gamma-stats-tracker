@@ -294,7 +294,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 							className={styles.worldInner}
 							style={{
 								transform: `translate(${pan.x}px, ${pan.y}px)`,
-								transition: drag.current.active ? 'none' : 'transform 0.45s ease-out',
+								transition: (follow && !drag.current.active) ? 'transform 0.45s ease-out' : 'none',
 							}}
 						>
 							<img
@@ -327,7 +327,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 							style={{
 								left: screenPos.x,
 								top: screenPos.y,
-								transition: drag.current.active ? 'none' : 'left 0.45s ease-out, top 0.45s ease-out',
+								transition: (follow && !drag.current.active) ? 'left 0.45s ease-out, top 0.45s ease-out' : 'none',
 							}}
 							aria-label="Player position"
 						>
