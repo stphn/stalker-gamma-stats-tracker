@@ -17,6 +17,7 @@ export const uk: Record<string, string> = {
 
 	'deathlog.date': 'Дата',
 	'deathlog.run': 'Забіг',
+	'deathlog.location': 'Зона',
 	'deathlog.time': 'Час',
 	'deathlog.kills': 'Вбивства',
 	'deathlog.earned': 'Зароблено',
@@ -43,6 +44,9 @@ export const uk: Record<string, string> = {
 	'map.markerTitle': 'Перемкнути стиль маркера',
 	'map.close': 'Закрити карту',
 	'map.debugCross': 'пурпурний = обчислена точка',
+	'map.legend.deaths': 'Смерті',
+	'map.legend.companions': 'Загін',
+	'map.legend.noPos': 'Немає позиції на карті',
 	'minimap.underground': 'ПІД ЗЕМЛЕЮ',
 	'minimap.openFull': 'Відкрити повну карту',
 

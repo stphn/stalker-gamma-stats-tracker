@@ -1,4 +1,6 @@
+import { Coins, Compass } from '@phosphor-icons/react';
 import type { StatsData } from '../../types';
+import { GameIcon } from '../GameIcon/GameIcon';
 import { useI18n } from '../../i18n/I18nContext';
 import {
 	FACTION_BG_COLORS,
@@ -120,7 +122,7 @@ export function RightPanel({ data }: RightPanelProps) {
 		<div className={styles.root}>
 			{/* Kills */}
 			<div className={styles.panel}>
-				<CardHeader label={t('kills.title')} accentColor="#c85a5a" />
+				<CardHeader label={t('kills.title')} accentColor="#c85a5a" icon={<GameIcon name="burningSkull" size={14} color="#c85a5a" />} />
 				<div className={styles.killsContent}>
 					<div className={styles.killRows}>
 						{killData.map((k) => (
@@ -165,7 +167,7 @@ export function RightPanel({ data }: RightPanelProps) {
 			{/* Economy + Exploration */}
 			<div className={styles.bottomRow}>
 				<div className={styles.panel}>
-					<CardHeader label={t('panel.economy')} accentColor="#5a8ab4" />
+					<CardHeader label={t('panel.economy')} accentColor="#5a8ab4" icon={<Coins size={14} weight="bold" />} />
 					<div className={styles.statRows}>
 						<StatRow label={t('panel.earned')} value={fmt_money(session.rubles_earned, locale)} />
 						<StatRow label={t('panel.spent')} value={fmt_money(session.rubles_spent, locale)} />
@@ -173,7 +175,7 @@ export function RightPanel({ data }: RightPanelProps) {
 					</div>
 				</div>
 				<div className={styles.panel}>
-					<CardHeader label={t('panel.exploration')} accentColor="#8ab45a" />
+					<CardHeader label={t('panel.exploration')} accentColor="#8ab45a" icon={<Compass size={14} weight="bold" />} />
 					<div className={styles.statRows}>
 						<StatRow label={t('panel.tasksDone')} value={session.tasks} />
 						<StatRow label={t('panel.stashesFound')} value={session.stashes} />

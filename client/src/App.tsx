@@ -1,3 +1,5 @@
+import { Clock, Coins, Crosshair, Flag, Vault } from '@phosphor-icons/react';
+import { GameIcon } from './components/GameIcon/GameIcon';
 import { useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from './types';
 import { useI18n } from './i18n/I18nContext';
@@ -44,17 +46,6 @@ export default function App() {
 	const [shaking, setShaking] = useState(false);
 	const [mapOpen, setMapOpen] = useState(false);
 
-	// Player marker style — shared by minimap + full map, persisted
-	const [markerStyle, setMarkerStyle] = useState<'character' | 'arrow'>(
-		() => (localStorage.getItem('tracker_marker_style') as 'character' | 'arrow') || 'character',
-	);
-	const toggleMarkerStyle = () =>
-		setMarkerStyle(s => {
-			const next = s === 'character' ? 'arrow' : 'character';
-			try { localStorage.setItem('tracker_marker_style', next); } catch {}
-			return next;
-		});
-
 	// Site-wide debug panel, toggled with D
 	const [debug, setDebug] = useState(false);
 	useEffect(() => {
@@ -98,8 +89,6 @@ export default function App() {
 					connected={connected}
 					gameState={gameState}
 					stale={stale}
-					markerStyle={markerStyle}
-					onToggleMarkerStyle={toggleMarkerStyle}
 					onTestDeath={triggerDeath}
 					onClose={() => setDebug(false)}
 				/>
@@ -108,9 +97,10 @@ export default function App() {
 				<MapView
 					actor={displayActor}
 					onClose={() => setMapOpen(false)}
-					markerStyle={markerStyle}
-					onToggleMarkerStyle={toggleMarkerStyle}
+					gameState={gameState}
 					debug={debug}
+					runs={runs}
+					companions={data?.companions}
 				/>
 			)}
 
@@ -138,7 +128,7 @@ export default function App() {
 											gameTime={displayActor.game_time}
 											gameState={gameState}
 										/>
-										<Minimap actor={displayActor} onExpand={() => setMapOpen(true)} markerStyle={markerStyle} />
+										<Minimap actor={displayActor} onExpand={() => setMapOpen(true)} />
 										<div className="actors">
 											<Player actor={displayActor} />
 											{data.companions && data.companions.length > 0 && (
@@ -160,13 +150,14 @@ export default function App() {
 							<div className="death-header" aria-hidden="true">
 								<span />
 								<span>{t('deathlog.date')}</span>
-								<span>{t('deathlog.run')}</span>
-								<span>{t('deathlog.time')}</span>
-								<span>{t('deathlog.kills')}</span>
-								<span>{t('deathlog.earned')}</span>
-								<span>{t('deathlog.artifacts')}</span>
-								<span>{t('deathlog.tasks')}</span>
-								<span>{t('deathlog.stashes')}</span>
+								<span><GameIcon name="run" size={10} />{t('deathlog.run')}</span>
+								<span>{t('deathlog.location')}</span>
+								<span><Clock size={10} weight="bold" />{t('deathlog.time')}</span>
+								<span><Crosshair size={10} weight="bold" />{t('deathlog.kills')}</span>
+								<span><Coins size={10} weight="bold" />{t('deathlog.earned')}</span>
+								<span><GameIcon name="artifact" size={10} />{t('deathlog.artifacts')}</span>
+								<span><Flag size={10} weight="bold" />{t('deathlog.tasks')}</span>
+								<span><Vault size={10} weight="bold" />{t('deathlog.stashes')}</span>
 							</div>
 							{runs.map((run, i) => {
 								const date = new Date(run.start * 1000)
@@ -182,9 +173,10 @@ export default function App() {
 										className="death-row"
 										aria-label={`Run ${i + 1} on ${date}`}
 									>
-										<span className="death-skull" aria-hidden="true">💀</span>
+										<span className="death-skull" aria-hidden="true"><GameIcon name="burningSkull" size={14} /></span>
 										<time className="death-date" dateTime={new Date(run.start * 1000).toISOString()}>{date}</time>
 										<span className="death-run">#{i + 1}</span>
+										<span className="death-zone">{run.death_location_name ?? (run.death_location ? t(`level.${run.death_location}`) : '—')}</span>
 										<span>{fmt_time(run.playtime ?? 0)}</span>
 										<span>{run.kills?.total ?? 0}</span>
 										<span>{fmt_money(run.rubles_earned ?? 0, locale)}</span>

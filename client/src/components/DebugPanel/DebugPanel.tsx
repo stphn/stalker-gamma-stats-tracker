@@ -1,5 +1,4 @@
 import type { StatsData } from '../../types';
-import type { MarkerStyle } from '../PlayerMarker/PlayerMarker';
 import styles from './DebugPanel.module.css';
 
 interface DebugPanelProps {
@@ -7,14 +6,12 @@ interface DebugPanelProps {
 	connected: boolean;
 	gameState: 'playing' | 'menu' | 'off';
 	stale: boolean;
-	markerStyle: MarkerStyle;
-	onToggleMarkerStyle: () => void;
 	onTestDeath: () => void;
 	onClose: () => void;
 }
 
 export function DebugPanel({
-	data, connected, gameState, stale, markerStyle, onToggleMarkerStyle, onTestDeath, onClose,
+	data, connected, gameState, stale, onTestDeath, onClose,
 }: DebugPanelProps) {
 	const a = data?.actor;
 	const age = data?.last_updated ? Math.round(Date.now() / 1000 - data.last_updated) : null;
@@ -55,10 +52,7 @@ export function DebugPanel({
 			</div>
 
 			<div className={styles.section}>
-				<div className={styles.title}>Settings &amp; actions</div>
-				<button className={styles.btn} onClick={onToggleMarkerStyle}>
-					marker: <b>{markerStyle}</b>
-				</button>
+				<div className={styles.title}>Actions</div>
 				<button className={`${styles.btn} ${styles.danger}`} onClick={onTestDeath}>
 					💀 test death
 				</button>

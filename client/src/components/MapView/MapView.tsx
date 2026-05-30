@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import type { ActorInfo } from '../../types';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { NavigationArrow, Skull, SmileyXEyes, UserCircleDashed } from '@phosphor-icons/react';
+import type { ActorInfo, Companion, Run } from '../../types';
 import { useI18n } from '../../i18n/I18nContext';
 import mapLevelsData from '../../data/map-levels.json';
 import { mapUrl } from '../../utils/mapsBase';
-import { PlayerMarker, type MarkerStyle } from '../PlayerMarker/PlayerMarker';
+import { hp_color } from '../../utils/formatters';
+import { FACTION_COLORS } from '../../utils/constants';
 import styles from './MapView.module.css';
 
 // World coordinate space (from rawRect in map-levels.json)
@@ -36,12 +38,13 @@ const ZOOM_STEP = 1.3;
 interface MapViewProps {
 	actor: ActorInfo | null;
 	onClose: () => void;
-	markerStyle: MarkerStyle;
-	onToggleMarkerStyle: () => void;
+	gameState?: 'playing' | 'menu' | 'off';
 	debug?: boolean;
+	runs?: Run[];
+	companions?: Companion[];
 }
 
-export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debug = false }: MapViewProps) {
+export function MapView({ actor, onClose, gameState = 'off', debug = false, runs, companions }: MapViewProps) {
 	const { t } = useI18n();
 	const panelRef   = useRef<HTMLDivElement>(null);
 	const mapAreaRef = useRef<HTMLDivElement>(null);
@@ -51,6 +54,8 @@ export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debu
 	const [areaW, setAreaW]               = useState(480);
 	const [areaH, setAreaH]               = useState(800);
 	const [follow, setFollow]             = useState(true); // lock to player by default
+	const [showDeaths, setShowDeaths]     = useState(true);
+	const [showCompanions, setShowCompanions] = useState(true);
 
 	const drag = useRef({ active: false, startX: 0, startY: 0, panX: 0, panY: 0 });
 	// True once the user has zoomed/panned/followed — suppresses auto re-fit on resize
@@ -208,6 +213,42 @@ export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debu
 		}
 		: null;
 
+	// Compute death marker positions.
+	// Runs with exact coords get individual pins; runs without coords are grouped
+	// by zone and shown at the level center with a count badge.
+	const deathMarkers = useMemo(() => {
+		if (!runs?.length) return [];
+		type Marker = { key: string; cx: number; cy: number; count: number; exact: boolean };
+		const markers: Marker[] = [];
+		const zoneGroups = new Map<string, number>();
+
+		for (const run of runs) {
+			if (!run.death_location) continue;
+			const level = levelIndex.get(run.death_location);
+			if (!level?.rawRect || !level.worldBounds) continue;
+
+			if (run.death_pos_x != null && run.death_pos_z != null) {
+				const mp = worldToMapPos(run.death_pos_x, run.death_pos_z, level);
+				markers.push({ key: `exact-${run.id}`, cx: mp.x, cy: mp.y, count: 1, exact: true });
+			} else {
+				zoneGroups.set(run.death_location, (zoneGroups.get(run.death_location) ?? 0) + 1);
+			}
+		}
+
+		for (const [levelId, count] of zoneGroups) {
+			const level = levelIndex.get(levelId);
+			if (!level?.rawRect) continue;
+			markers.push({
+				key: `zone-${levelId}`,
+				cx: (level.rawRect.x1 + level.rawRect.x2) / 2,
+				cy: (level.rawRect.y1 + level.rawRect.y2) / 2,
+				count,
+				exact: false,
+			});
+		}
+		return markers;
+	}, [runs]);
+
 	return (
 		<div className={styles.backdrop} role="dialog" aria-modal aria-label="Full map" onMouseDown={onBackdropClick}>
 			<div className={styles.panel} ref={panelRef}>
@@ -219,13 +260,6 @@ export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debu
 						{t(`level.${levelId}`) !== `level.${levelId}` ? t(`level.${levelId}`) : (levelData?.name ?? levelId ?? '—')}
 					</span>
 					<div className={styles.headerRight}>
-						<button
-							className={styles.resetBtn}
-							onClick={onToggleMarkerStyle}
-							title={t('map.markerTitle')}
-						>
-							{markerStyle === 'character' ? `◭ ${t('map.toArrow')}` : `☻ ${t('map.toChar')}`}
-						</button>
 						<button
 							className={`${styles.followBtn} ${follow ? styles.followOn : ''}`}
 							onClick={() => {
@@ -289,8 +323,7 @@ export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debu
 
 					</div>
 
-					{/* Player marker — rendered in screen space (outside the scaled
-					    world) so the vector stays sharp at every zoom level. */}
+					{/* Player marker — rendered in screen space so the vector stays sharp */}
 					{screenPos && (
 						<div
 							className={styles.playerOverlay}
@@ -301,12 +334,18 @@ export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debu
 							}}
 							aria-label="Player position"
 						>
-							<PlayerMarker
-								heading={actor?.heading}
-								size={29 * markerGrow}
-								ping={zoom >= 16}
-								variant={markerStyle}
-							/>
+							{zoom >= 16 && (
+								<span className={styles.ping} style={{ width: Math.round(24 * markerGrow), height: Math.round(24 * markerGrow) }} />
+							)}
+							<div
+								className={styles.playerIcon}
+								style={{ transform: `translate(-50%, -50%)${gameState === 'playing' ? ` rotate(${actor?.heading ?? 0}deg)` : ''}` }}
+							>
+								{gameState === 'playing'
+									? <NavigationArrow size={Math.round(24 * markerGrow)} weight="fill" color="#F17370" />
+									: <Skull size={Math.round(22 * markerGrow)} weight="fill" color="var(--color-danger)" />
+								}
+							</div>
 						</div>
 					)}
 
@@ -322,6 +361,63 @@ export function MapView({ actor, onClose, markerStyle, onToggleMarkerStyle, debu
 							<div className={styles.debugHint}>{t('map.debugCross')}</div>
 						</div>
 					)}
+
+					{/* Death markers — screen-space skulls at zone centers */}
+					{showDeaths && deathMarkers.map(dm => {
+						const sx = zoom * (dm.cx / WORLD_W * areaW + pan.x);
+						const sy = zoom * (dm.cy / WORLD_W * areaW + pan.y);
+						return (
+							<div key={dm.key} className={styles.deathOverlay} style={{ left: sx, top: sy }}>
+								<div className={styles.deathMarker}>
+									<SmileyXEyes size={20} weight="fill" color="var(--color-danger)" />
+									{dm.count > 1 && <span className={styles.deathCount}>×{dm.count}</span>}
+								</div>
+							</div>
+						);
+					})}
+
+					{/* Companion markers — screen-space pins when position available */}
+					{showCompanions && companions?.map(c => {
+						if (c.pos_x == null || c.pos_z == null || !c.level) return null;
+						const cLevel = levelIndex.get(c.level);
+						if (!cLevel?.rawRect || !cLevel.worldBounds) return null;
+						const mp = worldToMapPos(c.pos_x, c.pos_z, cLevel);
+						const sx = zoom * (mp.x / WORLD_W * areaW + pan.x);
+						const sy = zoom * (mp.y / WORLD_W * areaW + pan.y);
+						const factionColor = FACTION_COLORS[c.faction] ?? '#e8c46a';
+						return (
+							<div key={c.name} className={styles.companionOverlay} style={{ left: sx, top: sy }}>
+								<div className={styles.companionMarker}>
+									<UserCircleDashed size={22} weight="fill" color={factionColor} />
+									<span className={styles.companionName} style={{ color: factionColor }}>{c.name}</span>
+									<div className={styles.companionHpTrack}>
+										<div className={styles.companionHpFill} style={{ width: `${c.health}%`, background: hp_color(c.health) }} />
+									</div>
+								</div>
+							</div>
+						);
+					})}
+
+					{/* Legend */}
+					<div className={styles.legend}>
+						{!!deathMarkers.length && (
+							<button
+								className={`${styles.legendBtn} ${showDeaths ? styles.legendBtnOn : ''}`}
+								onClick={() => setShowDeaths(d => !d)}
+							>
+								<SmileyXEyes size={11} weight="fill" />
+								{t('map.legend.deaths')} ({deathMarkers.length})
+							</button>
+						)}
+						{!!companions?.length && (
+							<button
+								className={`${styles.legendBtn} ${showCompanions ? styles.legendBtnOn : ''}`}
+								onClick={() => setShowCompanions(c => !c)}
+							>
+								{t('map.legend.companions')} ({companions.length})
+							</button>
+						)}
+					</div>
 				</div>
 
 				<div className={styles.footer}>

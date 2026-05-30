@@ -17,6 +17,7 @@ export const de: Record<string, string> = {
 
 	'deathlog.date': 'Datum',
 	'deathlog.run': 'Lauf',
+	'deathlog.location': 'Zone',
 	'deathlog.time': 'Zeit',
 	'deathlog.kills': 'Kills',
 	'deathlog.earned': 'Verdient',
@@ -43,6 +44,9 @@ export const de: Record<string, string> = {
 	'map.markerTitle': 'Spielermarkierung umschalten',
 	'map.close': 'Karte schließen',
 	'map.debugCross': 'magenta = berechneter Punkt',
+	'map.legend.deaths': 'Tode',
+	'map.legend.companions': 'Truppe',
+	'map.legend.noPos': 'Keine Kartenposition',
 	'minimap.underground': 'UNTERGRUND',
 	'minimap.openFull': 'Vollkarte öffnen',
 

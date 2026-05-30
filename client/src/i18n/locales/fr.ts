@@ -17,6 +17,7 @@ export const fr: Record<string, string> = {
 
 	'deathlog.date': 'Date',
 	'deathlog.run': 'Partie',
+	'deathlog.location': 'Zone',
 	'deathlog.time': 'Temps',
 	'deathlog.kills': 'Kills',
 	'deathlog.earned': 'Gagné',
@@ -43,6 +44,9 @@ export const fr: Record<string, string> = {
 	'map.markerTitle': 'Changer le style du marqueur',
 	'map.close': 'Fermer la carte',
 	'map.debugCross': 'magenta = point calculé',
+	'map.legend.deaths': 'Morts',
+	'map.legend.companions': 'Escouade',
+	'map.legend.noPos': 'Position indisponible',
 	'minimap.underground': 'SOUTERRAIN',
 	'minimap.openFull': 'Ouvrir la carte complète',
 

@@ -275,6 +275,7 @@ body {
 		max-content   /* skull */
 		max-content   /* date */
 		max-content   /* run */
+		max-content   /* zone */
 		max-content   /* time */
 		max-content   /* kills */
 		max-content   /* earned */
@@ -320,6 +321,9 @@ body {
 
 /* Header labels */
 .death-header > * {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
 	font-size: var(--text-2xs);
 	letter-spacing: 1px;
 	text-transform: uppercase;
@@ -339,10 +343,15 @@ body {
 }
 
 /* Right-align numeric stat columns (kills → stashes) */
-.death-header > *:nth-child(n+5),
-.death-row > *:nth-child(n+5) {
+.death-header > *:nth-child(n+6),
+.death-row > *:nth-child(n+6) {
 	text-align: right;
 	padding-right: var(--pad-lg);
+}
+
+.death-zone {
+	color: var(--text-dim);
+	font-style: italic;
 }
 
 .death-skull {

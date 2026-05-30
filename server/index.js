@@ -35,14 +35,16 @@ async function push() {
 
     const rows = last_run.map((r) => ({
         start:               r.start,
-        playtime:            r.playtime          ?? null,
-        kills:               r.kills             ?? null,
-        rubles_earned:       r.rubles_earned      ?? null,
-        artifacts:           r.artifacts         ?? null,
-        tasks:               r.tasks             ?? null,
-        stashes:             r.stashes           ?? null,
-        death_location:      r.death_location     ?? null,
+        playtime:            r.playtime           ?? null,
+        kills:               r.kills              ?? null,
+        rubles_earned:       r.rubles_earned       ?? null,
+        artifacts:           r.artifacts          ?? null,
+        tasks:               r.tasks              ?? null,
+        stashes:             r.stashes            ?? null,
+        death_location:      r.death_location      ?? null,
         death_location_name: r.death_location_name ?? null,
+        death_pos_x:         r.death_pos_x         ?? null,
+        death_pos_z:         r.death_pos_z         ?? null,
     }))
 
     const { error: runsError } = await supabase

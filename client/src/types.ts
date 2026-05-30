@@ -32,6 +32,8 @@ export interface SessionBlock extends StatsBlock {
 	start: number;
 	death_location?: string;
 	death_location_name?: string;
+	death_pos_x?: number;
+	death_pos_z?: number;
 }
 
 /** Row from the `runs` Supabase table — one entry per death. */
@@ -46,6 +48,8 @@ export interface Run {
 	stashes: number | null;
 	death_location: string | null;
 	death_location_name: string | null;
+	death_pos_x: number | null;
+	death_pos_z: number | null;
 	created_at: string;
 }
 
@@ -82,6 +86,9 @@ export interface Companion {
 	health: number;
 	faction: string;
 	rank: number;
+	pos_x?: number;
+	pos_z?: number;
+	level?: string;
 }
 
 export interface ActorInfo {

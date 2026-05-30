@@ -1,8 +1,8 @@
 import type { ActorInfo } from '../../types';
+import { NavigationArrow } from '@phosphor-icons/react';
 import { useI18n } from '../../i18n/I18nContext';
 import mapLevels from '../../data/map-levels.json';
 import { mapUrl } from '../../utils/mapsBase';
-import { PlayerMarker, type MarkerStyle } from '../PlayerMarker/PlayerMarker';
 import styles from './Minimap.module.css';
 
 interface WorldBounds { minX: number; maxX: number; minZ: number; maxZ: number }
@@ -11,24 +11,21 @@ interface LevelEntry  { id: string; name: string; underground: boolean; worldBou
 const levels: LevelEntry[] = (mapLevels as { levels: LevelEntry[] }).levels;
 const levelIndex = new Map(levels.map(l => [l.id, l]));
 
-const VIEW = 180;          // minimap viewport size (px)
-const COMPASS_ZOOM = 3;    // how zoomed-in compass mode is (long side = VIEW × this)
+const VIEW = 180;
+const COMPASS_ZOOM = 3;
 
 function worldToUV(px: number, pz: number, b: WorldBounds) {
 	const u = (px - b.minX) / (b.maxX - b.minX);
-	const v = 1 - (pz - b.minZ) / (b.maxZ - b.minZ); // Z inverted: north = top
+	const v = 1 - (pz - b.minZ) / (b.maxZ - b.minZ);
 	return { u: Math.max(0, Math.min(1, u)), v: Math.max(0, Math.min(1, v)) };
 }
 
 interface MinimapProps {
 	actor: ActorInfo | null;
 	onExpand: () => void;
-	markerStyle: MarkerStyle;
 }
 
-/** Compass-style minimap: zoomed in, map rotates to the player's facing (always
- *  up), player fixed at center. Click anywhere to open the full map. */
-export function Minimap({ actor, onExpand, markerStyle }: MinimapProps) {
+export function Minimap({ actor, onExpand }: MinimapProps) {
 	const { t } = useI18n();
 	const levelId       = actor?.location ?? '';
 	const levelData     = levelIndex.get(levelId) ?? null;
@@ -48,7 +45,7 @@ export function Minimap({ actor, onExpand, markerStyle }: MinimapProps) {
 	if (!imgSrc) {
 		body = <div className={styles.underground}><span>{t('minimap.underground')}</span></div>;
 	} else if (compassActive) {
-		const aspect = (wb!.maxX - wb!.minX) / (wb!.maxZ - wb!.minZ); // w/h
+		const aspect = (wb!.maxX - wb!.minX) / (wb!.maxZ - wb!.minZ);
 		const dW = aspect >= 1 ? VIEW * COMPASS_ZOOM : VIEW * COMPASS_ZOOM * aspect;
 		const dH = aspect >= 1 ? (VIEW * COMPASS_ZOOM) / aspect : VIEW * COMPASS_ZOOM;
 		const c  = VIEW / 2;
@@ -67,12 +64,11 @@ export function Minimap({ actor, onExpand, markerStyle }: MinimapProps) {
 					/>
 				</div>
 				<div className={styles.compassPlayer}>
-					<PlayerMarker heading={0} size={15} variant={markerStyle} />
+					<NavigationArrow size={15} weight="fill" color="#F17370" style={{ filter: 'drop-shadow(0 0 2px rgba(0,0,0,0.9))' }} />
 				</div>
 			</>
 		);
 	} else {
-		// Have a map but no position yet — static north-up, no player
 		body = <div className={styles.mapImg} style={{ backgroundImage: `url(${imgSrc})` }} />;
 	}
 

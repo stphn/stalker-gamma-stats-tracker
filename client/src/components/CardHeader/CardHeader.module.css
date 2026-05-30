@@ -8,6 +8,13 @@
 	flex-shrink: 0;
 }
 
+.icon {
+	display: flex;
+	align-items: center;
+	margin-right: var(--pad-xs);
+	opacity: 0.85;
+}
+
 .label {
 	font-family: var(--font-display);
 	font-size: var(--text-xs);
