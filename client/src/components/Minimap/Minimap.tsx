@@ -37,6 +37,7 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 	const uv      = hasPosition && wb ? worldToUV(actor!.pos_x!, actor!.pos_z!, wb) : null;
 	const imgSrc  = isUnderground || !levelId ? null : mapUrl(`${levelId}.webp`);
 	const heading = actor?.heading ?? 0;
+	const color   = FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a';
 
 	if (!levelId) return null;
 
@@ -63,18 +64,19 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 							top: c - uv!.v * dH,
 						}}
 					/>
+					<img src="/compass.webp" className={styles.compassRing} alt="" draggable={false} />
 				</div>
 				<div className={styles.compassPlayer}>
 					<div style={{
 						position: 'absolute',
-						width: 15,
-						height: 15,
+						width: 14,
+						height: 14,
 						left: 0,
 						top: 0,
 						transform: 'translate(-50%, -50%)',
-						filter: 'drop-shadow(0 0 2px rgba(0,0,0,0.9))',
+						filter: `drop-shadow(0 0 3px rgba(0,0,0,1)) drop-shadow(0 0 2px ${color})`,
 					}}>
-						<NavigationArrow width="100%" height="100%" weight="fill" color={FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a'} />
+						<NavigationArrow width="100%" height="100%" weight="fill" color={color} />
 					</div>
 				</div>
 			</>
@@ -91,7 +93,6 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 			aria-label={t('minimap.openFull')}
 		>
 			<div className={styles.mapWrap}>{body}</div>
-			<div className={styles.hud} aria-hidden="true" />
 		</button>
 	);
 }
