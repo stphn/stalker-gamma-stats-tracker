@@ -198,10 +198,6 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 		if (panelRef.current && !panelRef.current.contains(e.target as Node)) close();
 	};
 
-	// Marker size peaks gently around the single-level overview (~4×) so the
-	// player is easy to spot, tapering to base (24px) both zoomed into the
-	// streets (~32×) and zoomed way out (≤0.5×). Peak ≈ 1.6× (≈38px).
-	const markerGrow = Math.min(1.6, Math.max(1, 1.6 - 0.2 * Math.abs(Math.log2(zoom / 4))));
 
 	// Player position in SCREEN pixels (so the marker can be rendered outside the
 	// scaled .world layer → vector stays crisp at any zoom instead of being
@@ -336,27 +332,22 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 							aria-label="Player position"
 						>
 							{zoom >= 16 && (
-								<span className={styles.ping} style={{ width: Math.round(24 * markerGrow), height: Math.round(24 * markerGrow) }} />
+								<span className={styles.ping} style={{ width: 22, height: 22 }} />
 							)}
-							{(() => {
-								const sz = Math.round(24 * markerGrow);
-								return (
-									<div style={{
-										position: 'absolute',
-										width: sz,
-										height: sz,
-										left: 0,
-										top: 0,
-										transform: `translate(-50%, -50%)${gameState === 'playing' ? ` rotate(${actor?.heading ?? 0}deg)` : ''}`,
-										filter: 'drop-shadow(0 0 3px rgba(0,0,0,0.9))',
-									}}>
-										{gameState === 'playing'
-											? <NavigationArrow width="100%" height="100%" weight="fill" color={FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a'} />
-											: <Skull width="100%" height="100%" weight="fill" color="var(--color-danger)" />
-										}
-									</div>
-								);
-							})()}
+							<div style={{
+								position: 'absolute',
+								width: 22,
+								height: 22,
+								left: 0,
+								top: 0,
+								transform: `translate(-50%, -50%)${gameState === 'playing' ? ` rotate(${actor?.heading ?? 0}deg)` : ''}`,
+								filter: 'drop-shadow(0 0 3px rgba(0,0,0,0.9))',
+							}}>
+								{gameState === 'playing'
+									? <NavigationArrow width="100%" height="100%" weight="fill" color={FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a'} />
+									: <Skull width="100%" height="100%" weight="fill" color="var(--color-danger)" />
+								}
+							</div>
 						</div>
 					)}
 
