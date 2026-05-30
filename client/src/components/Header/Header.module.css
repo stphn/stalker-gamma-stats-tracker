@@ -154,6 +154,9 @@
 	background: var(--color-danger);
 	box-shadow: 0 0 4px 1px color-mix(in srgb, var(--color-danger) 33%, transparent);
 }
+.dot.dim {
+	background: var(--text-dim);
+}
 
 .pill.green {
 	color: var(--color-positive);
@@ -169,4 +172,9 @@
 	color: var(--color-danger);
 	border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
 	background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+}
+.pill.dim {
+	color: var(--text-dim);
+	border-color: var(--border);
+	background: color-mix(in srgb, var(--text-dim) 8%, transparent);
 }

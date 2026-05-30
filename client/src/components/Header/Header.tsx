@@ -12,7 +12,7 @@ export function Header({ connected, gameState, onMapOpen }: HeaderProps) {
 	const { t } = useI18n();
 	const serverColor = connected ? 'green' : 'red';
 	const gameColor =
-		gameState === 'playing' ? 'green' : gameState === 'dead' ? 'red' : gameState === 'menu' ? 'amber' : 'red';
+		gameState === 'playing' ? 'green' : gameState === 'dead' ? 'red' : gameState === 'menu' ? 'amber' : 'dim';
 
 	const gameStatus =
 		gameState === 'playing' ? t('status.inSession') : gameState === 'dead' ? t('status.dead') : gameState === 'menu' ? t('status.inMenu') : t('status.offline');
