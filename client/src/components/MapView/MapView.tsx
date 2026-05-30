@@ -346,12 +346,12 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 								height: 22,
 								left: 0,
 								top: 0,
-								transform: `translate(-50%, -50%)${gameState === 'playing' ? ` rotate(${actor?.heading ?? 0}deg)` : ''}`,
+								transform: `translate(-50%, -50%) rotate(${gameState === 'dead' ? 0 : (actor?.heading ?? 0) - 45}deg)`,
 								filter: 'drop-shadow(0 0 3px rgba(0,0,0,0.9))',
 							}}>
-								{gameState === 'playing'
-									? <NavigationArrow width="100%" height="100%" weight="fill" color={FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a'} />
-									: <Skull width="100%" height="100%" weight="fill" color="var(--color-danger)" />
+								{gameState === 'dead'
+									? <Skull width="100%" height="100%" weight="fill" color="var(--color-danger)" />
+									: <NavigationArrow width="100%" height="100%" weight="fill" color={FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a'} />
 								}
 							</div>
 						</div>
