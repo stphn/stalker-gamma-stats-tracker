@@ -12,7 +12,8 @@ interface LevelEntry  { id: string; name: string; underground: boolean; worldBou
 const levels: LevelEntry[] = (mapLevels as { levels: LevelEntry[] }).levels;
 const levelIndex = new Map(levels.map(l => [l.id, l]));
 
-const VIEW = 180;
+// Inner map circle size (matches .mapClip in CSS)
+const VIEW = 166;
 const COMPASS_ZOOM = 3;
 
 function worldToUV(px: number, pz: number, b: WorldBounds) {
@@ -45,7 +46,16 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 
 	let body;
 	if (!imgSrc) {
-		body = <div className={styles.underground}><span>{t('minimap.underground')}</span></div>;
+		body = (
+			<>
+				<div className={styles.rotor} style={{ transform: `rotate(${-heading}deg)` }}>
+					<img src="/compass.webp" className={styles.compassRing} alt="" draggable={false} />
+					<div className={styles.mapClip}>
+						<div className={styles.underground}><span>{t('minimap.underground')}</span></div>
+					</div>
+				</div>
+			</>
+		);
 	} else if (compassActive) {
 		const aspect = (wb!.maxX - wb!.minX) / (wb!.maxZ - wb!.minZ);
 		const dW = aspect >= 1 ? VIEW * COMPASS_ZOOM : VIEW * COMPASS_ZOOM * aspect;
@@ -54,17 +64,19 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 		body = (
 			<>
 				<div className={styles.rotor} style={{ transform: `rotate(${-heading}deg)` }}>
-					<div
-						className={styles.compassImg}
-						style={{
-							backgroundImage: `url(${imgSrc})`,
-							width: dW,
-							height: dH,
-							left: c - uv!.u * dW,
-							top: c - uv!.v * dH,
-						}}
-					/>
 					<img src="/compass.webp" className={styles.compassRing} alt="" draggable={false} />
+					<div className={styles.mapClip}>
+						<div
+							className={styles.compassImg}
+							style={{
+								backgroundImage: `url(${imgSrc})`,
+								width: dW,
+								height: dH,
+								left: c - uv!.u * dW,
+								top: c - uv!.v * dH,
+							}}
+						/>
+					</div>
 				</div>
 				<div className={styles.compassPlayer}>
 					<div style={{
@@ -82,7 +94,14 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 			</>
 		);
 	} else {
-		body = <div className={styles.mapImg} style={{ backgroundImage: `url(${imgSrc})` }} />;
+		body = (
+			<div className={styles.rotor} style={{ transform: `rotate(${-heading}deg)` }}>
+				<img src="/compass.webp" className={styles.compassRing} alt="" draggable={false} />
+				<div className={styles.mapClip}>
+					<div className={styles.mapImg} style={{ backgroundImage: `url(${imgSrc})` }} />
+				</div>
+			</div>
+		);
 	}
 
 	return (
