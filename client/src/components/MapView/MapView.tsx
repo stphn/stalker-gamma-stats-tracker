@@ -218,6 +218,8 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 		const markers: Marker[] = [];
 		const zoneGroups = new Map<string, number>();
 
+		const exactZones = new Set<string>();
+
 		for (const run of runs) {
 			if (!run.death_location) continue;
 			const level = levelIndex.get(run.death_location);
@@ -226,12 +228,16 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 			if (run.death_pos_x != null && run.death_pos_z != null) {
 				const mp = worldToMapPos(run.death_pos_x, run.death_pos_z, level);
 				markers.push({ key: `exact-${run.id}`, cx: mp.x, cy: mp.y, count: 1, exact: true });
+				exactZones.add(run.death_location);
 			} else {
 				zoneGroups.set(run.death_location, (zoneGroups.get(run.death_location) ?? 0) + 1);
 			}
 		}
 
+		// Only show zone-center fallback for zones that have no exact pins —
+		// avoids duplicate markers when old (pre-tracking) and new runs coexist.
 		for (const [levelId, count] of zoneGroups) {
+			if (exactZones.has(levelId)) continue;
 			const level = levelIndex.get(levelId);
 			if (!level?.rawRect) continue;
 			markers.push({
