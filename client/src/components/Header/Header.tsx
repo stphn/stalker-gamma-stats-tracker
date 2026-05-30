@@ -4,7 +4,7 @@ import styles from './Header.module.css';
 
 interface HeaderProps {
 	connected: boolean;
-	gameState: 'playing' | 'menu' | 'off';
+	gameState: 'playing' | 'menu' | 'dead' | 'off';
 	onMapOpen: () => void;
 }
 
@@ -12,10 +12,10 @@ export function Header({ connected, gameState, onMapOpen }: HeaderProps) {
 	const { t } = useI18n();
 	const serverColor = connected ? 'green' : 'red';
 	const gameColor =
-		gameState === 'playing' ? 'green' : gameState === 'menu' ? 'amber' : 'red';
+		gameState === 'playing' ? 'green' : gameState === 'dead' ? 'red' : gameState === 'menu' ? 'amber' : 'red';
 
 	const gameStatus =
-		gameState === 'playing' ? t('status.inSession') : gameState === 'menu' ? t('status.inMenu') : t('status.offline');
+		gameState === 'playing' ? t('status.inSession') : gameState === 'dead' ? t('status.dead') : gameState === 'menu' ? t('status.inMenu') : t('status.offline');
 
 	return (
 		<header className={styles.header}>

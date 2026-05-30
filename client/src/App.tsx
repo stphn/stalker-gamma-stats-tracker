@@ -31,7 +31,9 @@ export default function App() {
 	const gameState = gameLive
 		? data?.game_state === 'playing'
 			? 'playing'
-			: 'menu'
+			: (data?.session?.deaths ?? 0) > 0
+				? 'dead'
+				: 'menu'
 		: 'off';
 
 	const lastActorRef = useRef<ActorInfo | null>(null);

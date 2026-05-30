@@ -4,7 +4,7 @@ import styles from './DebugPanel.module.css';
 interface DebugPanelProps {
 	data: StatsData | null;
 	connected: boolean;
-	gameState: 'playing' | 'menu' | 'off';
+	gameState: 'playing' | 'menu' | 'dead' | 'off';
 	stale: boolean;
 	onTestDeath: () => void;
 	onClose: () => void;

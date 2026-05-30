@@ -48,7 +48,18 @@
 	background: var(--color-warning);
 	color: var(--bg-base);
 }
-.badgeOff {
+.badgeDead {
 	background: var(--color-danger);
 	color: var(--bg-base);
+	animation: badge-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+	0%, 100% { opacity: 1; }
+	50%       { opacity: 0.45; }
+}
+
+.badgeOff {
+	background: rgba(255, 255, 255, 0.12);
+	color: var(--text-dim);
 }

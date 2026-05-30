@@ -6,13 +6,14 @@ interface LocationProps {
 	location: string;
 	locationName?: string;
 	gameTime?: { h: number; m: number };
-	gameState: 'playing' | 'menu' | 'off';
+	gameState: 'playing' | 'menu' | 'dead' | 'off';
 }
 
 const BADGES = {
-	playing: { key: 'location.live', className: 'badgeLive' },
-	menu: { key: 'location.inMenu', className: 'badgeMenu' },
-	off: { key: 'location.off', className: 'badgeOff' },
+	playing: { key: 'location.live',   className: 'badgeLive' },
+	menu:    { key: 'location.inMenu', className: 'badgeMenu' },
+	dead:    { key: 'location.dead',   className: 'badgeDead' },
+	off:     { key: 'location.off',    className: 'badgeOff'  },
 };
 
 export function Location({

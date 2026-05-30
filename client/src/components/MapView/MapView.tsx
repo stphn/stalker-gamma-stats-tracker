@@ -38,7 +38,7 @@ const ZOOM_STEP = 1.3;
 interface MapViewProps {
 	actor: ActorInfo | null;
 	onClose: () => void;
-	gameState?: 'playing' | 'menu' | 'off';
+	gameState?: 'playing' | 'menu' | 'dead' | 'off';
 	debug?: boolean;
 	runs?: Run[];
 	companions?: Companion[];

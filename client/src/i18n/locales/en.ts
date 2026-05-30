@@ -10,6 +10,7 @@ export const en: Record<string, string> = {
 	'status.offline': 'Offline',
 	'status.inSession': 'In Session',
 	'status.inMenu': 'In Menu',
+	'status.dead': 'Dead',
 
 	// Empty / footer
 	'empty.waiting': 'Waiting for stats — load a save in-game.',
@@ -30,6 +31,7 @@ export const en: Record<string, string> = {
 	// Location badges
 	'location.live': 'Live',
 	'location.inMenu': 'In Menu',
+	'location.dead': 'K.I.A.',
 	'location.off': 'Not in Game',
 
 	// Map

@@ -10,6 +10,7 @@ export const uk: Record<string, string> = {
 	'status.offline': 'Офлайн',
 	'status.inSession': 'У грі',
 	'status.inMenu': 'У меню',
+	'status.dead': 'Загинув',
 
 	'empty.waiting': 'Очікування статистики — завантажте збереження у грі.',
 	'empty.connecting': 'Підключення до сервера…',
@@ -27,6 +28,7 @@ export const uk: Record<string, string> = {
 
 	'location.live': 'Наживо',
 	'location.inMenu': 'У меню',
+	'location.dead': 'Загинув',
 	'location.off': 'Не у грі',
 
 	'map.title': 'КАРТА',

@@ -10,6 +10,7 @@ export const fr: Record<string, string> = {
 	'status.offline': 'Hors ligne',
 	'status.inSession': 'En partie',
 	'status.inMenu': 'Dans le menu',
+	'status.dead': 'Mort',
 
 	'empty.waiting': 'En attente des stats — chargez une sauvegarde en jeu.',
 	'empty.connecting': 'Connexion au serveur…',
@@ -27,6 +28,7 @@ export const fr: Record<string, string> = {
 
 	'location.live': 'En direct',
 	'location.inMenu': 'Dans le menu',
+	'location.dead': 'M.A.K.',
 	'location.off': 'Hors jeu',
 
 	'map.title': 'CARTE',
