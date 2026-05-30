@@ -36,6 +36,7 @@
 	height: 100%;
 	pointer-events: none;
 	user-select: none;
+	transition: filter 0.15s ease-out;
 }
 
 /* Inner map area — circular clip, centered inside the ring.
@@ -53,6 +54,19 @@
 	   ring image (which renders after mapClip in the DOM). box-shadow is
 	   never clipped by overflow:hidden so it fills the 27px ring gap. */
 	box-shadow: 0 0 12px 27px rgba(0, 0, 0, 0.72);
+	transition: box-shadow 0.15s ease-out;
+}
+
+/* ── Hover: amber glow ring + brighter compass ── */
+.root:hover .mapClip {
+	box-shadow:
+		0 0 12px 27px rgba(0, 0, 0, 0.72),
+		0 0 16px 3px rgba(184, 148, 72, 0.6),
+		inset 0 0 0 1px rgba(184, 148, 72, 0.5);
+}
+
+.root:hover .compassRing {
+	filter: brightness(1.25) drop-shadow(0 0 4px rgba(184, 148, 72, 0.5));
 }
 
 .compassImg {
