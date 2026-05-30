@@ -48,6 +48,7 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 	if (!imgSrc) {
 		body = (
 			<>
+				<div className={styles.ringBg} />
 				<div className={styles.rotor} style={{ transform: `rotate(${-heading}deg)` }}>
 					<img src="/compass.webp" className={styles.compassRing} alt="" draggable={false} />
 					<div className={styles.mapClip}>
@@ -63,6 +64,7 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 		const c  = VIEW / 2;
 		body = (
 			<>
+				<div className={styles.ringBg} />
 				<div className={styles.rotor} style={{ transform: `rotate(${-heading}deg)` }}>
 					<img src="/compass.webp" className={styles.compassRing} alt="" draggable={false} />
 					<div className={styles.mapClip}>
@@ -95,12 +97,15 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 		);
 	} else {
 		body = (
-			<div className={styles.rotor} style={{ transform: `rotate(${-heading}deg)` }}>
-				<img src="/compass.webp" className={styles.compassRing} alt="" draggable={false} />
-				<div className={styles.mapClip}>
-					<div className={styles.mapImg} style={{ backgroundImage: `url(${imgSrc})` }} />
+			<>
+				<div className={styles.ringBg} />
+				<div className={styles.rotor} style={{ transform: `rotate(${-heading}deg)` }}>
+					<img src="/compass.webp" className={styles.compassRing} alt="" draggable={false} />
+					<div className={styles.mapClip}>
+						<div className={styles.mapImg} style={{ backgroundImage: `url(${imgSrc})` }} />
+					</div>
 				</div>
-			</div>
+			</>
 		);
 	}
 
