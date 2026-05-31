@@ -136,6 +136,8 @@ export const uk: Record<string, string> = {
 	'rep.terrible': 'Жахлива',
 
 	'faction.stalker': 'Одинак',
+	'faction.actor_stalker': 'Одинак',
+	'faction.actor': 'Одинак',
 	'faction.bandit': 'Бандит',
 	'faction.army': 'Військові',
 	'faction.military': 'Військові',

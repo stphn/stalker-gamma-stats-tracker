@@ -150,6 +150,8 @@ export const en: Record<string, string> = {
 
 	// Faction display names
 	'faction.stalker': 'Loner',
+	'faction.actor_stalker': 'Loner',
+	'faction.actor': 'Loner',
 	'faction.bandit': 'Bandit',
 	'faction.army': 'Military',
 	'faction.military': 'Military',

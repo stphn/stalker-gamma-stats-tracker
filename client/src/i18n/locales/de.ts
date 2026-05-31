@@ -136,6 +136,8 @@ export const de: Record<string, string> = {
 	'rep.terrible': 'Schrecklich',
 
 	'faction.stalker': 'Einzelgänger',
+	'faction.actor_stalker': 'Einzelgänger',
+	'faction.actor': 'Einzelgänger',
 	'faction.bandit': 'Bandit',
 	'faction.army': 'Militär',
 	'faction.military': 'Militär',

@@ -136,6 +136,8 @@ export const fr: Record<string, string> = {
 	'rep.terrible': 'Terrible',
 
 	'faction.stalker': 'Solitaire',
+	'faction.actor_stalker': 'Solitaire',
+	'faction.actor': 'Solitaire',
 	'faction.bandit': 'Bandit',
 	'faction.army': 'Militaires',
 	'faction.military': 'Militaires',
