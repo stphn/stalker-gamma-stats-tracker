@@ -53,7 +53,6 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 	const [pan,  setPan]                  = useState({ x: 0, y: 0 });
 	const [areaW, setAreaW]               = useState(480);
 	const [areaH, setAreaH]               = useState(800);
-	const [follow, setFollow]             = useState(true); // lock to player by default
 	const [showDeaths, setShowDeaths]     = useState(true);
 	const [showCompanions, setShowCompanions] = useState(true);
 
@@ -122,19 +121,6 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 	useEffect(() => {
 		if (!adjusted.current) resetView(levelData);
 	}, [areaW, areaH, resetView, levelData]);
-
-	// Center the view on a world-space map position at the current zoom
-	const centerOn = useCallback((mp: { x: number; y: number }, z: number) => {
-		const cx = mp.x / WORLD_W * areaW;
-		const cy = mp.y / WORLD_W * areaW; // 1 WU = areaW/WORLD_W px in both axes
-		setPan({ x: areaW / (2 * z) - cx, y: areaH / (2 * z) - cy });
-	}, [areaW, areaH]);
-
-	// Follow mode — keep the player dot centered as position updates
-	useEffect(() => {
-		if (follow && mapPos) centerOn(mapPos, zoom);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [follow, mapPos?.x, mapPos?.y, zoom, centerOn]);
 
 	const close = useCallback(() => onClose(), [onClose]);
 
