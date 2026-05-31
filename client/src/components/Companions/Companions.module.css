@@ -26,6 +26,7 @@
 	padding: 8px 12px;
 	display: grid;
 	gap: 4px;
+	box-shadow: var(--shadow-elevation-medium);
 }
 
 .name {
