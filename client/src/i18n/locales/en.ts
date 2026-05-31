@@ -36,16 +36,11 @@ export const en: Record<string, string> = {
 
 	// Map
 	'map.title': 'MAP',
-	'map.lockOn': 'Lock On',
-	'map.lockOff': 'Lock Off',
 	'map.reset': 'Reset',
 	'map.toArrow': 'Arrow',
 	'map.toChar': 'Char',
 	'map.posUnavailable': 'Position unavailable — load a save in-game',
 	'map.hint': 'scroll · drag · R to reset',
-	'map.lockTitleOn': 'Locked on player — click to free-pan',
-	'map.lockTitleOff': 'Lock view to player',
-	'map.lockTitleNoPos': 'Player position unavailable',
 	'map.resetTitle': 'Reset view (R)',
 	'map.markerTitle': 'Toggle player marker style',
 	'map.close': 'Close map',
