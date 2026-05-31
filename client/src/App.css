@@ -269,12 +269,24 @@ body {
 }
 
 /* ── Death log ── */
+.death-log-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: var(--pad-md) var(--pad-lg) var(--pad-sm);
+	font-family: var(--font-display);
+	font-size: var(--text-md);
+	font-weight: 700;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: var(--color-danger);
+}
+
 .death-log {
 	display: inline-grid;
 	grid-template-columns:
-		max-content   /* skull */
-		max-content   /* date */
 		max-content   /* run */
+		max-content   /* date */
 		max-content   /* zone */
 		max-content   /* time */
 		max-content   /* kills */
@@ -324,12 +336,17 @@ body {
 .death-header > * {
 	display: inline-flex;
 	align-items: center;
-	gap: 4px;
+	gap: 5px;
 	font-size: var(--text-2xs);
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	color: var(--text-dim);
 	border-bottom: 1px solid var(--border);
+}
+
+/* Keep header icons crisp and from squashing the label */
+.death-header > * svg {
+	flex-shrink: 0;
 }
 
 /* Data cells */
@@ -343,9 +360,9 @@ body {
 	border-bottom: none;
 }
 
-/* Right-align numeric stat columns (kills → stashes) */
-.death-header > *:nth-child(n+6),
-.death-row > *:nth-child(n+6) {
+/* Right-align numeric stat columns (kills → items) */
+.death-header > *:nth-child(n+5),
+.death-row > *:nth-child(n+5) {
 	text-align: right;
 	padding-right: var(--pad-lg);
 }
@@ -353,10 +370,6 @@ body {
 .death-zone {
 	color: var(--text-dim);
 	font-style: italic;
-}
-
-.death-skull {
-	font-size: var(--text-xs);
 }
 
 .death-date {

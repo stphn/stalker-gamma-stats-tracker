@@ -3,7 +3,7 @@
 	position: relative;
 	width: 100%;
 	flex: 1;
-	height: clamp(420px, 42vw, 960px);
+	height: clamp(420px, 46vw, 1080px);
 	overflow: hidden;
 	background: var(--bg-base);
 	cursor: crosshair;

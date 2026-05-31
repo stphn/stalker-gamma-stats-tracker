@@ -16,6 +16,7 @@ export const de: Record<string, string> = {
 	'empty.connecting': 'Verbinde mit Server…',
 	'footer.label': 'Externe Links',
 
+	'deathlog.title': 'Todesprotokoll',
 	'deathlog.date': 'Datum',
 	'deathlog.run': 'Lauf',
 	'deathlog.location': 'Zone',

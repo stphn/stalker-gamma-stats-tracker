@@ -18,6 +18,7 @@ export const en: Record<string, string> = {
 	'footer.label': 'External Refs',
 
 	// Death log columns
+	'deathlog.title': 'Death Logs',
 	'deathlog.date': 'Date',
 	'deathlog.run': 'Run',
 	'deathlog.location': 'Zone',

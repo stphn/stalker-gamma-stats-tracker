@@ -1,4 +1,4 @@
-import { Atom, Clock, Coins, Crosshair, Flag, Package, PersonSimpleRun, Skull, Vault } from '@phosphor-icons/react';
+import { Atom, Clock, Coins, Crosshair, Flag, Package, PersonSimpleRun, Radioactive, Skull, Vault } from '@phosphor-icons/react';
 import { useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from './types';
 import { useI18n } from './i18n/I18nContext';
@@ -147,19 +147,22 @@ export default function App() {
 
 					{runs.length > 0 && (
 						<div className="death-log-wrap">
+						<div className="death-log-title">
+							<Skull size={16} weight="fill" />
+							<span>{t('deathlog.title')}</span>
+						</div>
 						<section className="death-log" aria-label="Death log">
 							<div className="death-header" aria-hidden="true">
-								<span />
-								<span>{t('deathlog.date')}</span>
-								<span><PersonSimpleRun size={10} weight="bold" />{t('deathlog.run')}</span>
-								<span>{t('deathlog.location')}</span>
-								<span><Clock size={10} weight="bold" />{t('deathlog.time')}</span>
-								<span><Crosshair size={10} weight="bold" />{t('deathlog.kills')}</span>
-								<span><Coins size={10} weight="bold" />{t('deathlog.earned')}</span>
-								<span><Atom size={10} weight="bold" />{t('deathlog.artifacts')}</span>
-								<span><Flag size={10} weight="bold" />{t('deathlog.tasks')}</span>
-								<span><Vault size={10} weight="bold" />{t('deathlog.stashes')}</span>
-								<span><Package size={10} weight="bold" />{t('deathlog.items')}</span>
+								<span><PersonSimpleRun size={12} weight="bold" />{t('deathlog.run')}</span>
+								<span><Radioactive size={12} weight="bold" />{t('deathlog.date')}</span>
+								<span><Radioactive size={12} weight="bold" />{t('deathlog.location')}</span>
+								<span><Clock size={12} weight="bold" />{t('deathlog.time')}</span>
+								<span><Crosshair size={12} weight="bold" />{t('deathlog.kills')}</span>
+								<span><Coins size={12} weight="bold" />{t('deathlog.earned')}</span>
+								<span><Atom size={12} weight="bold" />{t('deathlog.artifacts')}</span>
+								<span><Flag size={12} weight="bold" />{t('deathlog.tasks')}</span>
+								<span><Vault size={12} weight="bold" />{t('deathlog.stashes')}</span>
+								<span><Package size={12} weight="bold" />{t('deathlog.items')}</span>
 							</div>
 							{runs.map((run, i) => {
 								const date = new Date(run.start * 1000)
@@ -175,9 +178,8 @@ export default function App() {
 										className="death-row"
 										aria-label={`Run ${i + 1} on ${date}`}
 									>
-										<span className="death-skull" aria-hidden="true"><Skull size={14} weight="fill" /></span>
-										<time className="death-date" dateTime={new Date(run.start * 1000).toISOString()}>{date}</time>
 										<span className="death-run">#{i + 1}</span>
+										<time className="death-date" dateTime={new Date(run.start * 1000).toISOString()}>{date}</time>
 										<span className="death-zone">{run.death_location_name ?? (run.death_location ? t(`level.${run.death_location}`) : '—')}</span>
 										<span>{fmt_time(run.playtime ?? 0)}</span>
 										<span>{run.kills?.total ?? 0}</span>

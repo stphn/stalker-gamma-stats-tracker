@@ -16,6 +16,7 @@ export const uk: Record<string, string> = {
 	'empty.connecting': 'Підключення до сервера…',
 	'footer.label': 'Зовнішні посилання',
 
+	'deathlog.title': 'Журнал смертей',
 	'deathlog.date': 'Дата',
 	'deathlog.run': 'Забіг',
 	'deathlog.location': 'Зона',
