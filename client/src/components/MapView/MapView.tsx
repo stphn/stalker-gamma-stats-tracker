@@ -35,6 +35,10 @@ const MIN_ZOOM  = 0.3;
 const MAX_ZOOM  = 32;
 const ZOOM_STEP = 1.3;
 
+// Idle time after the last user pan/zoom before the view re-centers on the
+// player and follows them — keeps the marker in view without manual scrolling.
+const RECENTER_IDLE_MS = 8000;
+
 interface MapViewProps {
 	actor: ActorInfo | null;
 	onClose: () => void;
@@ -59,6 +63,9 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 	const drag = useRef({ active: false, startX: 0, startY: 0, panX: 0, panY: 0 });
 	// True once the user has zoomed/panned/followed — suppresses auto re-fit on resize
 	const adjusted = useRef(false);
+	// Follow mode: after RECENTER_IDLE_MS of no interaction, the view tracks the player
+	const [following, setFollowing] = useState(false);
+	const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	// Track mapArea size so the view can re-fit responsively
 	useEffect(() => {
@@ -110,6 +117,36 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 		adjusted.current = false; // back to a clean fit
 	}, [areaW, areaH]);
 
+	// A user gesture suspends follow mode and restarts the idle countdown that
+	// eventually re-enables it.
+	const bumpIdle = useCallback(() => {
+		setFollowing(false);
+		if (idleTimer.current) clearTimeout(idleTimer.current);
+		idleTimer.current = setTimeout(() => setFollowing(true), RECENTER_IDLE_MS);
+	}, []);
+
+	// Start the countdown on open so the view eases into follow mode after the
+	// first idle window (rather than snapping to the player immediately).
+	useEffect(() => {
+		bumpIdle();
+		return () => { if (idleTimer.current) clearTimeout(idleTimer.current); };
+	}, [bumpIdle]);
+
+	// While following, keep the player centered as they move (current zoom kept).
+	// Depend on the scalar coords so this only fires on real movement, not every render.
+	const pmx = mapPos?.x, pmy = mapPos?.y;
+	useEffect(() => {
+		if (!following || pmx == null || pmy == null) return;
+		const area = mapAreaRef.current;
+		if (!area) return;
+		const cw = area.clientWidth  || areaW;
+		const ch = area.clientHeight || areaH;
+		setPan({
+			x: cw / (2 * zoom) - pmx / WORLD_W * areaW,
+			y: ch / (2 * zoom) - pmy / WORLD_W * areaW,
+		});
+	}, [following, pmx, pmy, zoom, areaW, areaH]);
+
 	// Re-fit on level change (fresh fit even if the previous level was adjusted)
 	useEffect(() => {
 		const t = setTimeout(() => resetView(levelData), 40);
@@ -131,6 +168,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 		const onWheel = (e: WheelEvent) => {
 			e.preventDefault();
 			adjusted.current = true;
+			bumpIdle();
 			const rect   = area.getBoundingClientRect();
 			const cx     = e.clientX - rect.left;
 			const cy     = e.clientY - rect.top;
@@ -143,13 +181,14 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 		};
 		area.addEventListener('wheel', onWheel, { passive: false });
 		return () => area.removeEventListener('wheel', onWheel);
-	}, []);
+	}, [bumpIdle]);
 
 	// Drag-to-pan
 	const onMouseDown = (e: React.MouseEvent) => {
 		if (e.button !== 0) return;
 		e.preventDefault();
 		adjusted.current = true;
+		bumpIdle();
 		drag.current = { active: true, startX: e.clientX, startY: e.clientY, panX: pan.x, panY: pan.y };
 	};
 
@@ -173,11 +212,11 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 	useEffect(() => {
 		const onKey = (e: KeyboardEvent) => {
 			if (e.key === 'Escape')             { close(); return; }
-			if (e.key === 'r' || e.key === 'R') { resetView(levelData); return; }
+			if (e.key === 'r' || e.key === 'R') { bumpIdle(); resetView(levelData); return; }
 		};
 		window.addEventListener('keydown', onKey);
 		return () => window.removeEventListener('keydown', onKey);
-	}, [close, resetView, levelData]);
+	}, [close, resetView, levelData, bumpIdle]);
 
 	const onBackdropClick = (e: React.MouseEvent) => {
 		if (panelRef.current && !panelRef.current.contains(e.target as Node)) close();
@@ -247,7 +286,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 						{t(`level.${levelId}`) !== `level.${levelId}` ? t(`level.${levelId}`) : (levelData?.name ?? levelId ?? '—')}
 					</span>
 					<div className={styles.headerRight}>
-						<button className={styles.resetBtn} onClick={() => resetView(levelData)} title={t('map.resetTitle')}>
+						<button className={styles.resetBtn} onClick={() => { bumpIdle(); resetView(levelData); }} title={t('map.resetTitle')}>
 							{zoom.toFixed(1)}× · {t('map.reset')}
 						</button>
 						<button className={styles.closeBtn} onClick={close} aria-label={t('map.close')}>✕</button>

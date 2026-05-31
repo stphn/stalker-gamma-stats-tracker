@@ -18,19 +18,28 @@ export function useRuns(): { runs: Run[]; loading: boolean } {
 				setLoading(false)
 			})
 
-		// Realtime: prepend new rows as they arrive
+		// Realtime: merge rows as they arrive. The server upserts on `start`, so a
+		// run is INSERTed when it begins and later UPDATEd once it ends (death
+		// location/pos filled in) — listen for both so deaths appear without a reload.
 		const channel = supabase
 			.channel('runs-live')
 			.on(
 				'postgres_changes',
-				{ event: 'INSERT', schema: 'public', table: 'runs' },
+				{ event: '*', schema: 'public', table: 'runs' },
 				(payload) => {
+					if (payload.eventType === 'DELETE') return
 					const incoming = payload.new as Run
 					setRuns((prev) => {
-						// Deduplicate by start in case of rapid duplicate events
-						const exists = prev.some((r) => r.start === incoming.start)
-						if (exists) return prev
-						return [incoming, ...prev].slice(0, 10)
+						// Upsert by `start`: replace the matching row (UPDATE) or prepend (INSERT)
+						const idx = prev.findIndex((r) => r.start === incoming.start)
+						if (idx !== -1) {
+							const next = prev.slice()
+							next[idx] = { ...next[idx], ...incoming }
+							return next
+						}
+						return [incoming, ...prev]
+							.sort((a, b) => b.start - a.start)
+							.slice(0, 10)
 					})
 				},
 			)
