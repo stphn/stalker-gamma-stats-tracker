@@ -67,6 +67,7 @@ export function useStageGL(
 				uTexture: { value: null },
 				uNextTexture: { value: null },
 				uTransition: { value: 0 },
+				uTime: { value: 0 },
 				uGrid: { value: null },
 				uContainerResolution: { value: new THREE.Vector2() },
 				uImageResolution: { value: new THREE.Vector2(1, 1) },
@@ -225,6 +226,7 @@ export function useStageGL(
 			gpgpu.compute();
 			material.uniforms.uGrid.value =
 				gpgpu.getCurrentRenderTarget(variable).texture;
+			material.uniforms.uTime.value = time;
 
 			// Advance the crossfade (smoothstep easing)
 			if (fading) {

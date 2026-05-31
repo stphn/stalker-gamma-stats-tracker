@@ -27,7 +27,9 @@ export function Stage({ location, night, left, overlay, death }: StageProps) {
 		>
 			{/* WebGL canvas is injected by useStageGL at z-index 0 */}
 			<div className="hud-frame" aria-hidden="true" />
-			<div className={styles.scanline} aria-hidden="true" />
+			<div className={styles.vhs} aria-hidden="true">
+				<span className={styles.vhsBar} />
+			</div>
 			<div className={styles.left}>{left}</div>
 			{overlay && <div className={styles.overlay}>{overlay}</div>}
 			{death && <div className={styles.death}>{death}</div>}

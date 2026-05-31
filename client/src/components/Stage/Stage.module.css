@@ -8,6 +8,8 @@
 	background: var(--bg-base);
 	cursor: crosshair;
 	--hud-inset: 6px;
+	/* Contain the VHS difference blend to the stage's own layers */
+	isolation: isolate;
 }
 
 
@@ -28,6 +30,107 @@
 	5%   { opacity: 1; }
 	95%  { opacity: 1; }
 	100% { top: 100%; opacity: 0; }
+}
+
+/* ── VHS overlay — rolling tracking bands that blur/smear the backdrop as
+   they sweep (analog tracking distortion), over faint CRT scanlines. ── */
+.vhs {
+	position: absolute;
+	inset: 0;
+	/* Below .left (z-index 1) so the player/companion cards stay clean on top,
+	   but above the WebGL backdrop canvas (z-index 0). */
+	z-index: 1;
+	pointer-events: none;
+	overflow: hidden;
+	/* Fine CRT/VHS horizontal lines */
+	background: repeating-linear-gradient(
+		to bottom,
+		rgba(0, 0, 0, 0) 0px,
+		rgba(0, 0, 0, 0) 2px,
+		rgba(0, 0, 0, 0.07) 3px,
+		rgba(0, 0, 0, 0.07) 4px
+	);
+	animation: vhs-flicker 7s steps(24) infinite;
+}
+
+/* Two rolling tracking bands — one travels down, one up, at different
+   sizes/speeds. Each blurs the backdrop behind it, feathered via a mask. */
+.vhs::before,
+.vhs::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	pointer-events: none;
+}
+
+.vhs::before {
+	height: 150px;
+	background: rgba(255, 255, 255, 0.03);
+	backdrop-filter: blur(4px) brightness(1.06) saturate(1.2);
+	-webkit-backdrop-filter: blur(4px) brightness(1.06) saturate(1.2);
+	/* Feather the blurred band so its edges fade instead of hard rectangles */
+	-webkit-mask: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
+	mask: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
+	animation: vhs-roll-down 16s linear infinite;
+}
+
+.vhs::after {
+	height: 90px;
+	background: rgba(255, 255, 255, 0.02);
+	backdrop-filter: blur(2.5px) brightness(1.04);
+	-webkit-backdrop-filter: blur(2.5px) brightness(1.04);
+	-webkit-mask: linear-gradient(to bottom, transparent, #000 40%, #000 60%, transparent);
+	mask: linear-gradient(to bottom, transparent, #000 40%, #000 60%, transparent);
+	animation: vhs-roll-up 25s linear infinite;
+}
+
+/* Third band — thinner, sharper, drifting down at its own pace */
+.vhsBar {
+	position: absolute;
+	left: 0;
+	right: 0;
+	height: 56px;
+	background: rgba(255, 255, 255, 0.025);
+	backdrop-filter: blur(3px) brightness(1.05) saturate(1.15);
+	-webkit-backdrop-filter: blur(3px) brightness(1.05) saturate(1.15);
+	-webkit-mask: linear-gradient(to bottom, transparent, #000 35%, #000 65%, transparent);
+	mask: linear-gradient(to bottom, transparent, #000 35%, #000 65%, transparent);
+	animation: vhs-roll-down 20s linear infinite;
+	animation-delay: -8s;
+}
+
+@keyframes vhs-roll-down {
+	0%   { top: -15%; opacity: 0; }
+	6%   { opacity: 1; }
+	94%  { opacity: 1; }
+	100% { top: 115%; opacity: 0; }
+}
+
+@keyframes vhs-roll-up {
+	0%   { top: 115%; opacity: 0; }
+	8%   { opacity: 0.85; }
+	92%  { opacity: 0.85; }
+	100% { top: -15%; opacity: 0; }
+}
+
+@keyframes vhs-flicker {
+	0%, 100% { opacity: 0.92; }
+	48%      { opacity: 1;    }
+	50%      { opacity: 0.85; }
+	72%      { opacity: 0.97; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.vhs,
+	.vhs::before,
+	.vhs::after {
+		animation: none;
+	}
+	.vhs::before,
+	.vhs::after {
+		opacity: 0;
+	}
 }
 
 /* Reset cursor on UI panels — bare image area keeps crosshair */
