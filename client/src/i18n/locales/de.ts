@@ -30,6 +30,11 @@ export const de: Record<string, string> = {
 	'deathlog.stashes': 'Verstecke',
 	'deathlog.items': 'Gegenstände',
 
+	// Death takeover
+	'death.title': 'Du bist gestorben',
+	'death.flavor': 'Kehr in die Zone zurück, Stalker.',
+	'death.viewRun': 'Diesen Run ansehen',
+
 	'location.live': 'Live',
 	'location.inMenu': 'Pausiert',
 	'location.dead': 'Gefallen',

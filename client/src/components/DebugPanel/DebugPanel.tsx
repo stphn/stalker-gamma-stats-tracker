@@ -7,11 +7,13 @@ interface DebugPanelProps {
 	gameState: 'playing' | 'menu' | 'dead' | 'off';
 	stale: boolean;
 	onTestDeath: () => void;
+	deathScreen: boolean;
+	onToggleDeathScreen: () => void;
 	onClose: () => void;
 }
 
 export function DebugPanel({
-	data, connected, gameState, stale, onTestDeath, onClose,
+	data, connected, gameState, stale, onTestDeath, deathScreen, onToggleDeathScreen, onClose,
 }: DebugPanelProps) {
 	const a = data?.actor;
 	const age = data?.last_updated ? Math.round(Date.now() / 1000 - data.last_updated) : null;
@@ -55,6 +57,13 @@ export function DebugPanel({
 				<div className={styles.title}>Actions</div>
 				<button className={`${styles.btn} ${styles.danger}`} onClick={onTestDeath}>
 					💀 test death
+				</button>
+				<button
+					className={`${styles.btn} ${styles.danger}`}
+					onClick={onToggleDeathScreen}
+					aria-pressed={deathScreen}
+				>
+					{deathScreen ? '✕ hide death screen' : '☠ death screen'}
 				</button>
 			</div>
 

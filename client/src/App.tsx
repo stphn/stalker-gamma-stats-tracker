@@ -10,6 +10,7 @@ import './App.css';
 
 import { BloodSplatter } from './components/BloodSplatter/BloodSplatter';
 import { Companions } from './components/Companions/Companions';
+import { DeathOverlay } from './components/DeathOverlay/DeathOverlay';
 import { DebugPanel } from './components/DebugPanel/DebugPanel';
 import { Header } from './components/Header/Header';
 import { Location } from './components/Location/Location';
@@ -24,7 +25,7 @@ import { StatsTabs } from './components/StatsTabs/StatsTabs';
 export default function App() {
 	const { t, locale } = useI18n();
 	const { data, connected, stale } = useStats();
-	const { runs } = useRuns();
+	const { runs, total: totalRuns } = useRuns();
 	const gameLive =
 		connected && !!data && Date.now() / 1000 - data.last_updated < 15;
 	const gameState = gameLive
@@ -50,6 +51,16 @@ export default function App() {
 	const DEATHLOG_PREVIEW = 4;
 	const visibleRuns = showAllRuns ? runs : runs.slice(0, DEATHLOG_PREVIEW);
 
+	// Death log scroll target + freshly-died row highlight
+	const deathLogRef = useRef<HTMLDivElement>(null);
+	const [highlightStart, setHighlightStart] = useState<number | null>(null);
+	const scrollToLog = () =>
+		deathLogRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+	// Debug-only: force the death takeover regardless of live game state
+	const [previewDeath, setPreviewDeath] = useState(false);
+	const showDeathScreen = gameState === 'dead' || previewDeath;
+
 	// Site-wide debug panel, toggled with D
 	const [debug, setDebug] = useState(false);
 	useEffect(() => {
@@ -66,6 +77,12 @@ export default function App() {
 		setDeathTrigger(Date.now());
 		setShaking(true);
 		setTimeout(() => setShaking(false), 500);
+		// Exercise the log behaviour too: flash the newest row
+		const newest = runs[0]?.start;
+		if (newest != null) {
+			setHighlightStart(newest);
+			setTimeout(() => setHighlightStart(null), 5000);
+		}
 	};
 	const prevRunStart = useRef<number | null>(null);
 	const latestDeathStart = data?.last_run?.[0]?.start ?? null;
@@ -80,6 +97,10 @@ export default function App() {
 			setDeathTrigger(latestDeathStart);
 			setShaking(true);
 			setTimeout(() => setShaking(false), 500);
+			// Flag the fresh row so it flashes in the log (no auto-scroll).
+			setHighlightStart(latestDeathStart);
+			const clear = setTimeout(() => setHighlightStart(null), 5000);
+			return () => clearTimeout(clear);
 		}
 	}, [latestDeathStart]);
 
@@ -94,6 +115,8 @@ export default function App() {
 					gameState={gameState}
 					stale={stale}
 					onTestDeath={triggerDeath}
+					deathScreen={previewDeath}
+					onToggleDeathScreen={() => setPreviewDeath(v => !v)}
 					onClose={() => setDebug(false)}
 				/>
 			)}
@@ -123,6 +146,11 @@ export default function App() {
 						<BloodSplatter trigger={deathTrigger} key={deathTrigger} />
 						<Stage
 							location={displayActor?.location}
+							death={
+								showDeathScreen ? (
+									<DeathOverlay run={runs[0] ?? null} onViewRun={scrollToLog} />
+								) : undefined
+							}
 							left={
 								displayActor && (
 									<>
@@ -149,7 +177,7 @@ export default function App() {
 					</div>
 
 					{runs.length > 0 && (
-						<div className="death-log-wrap">
+						<div className="death-log-wrap" ref={deathLogRef}>
 						<div className="death-log-title">
 							<Skull size={16} weight="fill" />
 							<span>{t('deathlog.title')}</span>
@@ -168,6 +196,9 @@ export default function App() {
 								<span><Package size={12} weight="bold" />{t('deathlog.items')}</span>
 							</div>
 							{visibleRuns.map((run, i) => {
+								// Newest run sits on top but carries the highest ordinal:
+								// total runs minus its offset from the top (fallback to fetched length).
+								const runNo = (totalRuns || runs.length) - i;
 								const date = new Date(run.start * 1000)
 									.toLocaleDateString('en-GB', {
 										day: '2-digit',
@@ -178,10 +209,10 @@ export default function App() {
 								return (
 									<article
 										key={run.start}
-										className="death-row"
-										aria-label={`Run ${i + 1} on ${date}`}
+										className={run.start === highlightStart ? 'death-row death-row--new' : 'death-row'}
+										aria-label={`Run ${runNo} on ${date}`}
 									>
-										<span className="death-run">#{i + 1}</span>
+										<span className="death-run">#{runNo}</span>
 										<time className="death-date" dateTime={new Date(run.start * 1000).toISOString()}>{date}</time>
 										<span className="death-zone">{run.death_location_name ?? (run.death_location ? t(`level.${run.death_location}`) : '—')}</span>
 										<span>{fmt_time(run.playtime ?? 0)}</span>

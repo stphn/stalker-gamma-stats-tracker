@@ -45,6 +45,17 @@
 	cursor: default;
 }
 
+/* ── Death takeover — full-cover, sits above all stage content ── */
+.death {
+	position: absolute;
+	inset: 0;
+	z-index: 6;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: default;
+}
+
 /* ── Content overlay ── */
 .left {
 	position: absolute;

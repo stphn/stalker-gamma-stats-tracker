@@ -404,6 +404,17 @@ body {
 	padding-right: var(--pad-xl);
 }
 
+/* Freshly-died row — red flash that fades as attention lands on it */
+.death-row--new > * {
+	animation: death-row-flash 5s ease-out;
+}
+
+@keyframes death-row-flash {
+	0%   { background: hsl(0, 60%, 32%, 0.55); }
+	12%  { background: hsl(0, 60%, 32%, 0.38); }
+	100% { background: hsl(0, 60%, 32%, 0); }
+}
+
 /* ── Death effect keyframes ── */
 @keyframes blood-shake {
 	0%   { transform: translate(0,    0);   }

@@ -81,6 +81,12 @@
 }
 .danger:hover { background: rgba(216, 58, 46, 0.22); }
 
+.btn[aria-pressed='true'] {
+	background: rgba(216, 58, 46, 0.32);
+	border-color: rgba(216, 58, 46, 0.8);
+	color: #ffb4ad;
+}
+
 .hint {
 	padding: 5px 10px;
 	color: var(--text-disabled);

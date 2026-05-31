@@ -8,9 +8,10 @@ interface StageProps {
 	location?: string;
 	left?: ReactNode;
 	overlay?: ReactNode;
+	death?: ReactNode;
 }
 
-export function Stage({ location, left, overlay }: StageProps) {
+export function Stage({ location, left, overlay, death }: StageProps) {
 	const src = useLocationImage(location);
 	const containerRef = useRef<HTMLDivElement>(null);
 
@@ -28,6 +29,7 @@ export function Stage({ location, left, overlay }: StageProps) {
 			<div className={styles.scanline} aria-hidden="true" />
 			<div className={styles.left}>{left}</div>
 			{overlay && <div className={styles.overlay}>{overlay}</div>}
+			{death && <div className={styles.death}>{death}</div>}
 		</div>
 	);
 }
