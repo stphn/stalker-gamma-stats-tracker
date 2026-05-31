@@ -17,6 +17,8 @@ export const uk: Record<string, string> = {
 	'footer.label': 'Зовнішні посилання',
 
 	'deathlog.title': 'Журнал смертей',
+	'deathlog.showAll': 'Показати всі ({count})',
+	'deathlog.showLess': 'Згорнути',
 	'deathlog.date': 'Дата',
 	'deathlog.run': 'Забіг',
 	'deathlog.location': 'Зона',

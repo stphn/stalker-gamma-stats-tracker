@@ -17,6 +17,8 @@ export const de: Record<string, string> = {
 	'footer.label': 'Externe Links',
 
 	'deathlog.title': 'Todesprotokoll',
+	'deathlog.showAll': 'Alle anzeigen ({count})',
+	'deathlog.showLess': 'Weniger anzeigen',
 	'deathlog.date': 'Datum',
 	'deathlog.run': 'Lauf',
 	'deathlog.location': 'Zone',

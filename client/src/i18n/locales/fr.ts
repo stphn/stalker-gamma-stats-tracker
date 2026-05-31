@@ -17,6 +17,8 @@ export const fr: Record<string, string> = {
 	'footer.label': 'Liens externes',
 
 	'deathlog.title': 'Journal des morts',
+	'deathlog.showAll': 'Tout afficher ({count})',
+	'deathlog.showLess': 'Réduire',
 	'deathlog.date': 'Date',
 	'deathlog.run': 'Partie',
 	'deathlog.location': 'Zone',

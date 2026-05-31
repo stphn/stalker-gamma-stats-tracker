@@ -19,6 +19,8 @@ export const en: Record<string, string> = {
 
 	// Death log columns
 	'deathlog.title': 'Death Logs',
+	'deathlog.showAll': 'Show all ({count})',
+	'deathlog.showLess': 'Show less',
 	'deathlog.date': 'Date',
 	'deathlog.run': 'Run',
 	'deathlog.location': 'Zone',

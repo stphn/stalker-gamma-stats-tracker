@@ -1,4 +1,4 @@
-import { Atom, Clock, Coins, Crosshair, Flag, Package, PersonSimpleRun, Radioactive, Skull, Vault } from '@phosphor-icons/react';
+import { Atom, CalendarDots, CaretDoubleDown, CaretDoubleUp, Clock, Coins, Crosshair, Flag, Package, PersonSimpleRun, Radioactive, Skull, Vault } from '@phosphor-icons/react';
 import { useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from './types';
 import { useI18n } from './i18n/I18nContext';
@@ -46,6 +46,9 @@ export default function App() {
 	const [deathTrigger, setDeathTrigger] = useState(0);
 	const [shaking, setShaking] = useState(false);
 	const [mapOpen, setMapOpen] = useState(false);
+	const [showAllRuns, setShowAllRuns] = useState(false);
+	const DEATHLOG_PREVIEW = 4;
+	const visibleRuns = showAllRuns ? runs : runs.slice(0, DEATHLOG_PREVIEW);
 
 	// Site-wide debug panel, toggled with D
 	const [debug, setDebug] = useState(false);
@@ -154,7 +157,7 @@ export default function App() {
 						<section className="death-log" aria-label="Death log">
 							<div className="death-header" aria-hidden="true">
 								<span><PersonSimpleRun size={12} weight="bold" />{t('deathlog.run')}</span>
-								<span><Radioactive size={12} weight="bold" />{t('deathlog.date')}</span>
+								<span><CalendarDots size={12} weight="bold" />{t('deathlog.date')}</span>
 								<span><Radioactive size={12} weight="bold" />{t('deathlog.location')}</span>
 								<span><Clock size={12} weight="bold" />{t('deathlog.time')}</span>
 								<span><Crosshair size={12} weight="bold" />{t('deathlog.kills')}</span>
@@ -164,7 +167,7 @@ export default function App() {
 								<span><Vault size={12} weight="bold" />{t('deathlog.stashes')}</span>
 								<span><Package size={12} weight="bold" />{t('deathlog.items')}</span>
 							</div>
-							{runs.map((run, i) => {
+							{visibleRuns.map((run, i) => {
 								const date = new Date(run.start * 1000)
 									.toLocaleDateString('en-GB', {
 										day: '2-digit',
@@ -191,6 +194,20 @@ export default function App() {
 									</article>
 								);
 							})}
+							{runs.length > DEATHLOG_PREVIEW && (
+								<button
+									type="button"
+									className="death-log-toggle"
+									onClick={() => setShowAllRuns((v) => !v)}
+									aria-expanded={showAllRuns}
+								>
+									{showAllRuns ? (
+										<><CaretDoubleUp size={12} weight="bold" />{t('deathlog.showLess')}<CaretDoubleUp size={12} weight="bold" /></>
+									) : (
+										<><CaretDoubleDown size={12} weight="bold" />{t('deathlog.showAll', { count: runs.length })}<CaretDoubleDown size={12} weight="bold" /></>
+									)}
+								</button>
+							)}
 						</section>
 						</div>
 					)}
