@@ -51,11 +51,8 @@ export default function App() {
 	const DEATHLOG_PREVIEW = 4;
 	const visibleRuns = showAllRuns ? runs : runs.slice(0, DEATHLOG_PREVIEW);
 
-	// Death log scroll target + freshly-died row highlight
-	const deathLogRef = useRef<HTMLDivElement>(null);
+	// Freshly-died row highlight (flash only — no scrolling)
 	const [highlightStart, setHighlightStart] = useState<number | null>(null);
-	const scrollToLog = () =>
-		deathLogRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 	// Latched death state: turns on when a death is detected, off when a new
 	// run starts (game_state back to 'playing'). Decouples the takeover from
@@ -157,7 +154,7 @@ export default function App() {
 							location={displayActor?.location}
 							death={
 								showDeathScreen ? (
-									<DeathOverlay run={runs[0] ?? null} onViewRun={scrollToLog} />
+									<DeathOverlay run={runs[0] ?? null} />
 								) : undefined
 							}
 							left={
@@ -186,7 +183,7 @@ export default function App() {
 					</div>
 
 					{runs.length > 0 && (
-						<div className="death-log-wrap" ref={deathLogRef}>
+						<div className="death-log-wrap">
 						<div className="death-log-title">
 							<Skull size={16} weight="fill" />
 							<span>{t('deathlog.title')}</span>

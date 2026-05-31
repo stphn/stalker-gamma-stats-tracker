@@ -33,7 +33,6 @@ export const fr: Record<string, string> = {
 	// Death takeover
 	'death.title': 'Vous êtes mort',
 	'death.flavor': 'Retourne dans la Zone, Stalker.',
-	'death.viewRun': 'Voir cette partie',
 
 	'location.live': 'En direct',
 	'location.inMenu': 'Pause',

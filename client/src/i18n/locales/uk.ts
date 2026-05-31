@@ -33,7 +33,6 @@ export const uk: Record<string, string> = {
 	// Death takeover
 	'death.title': 'Ви загинули',
 	'death.flavor': 'Повертайся в Зону, сталкере.',
-	'death.viewRun': 'Переглянути цей забіг',
 
 	'location.live': 'Наживо',
 	'location.inMenu': 'Пауза',

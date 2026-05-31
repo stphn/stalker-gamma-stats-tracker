@@ -1,120 +1,121 @@
 /* ── Minimap shell — 220px to accommodate the outer compass ring ── */
 .root {
-	position: relative;
-	width: 220px;
-	height: 220px;
-	flex-shrink: 0;
-	cursor: pointer;
-	margin-block: calc(var(--pad-md) * -1);
-	background: transparent;
-	border: none;
-	padding: 0;
+  position: relative;
+  width: 220px;
+  height: 220px;
+  flex-shrink: 0;
+  cursor: pointer;
+  margin-block: calc(var(--pad-md) * -1);
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 /* ── Map + ring wrapper — position:relative so .rotor's inset:0 anchors here ── */
 .mapWrap {
-	width: 220px;
-	height: 220px;
-	position: relative;
-	background: transparent;
+  width: 220px;
+  height: 220px;
+  position: relative;
+  background: transparent;
 }
-
 
 /* ── Rotating layer: both compass ring and map image spin together ── */
 .rotor {
-	position: absolute;
-	inset: 0;
-	transform-origin: center;
-	transition: transform 0.6s ease-out;
-	/* Keep the spinning layer on the compositor to avoid repaint flicker */
-	will-change: transform;
-	backface-visibility: hidden;
+  position: absolute;
+  inset: 0;
+  transform-origin: center;
+  transition: transform 0.6s ease-out;
+  /* Keep the spinning layer on the compositor to avoid repaint flicker */
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 /* Compass ring image — full 220×220, not clipped */
 .compassRing {
-	position: absolute;
-	inset: 0;
-	width: 100%;
-	height: 100%;
-	pointer-events: none;
-	user-select: none;
-	transition: filter 0.15s ease-out;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.15s ease-out;
 }
 
 /* Inner map area — circular clip, centered inside the ring.
    Inner circle of the webp ≈ 76% of image = 220 * 0.76 = 167px → 166px diameter, 27px offset. */
 .mapClip {
-	position: absolute;
-	left: 27px;
-	top: 27px;
-	width: 166px;
-	height: 166px;
-	border-radius: 50%;
-	overflow: hidden;
-	background: rgba(6, 8, 7, 0.82);
-	/* Frost the stage behind the disc instead of leaning on a soft shadow */
-	backdrop-filter: blur(5px);
-	-webkit-backdrop-filter: blur(5px);
-	/* Plain flat backing (no blur) fills the ring area behind the compass
+  position: absolute;
+  left: 27px;
+  top: 27px;
+  width: 166px;
+  height: 166px;
+  border-radius: 50%;
+  overflow: hidden;
+  /* Frost the stage behind the disc instead of leaning on a soft shadow */
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  /* Plain flat backing (no blur) fills the ring area behind the compass
 	   image — clean solid colour instead of the old smudgy halo. box-shadow
 	   is never clipped by overflow:hidden, so it still fills the 27px ring. */
-	box-shadow: 0 0 0 27px rgba(6, 8, 7, 0.92);
-	transition: box-shadow 0.15s ease-out;
+  box-shadow: 0 0 0 27px rgba(6, 8, 7, 0.5);
+  transition: box-shadow 0.15s ease-out;
 }
 
 /* ── Hover: amber glow ring + brighter compass ── */
 .root:hover .mapClip {
-	box-shadow:
-		0 0 0 27px rgba(6, 8, 7, 0.92),
-		0 0 16px 3px color-mix(in srgb, var(--color-positive) 60%, transparent),
-		inset 0 0 0 1px color-mix(in srgb, var(--color-positive) 55%, transparent);
+  box-shadow:
+    0 0 0 27px rgba(6, 8, 7, 0.92),
+    0 0 16px 3px color-mix(in srgb, var(--color-positive) 60%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--color-positive) 55%, transparent);
 }
 
 .root:hover .compassRing {
-	filter: brightness(1.25) drop-shadow(0 0 4px color-mix(in srgb, var(--color-positive) 55%, transparent));
+  filter: brightness(1.25)
+    drop-shadow(
+      0 0 4px color-mix(in srgb, var(--color-positive) 55%, transparent)
+    );
 }
 
 .compassImg {
-	position: absolute;
-	left: 0;
-	top: 0;
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
-	transition: transform 0.6s ease-out;
-	will-change: transform;
-	backface-visibility: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  transition: transform 0.6s ease-out;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 /* Static map (no position yet) */
 .mapImg {
-	width: 100%;
-	height: 100%;
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 
 /* ── Player marker — fixed at center, above everything ── */
 .compassPlayer {
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	width: 0;
-	height: 0;
-	z-index: 3;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  z-index: 3;
 }
 
 /* ── Underground fallback ── */
 .underground {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: var(--bg-base);
-	color: var(--text-disabled);
-	font-family: var(--font-display);
-	font-size: var(--text-2xs);
-	letter-spacing: 2px;
-	text-transform: uppercase;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-base);
+  color: var(--text-disabled);
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }

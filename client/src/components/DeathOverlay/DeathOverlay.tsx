@@ -1,4 +1,4 @@
-import { ArrowFatLineDown, Skull } from '@phosphor-icons/react';
+import { Skull } from '@phosphor-icons/react';
 import { useI18n } from '../../i18n/I18nContext';
 import type { Run } from '../../types';
 import { fmt_time } from '../../utils/formatters';
@@ -6,10 +6,9 @@ import styles from './DeathOverlay.module.css';
 
 interface Props {
 	run: Run | null;
-	onViewRun: () => void;
 }
 
-export function DeathOverlay({ run, onViewRun }: Props) {
+export function DeathOverlay({ run }: Props) {
 	const { t } = useI18n();
 
 	const zone =
@@ -41,11 +40,6 @@ export function DeathOverlay({ run, onViewRun }: Props) {
 				)}
 
 				<p className={styles.flavor}>{t('death.flavor')}</p>
-
-				<button type="button" className={styles.cta} onClick={onViewRun}>
-					<ArrowFatLineDown weight="bold" />
-					{t('death.viewRun')}
-				</button>
 			</div>
 		</div>
 	);

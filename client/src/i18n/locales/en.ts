@@ -35,7 +35,6 @@ export const en: Record<string, string> = {
 	// Death takeover
 	'death.title': 'You Died',
 	'death.flavor': 'Return to the Zone, Stalker.',
-	'death.viewRun': 'View this run',
 
 	// Location badges
 	'location.live': 'Live',
