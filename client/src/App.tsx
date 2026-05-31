@@ -57,9 +57,17 @@ export default function App() {
 	const scrollToLog = () =>
 		deathLogRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+	// Latched death state: turns on when a death is detected, off when a new
+	// run starts (game_state back to 'playing'). Decouples the takeover from
+	// the live-freshness window so it doesn't vanish if pushes go stale.
+	const [died, setDied] = useState(false);
+	useEffect(() => {
+		if (data?.game_state === 'playing') setDied(false);
+	}, [data?.game_state]);
+
 	// Debug-only: force the death takeover regardless of live game state
 	const [previewDeath, setPreviewDeath] = useState(false);
-	const showDeathScreen = gameState === 'dead' || previewDeath;
+	const showDeathScreen = died || gameState === 'dead' || previewDeath;
 
 	// Site-wide debug panel, toggled with D
 	const [debug, setDebug] = useState(false);
@@ -94,6 +102,7 @@ export default function App() {
 		}
 		if (latestDeathStart !== prevRunStart.current) {
 			prevRunStart.current = latestDeathStart;
+			setDied(true);
 			setDeathTrigger(latestDeathStart);
 			setShaking(true);
 			setTimeout(() => setShaking(false), 500);
