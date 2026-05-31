@@ -1,6 +1,5 @@
-import { Coins, Compass } from '@phosphor-icons/react';
+import { Coins, Compass, Skull } from '@phosphor-icons/react';
 import type { StatsData } from '../../types';
-import { GameIcon } from '../GameIcon/GameIcon';
 import { useI18n } from '../../i18n/I18nContext';
 import { fmt_money } from '../../utils/formatters';
 import { CardHeader } from '../CardHeader/CardHeader';
@@ -20,7 +19,7 @@ export function RightPanel({ data }: RightPanelProps) {
 		<div className={styles.root}>
 			{/* Kills */}
 			<div className={styles.panel}>
-				<CardHeader label={t('kills.title')} accentColor="#c85a5a" icon={<GameIcon name="burningSkull" size={14} color="#c85a5a" />} />
+				<CardHeader label={t('kills.title')} accentColor="#c85a5a" icon={<Skull size={14} weight="fill" color="#c85a5a" />} />
 				<KillsBreakdown kills={session.kills} label={t('kills.title')} />
 			</div>
 

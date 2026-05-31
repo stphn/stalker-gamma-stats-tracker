@@ -89,17 +89,21 @@ export const en: Record<string, string> = {
 	'alltime.levelChanges': 'Level Changes',
 	'alltime.kd': 'K/D Ratio',
 
-	// PDA panel
+	// PDA panel — group labels
 	'pda.combat': 'Combat',
-	'pda.economy': 'Economy',
-	'pda.zone': 'Zone',
-	'pda.deeds': 'Deeds',
+	'pda.survival': 'Survival',
+	'pda.loot': 'Loot',
+	'pda.tasks': 'Tasks',
 	'pda.exploration': 'Exploration',
-	'pda.knowledge': 'Knowledge',
+	'pda.progress': 'Progress',
+	// PDA panel — stats
 	'pda.achievements': 'Achievements',
-	'pda.kills': 'Kills',
+	'pda.mutants': 'Mutants Killed',
+	'pda.stalkers': 'Stalkers Killed',
+	'pda.helicopters': 'Helicopters Downed',
 	'pda.deaths': 'Deaths',
 	'pda.surrendered': 'Enemies Surrendered',
+	'pda.timeInZone': 'Time Elapsed',
 	'pda.money': 'Money',
 	'pda.net': 'Net',
 	'pda.emissions': 'Emissions Survived',

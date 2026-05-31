@@ -80,6 +80,7 @@ export interface PdaStats extends StatsBlock {
 	articles: number;
 	achievements_count: number;
 	levels_visited: number;
+	game_days?: number; // in-game "Time Elapsed" in Zone days
 }
 
 export interface Companion {

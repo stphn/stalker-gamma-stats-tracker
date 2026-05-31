@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { Kills } from '../../types';
 import { useI18n } from '../../i18n/I18nContext';
 import {
@@ -101,10 +102,14 @@ function KillsDonut({
 interface KillsBreakdownProps {
 	kills: Kills;
 	label: string;
+	/** Optional extra column rendered right of the donut (e.g. Deaths + K/D). */
+	extra?: ReactNode;
+	/** Donut diameter in px (default 96). Larger when there's an extra column. */
+	donutSize?: number;
 }
 
 /** Faction-by-faction kill rows + donut. Shared by the live session panel and the All-Time tab. */
-export function KillsBreakdown({ kills, label }: KillsBreakdownProps) {
+export function KillsBreakdown({ kills, label, extra, donutSize = 96 }: KillsBreakdownProps) {
 	const { t } = useI18n();
 
 	const killData = KILL_DEFS.map((d) => ({
@@ -116,7 +121,7 @@ export function KillsBreakdown({ kills, label }: KillsBreakdownProps) {
 		.sort((a, b) => b.count - a.count);
 
 	return (
-		<div className={styles.killsContent}>
+		<div className={`${styles.killsContent} ${extra ? styles.withExtra : ''}`}>
 			<div className={styles.killRows}>
 				{killData.map((k) => (
 					<div key={k.key} className={styles.killRow}>
@@ -151,7 +156,8 @@ export function KillsBreakdown({ kills, label }: KillsBreakdownProps) {
 				))}
 				{killData.length === 0 && <StatRow label={t('kills.none')} value="—" />}
 			</div>
-			<KillsDonut segments={killData} total={kills.total} label={label} />
+			<KillsDonut segments={killData} total={kills.total} label={label} size={donutSize} thickness={donutSize >= 120 ? 18 : 14} />
+			{extra && <div className={styles.killExtra}>{extra}</div>}
 		</div>
 	);
 }

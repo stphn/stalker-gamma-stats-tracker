@@ -1,5 +1,4 @@
-import { Clock, Coins, Crosshair, Flag, Package, Vault } from '@phosphor-icons/react';
-import { GameIcon } from './components/GameIcon/GameIcon';
+import { Atom, Clock, Coins, Crosshair, Flag, Package, PersonSimpleRun, Skull, Vault } from '@phosphor-icons/react';
 import { useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from './types';
 import { useI18n } from './i18n/I18nContext';
@@ -152,12 +151,12 @@ export default function App() {
 							<div className="death-header" aria-hidden="true">
 								<span />
 								<span>{t('deathlog.date')}</span>
-								<span><GameIcon name="run" size={10} />{t('deathlog.run')}</span>
+								<span><PersonSimpleRun size={10} weight="bold" />{t('deathlog.run')}</span>
 								<span>{t('deathlog.location')}</span>
 								<span><Clock size={10} weight="bold" />{t('deathlog.time')}</span>
 								<span><Crosshair size={10} weight="bold" />{t('deathlog.kills')}</span>
 								<span><Coins size={10} weight="bold" />{t('deathlog.earned')}</span>
-								<span><GameIcon name="artifact" size={10} />{t('deathlog.artifacts')}</span>
+								<span><Atom size={10} weight="bold" />{t('deathlog.artifacts')}</span>
 								<span><Flag size={10} weight="bold" />{t('deathlog.tasks')}</span>
 								<span><Vault size={10} weight="bold" />{t('deathlog.stashes')}</span>
 								<span><Package size={10} weight="bold" />{t('deathlog.items')}</span>
@@ -176,7 +175,7 @@ export default function App() {
 										className="death-row"
 										aria-label={`Run ${i + 1} on ${date}`}
 									>
-										<span className="death-skull" aria-hidden="true"><GameIcon name="burningSkull" size={14} /></span>
+										<span className="death-skull" aria-hidden="true"><Skull size={14} weight="fill" /></span>
 										<time className="death-date" dateTime={new Date(run.start * 1000).toISOString()}>{date}</time>
 										<span className="death-run">#{i + 1}</span>
 										<span className="death-zone">{run.death_location_name ?? (run.death_location ? t(`level.${run.death_location}`) : '—')}</span>

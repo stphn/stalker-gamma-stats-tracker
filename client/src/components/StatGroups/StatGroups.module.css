@@ -1,0 +1,39 @@
+.grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: var(--pad-md);
+}
+
+@container layout (max-width: 900px) {
+	.grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@container layout (max-width: 500px) {
+	.grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.group {
+	display: grid;
+	gap: 4px;
+}
+
+.groupLabel {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	font-weight: 600;
+	letter-spacing: 1.5px;
+	text-transform: uppercase;
+	color: var(--accent-base);
+	gap: 6px;
+}
+
+.panel {
+	background: var(--bg-surface);
+	border: 1px solid var(--border);
+	display: grid;
+	gap: 1px;
+}

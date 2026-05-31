@@ -4,6 +4,21 @@
 	gap: 1px;
 }
 
+/* Three equal columns: kill rows | donut | extra (Deaths + K/D) */
+.withExtra {
+	grid-template-columns: 1fr 1fr 1fr;
+}
+
+.killExtra {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: var(--pad-lg);
+	padding: var(--pad-sm) var(--pad-md);
+	background: var(--bg-surface);
+}
+
 .killRows {
 	display: grid;
 	align-content: start;
