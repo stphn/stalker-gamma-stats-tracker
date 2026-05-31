@@ -1,5 +1,8 @@
 .root {
+	position: relative;
+	z-index: 2;
 	background: var(--bg-base);
+	box-shadow: var(--shadow-elevation-medium);
 }
 
 .tabBar {

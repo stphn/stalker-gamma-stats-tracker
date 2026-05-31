@@ -71,8 +71,9 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 					backgroundImage: `url(${imgSrc})`,
 					width: dW,
 					height: dH,
-					left: c - uv!.u * dW,
-					top: c - uv!.v * dH,
+					// Pan via transform (GPU-composited) instead of left/top so the
+					// upscaled map doesn't repaint/flicker each frame while animating.
+					transform: `translate3d(${c - uv!.u * dW}px, ${c - uv!.v * dH}px, 0)`,
 				}}
 			/>
 		);
