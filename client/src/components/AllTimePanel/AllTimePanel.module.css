@@ -1,8 +1,8 @@
 .root {
 	display: grid;
-	gap: var(--pad-sm);
-	padding: var(--pad-sm);
-	align-content: end;
+	gap: var(--pad-md);
+	padding: var(--pad-md) var(--pad-lg);
+	background: var(--bg-base);
 }
 
 .panel {
@@ -13,11 +13,16 @@
 	gap: 1px;
 }
 
-/* Economy / Exploration row */
 .bottomRow {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: var(--pad-sm);
+	gap: var(--pad-md);
+}
+
+@container layout (max-width: 700px) {
+	.bottomRow {
+		grid-template-columns: 1fr;
+	}
 }
 
 .statRows {

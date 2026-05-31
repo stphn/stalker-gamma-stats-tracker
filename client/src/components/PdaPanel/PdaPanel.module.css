@@ -2,14 +2,6 @@
 	background: var(--bg-base);
 }
 
-/* Header matches the grid's horizontal inset */
-.root > :first-child {
-	width: 100%;
-	box-sizing: border-box;
-	padding-left: var(--pad-lg);
-	padding-right: var(--pad-lg);
-}
-
 .grid {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);

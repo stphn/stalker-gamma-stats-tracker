@@ -1,12 +1,12 @@
-import type { PdaStats } from '../../types';
+import type { GameAchievements, PdaStats } from '../../types';
 import { useI18n } from '../../i18n/I18nContext';
 import { fmt_money, fmt_time } from '../../utils/formatters';
-import { CardHeader } from '../CardHeader/CardHeader';
 import { StatRow } from '../StatRow/StatRow';
 import styles from './PdaPanel.module.css';
 
 interface PdaPanelProps {
 	pda: PdaStats;
+	achievements?: GameAchievements;
 }
 
 // Guard against fields the mod hasn't written yet
@@ -14,23 +14,20 @@ function n(v: number | undefined): number {
 	return v ?? 0;
 }
 
-export function PdaPanel({ pda }: PdaPanelProps) {
+export function PdaPanel({ pda, achievements }: PdaPanelProps) {
 	const { t, locale } = useI18n();
-	const earned = n(pda.rubles_earned);
-	const spent = n(pda.rubles_spent);
-	const net = earned - spent;
+	const achText = achievements
+		? `${achievements.earned}/${achievements.total}`
+		: n(pda.achievements_count);
 
 	return (
 		<section className={styles.root}>
-			<CardHeader label={t('pda.title')} accentColor="transparent" />
-
 			<div className={styles.grid}>
 				{/* Combat */}
 				<div className={styles.group}>
 					<span className={styles.groupLabel}><span aria-hidden="true">⠿</span> {t('pda.combat')}</span>
 					<div className={styles.panel}>
 						<StatRow label={t('pda.kills')} value={n(pda.kills?.total)} />
-						<StatRow label={t('pda.deaths')} value={n(pda.deaths)} />
 						<StatRow label={t('pda.surrendered')} value={n(pda.enemies_surrendered)} />
 					</div>
 				</div>
@@ -39,15 +36,7 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 				<div className={styles.group}>
 					<span className={styles.groupLabel}><span aria-hidden="true">⠿</span> {t('pda.economy')}</span>
 					<div className={styles.panel}>
-						<StatRow label={t('pda.earned')} value={fmt_money(earned, locale)} />
-						<StatRow label={t('pda.spent')} value={fmt_money(spent, locale)} />
-						<StatRow
-							label={t('pda.net')}
-							value={fmt_money(net, locale)}
-							valueColor={
-								net >= 0 ? 'var(--color-positive)' : 'var(--color-danger)'
-							}
-						/>
+						<StatRow label={t('pda.money')} value={fmt_money(n(pda.current_money), locale)} />
 					</div>
 				</div>
 
@@ -87,6 +76,7 @@ export function PdaPanel({ pda }: PdaPanelProps) {
 				<div className={styles.group}>
 					<span className={styles.groupLabel}><span aria-hidden="true">⠿</span> {t('pda.knowledge')}</span>
 					<div className={styles.panel}>
+						<StatRow label={t('pda.achievements')} value={achText} />
 						<StatRow label={t('pda.articlesRead')} value={n(pda.articles)} />
 						<StatRow label={t('pda.artifactsFound')} value={n(pda.artifacts)} />
 						<StatRow label={t('pda.playtime')} value={fmt_time(pda.playtime)} />

@@ -1,0 +1,84 @@
+.killsContent {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1px;
+}
+
+.killRows {
+	display: grid;
+	align-content: start;
+	gap: 1px;
+}
+
+.killRow {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	gap: 8px;
+	padding: 4px 8px;
+	background: var(--bg-surface);
+	border-bottom: 1px solid var(--bg-subtle);
+}
+
+.killRow:last-child {
+	border-bottom: none;
+}
+
+.killName {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	font-family: var(--font-display);
+	font-size: var(--text-sm);
+	font-weight: 400;
+}
+
+.killDot {
+	width: 8px;
+	height: 8px;
+	border-radius: 2px;
+	flex-shrink: 0;
+}
+
+.killValue {
+	font-family: var(--font-display);
+	font-size: var(--text-sm);
+	font-weight: 700;
+	color: var(--accent-base);
+	text-align: right;
+}
+
+/* Donut */
+.donutWrap {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--pad-sm) var(--pad-md);
+	background: var(--bg-surface);
+}
+
+.donutCenter {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1px;
+	pointer-events: none;
+}
+
+.donutCount {
+	font-family: var(--font-display);
+	font-size: var(--text-xl);
+	font-weight: 700;
+	color: var(--text-primary);
+	line-height: 1;
+}
+
+.donutLabel {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--text-secondary);
+}

@@ -79,19 +79,28 @@ export const en: Record<string, string> = {
 	'panel.stashesFound': 'Stashes Found',
 	'panel.itemsLooted': 'Items Looted',
 
+	// Stats tabs
+	'tab.ariaLabel': 'Statistics view',
+	'tab.pda': 'PDA',
+	'tab.alltime': 'All-Time',
+
+	// All-Time panel
+	'alltime.progress': 'Progress',
+	'alltime.levelChanges': 'Level Changes',
+	'alltime.kd': 'K/D Ratio',
+
 	// PDA panel
-	'pda.title': 'PDA — All-Time Stats',
 	'pda.combat': 'Combat',
 	'pda.economy': 'Economy',
 	'pda.zone': 'Zone',
 	'pda.deeds': 'Deeds',
 	'pda.exploration': 'Exploration',
 	'pda.knowledge': 'Knowledge',
+	'pda.achievements': 'Achievements',
 	'pda.kills': 'Kills',
 	'pda.deaths': 'Deaths',
 	'pda.surrendered': 'Enemies Surrendered',
-	'pda.earned': 'Earned',
-	'pda.spent': 'Spent',
+	'pda.money': 'Money',
 	'pda.net': 'Net',
 	'pda.emissions': 'Emissions Survived',
 	'pda.psiStorms': 'Psi-Storms Survived',

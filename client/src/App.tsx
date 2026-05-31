@@ -17,10 +17,10 @@ import { Location } from './components/Location/Location';
 import { GameAchievementsPanel } from './components/GameAchievements/GameAchievements';
 import { MapView } from './components/MapView/MapView';
 import { Minimap } from './components/Minimap/Minimap';
-import { PdaPanel } from './components/PdaPanel/PdaPanel';
 import { Player } from './components/Player/Player';
 import { RightPanel } from './components/RightPanel/RightPanel';
 import { Stage } from './components/Stage/Stage';
+import { StatsTabs } from './components/StatsTabs/StatsTabs';
 
 export default function App() {
 	const { t, locale } = useI18n();
@@ -194,7 +194,7 @@ export default function App() {
 						</div>
 					)}
 
-					{data.alltime_official && <PdaPanel pda={data.alltime_official} />}
+					<StatsTabs data={data} />
 					{data.alltime_official && data.game_achievements && (
 						<GameAchievementsPanel
 							pda={data.alltime_official}
