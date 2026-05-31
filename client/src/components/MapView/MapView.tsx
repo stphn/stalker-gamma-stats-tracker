@@ -145,12 +145,11 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 		return () => area.removeEventListener('wheel', onWheel);
 	}, []);
 
-	// Drag-to-pan — manual panning breaks follow mode
+	// Drag-to-pan
 	const onMouseDown = (e: React.MouseEvent) => {
 		if (e.button !== 0) return;
 		e.preventDefault();
 		adjusted.current = true;
-		if (follow) setFollow(false);
 		drag.current = { active: true, startX: e.clientX, startY: e.clientY, panX: pan.x, panY: pan.y };
 	};
 
@@ -248,19 +247,6 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 						{t(`level.${levelId}`) !== `level.${levelId}` ? t(`level.${levelId}`) : (levelData?.name ?? levelId ?? '—')}
 					</span>
 					<div className={styles.headerRight}>
-						<button
-							className={`${styles.followBtn} ${follow ? styles.followOn : ''}`}
-							onClick={() => {
-								const next = !follow;
-								setFollow(next);
-								if (next && mapPos) { adjusted.current = true; centerOn(mapPos, zoom); }
-							}}
-							disabled={!mapPos}
-							title={mapPos ? (follow ? t('map.lockTitleOn') : t('map.lockTitleOff')) : t('map.lockTitleNoPos')}
-							aria-pressed={follow}
-						>
-							{follow ? `🔒 ${t('map.lockOn')}` : `🔓 ${t('map.lockOff')}`}
-						</button>
 						<button className={styles.resetBtn} onClick={() => resetView(levelData)} title={t('map.resetTitle')}>
 							{zoom.toFixed(1)}× · {t('map.reset')}
 						</button>
@@ -286,7 +272,6 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 							className={styles.worldInner}
 							style={{
 								transform: `translate(${pan.x}px, ${pan.y}px)`,
-								transition: (follow && !drag.current.active) ? 'transform 0.45s ease-out' : 'none',
 							}}
 						>
 							<img
@@ -319,7 +304,6 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 							style={{
 								left: screenPos.x,
 								top: screenPos.y,
-								transition: (follow && !drag.current.active) ? 'left 0.45s ease-out, top 0.45s ease-out' : 'none',
 							}}
 							aria-label="Player position"
 						>
