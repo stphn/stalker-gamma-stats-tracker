@@ -1,4 +1,4 @@
-import { Clock, Coins, Crosshair, Flag, Vault } from '@phosphor-icons/react';
+import { Clock, Coins, Crosshair, Flag, Package, Vault } from '@phosphor-icons/react';
 import { GameIcon } from './components/GameIcon/GameIcon';
 import { useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from './types';
@@ -160,6 +160,7 @@ export default function App() {
 								<span><GameIcon name="artifact" size={10} />{t('deathlog.artifacts')}</span>
 								<span><Flag size={10} weight="bold" />{t('deathlog.tasks')}</span>
 								<span><Vault size={10} weight="bold" />{t('deathlog.stashes')}</span>
+								<span><Package size={10} weight="bold" />{t('deathlog.items')}</span>
 							</div>
 							{runs.map((run, i) => {
 								const date = new Date(run.start * 1000)
@@ -185,6 +186,7 @@ export default function App() {
 										<span>{run.artifacts ?? 0}</span>
 										<span>{run.tasks ?? 0}</span>
 										<span>{run.stashes ?? 0}</span>
+										<span>{run.items ?? 0}</span>
 									</article>
 								);
 							})}

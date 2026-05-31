@@ -46,6 +46,7 @@ export interface Run {
 	artifacts: number | null;
 	tasks: number | null;
 	stashes: number | null;
+	items: number | null;
 	death_location: string | null;
 	death_location_name: string | null;
 	death_pos_x: number | null;

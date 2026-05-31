@@ -27,6 +27,7 @@ export const en: Record<string, string> = {
 	'deathlog.artifacts': 'Artifacts',
 	'deathlog.tasks': 'Tasks',
 	'deathlog.stashes': 'Stashes',
+	'deathlog.items': 'Items',
 
 	// Location badges
 	'location.live': 'Live',
@@ -76,7 +77,7 @@ export const en: Record<string, string> = {
 	'panel.artifacts': 'Artifacts',
 	'panel.tasksDone': 'Tasks Done',
 	'panel.stashesFound': 'Stashes Found',
-	'panel.levelChanges': 'Level Changes',
+	'panel.itemsLooted': 'Items Looted',
 
 	// PDA panel
 	'pda.title': 'PDA — All-Time Stats',

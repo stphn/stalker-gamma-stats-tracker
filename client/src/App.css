@@ -281,7 +281,8 @@ body {
 		max-content   /* earned */
 		max-content   /* art */
 		max-content   /* tasks */
-		max-content;  /* stashes */
+		max-content   /* stashes */
+		max-content;  /* items */
 	padding: var(--pad-sm) clamp(80px, 12vw, 180px) var(--pad-sm) var(--pad-lg);
 	background: var(--bg-scrim);
 	backdrop-filter: blur(8px);

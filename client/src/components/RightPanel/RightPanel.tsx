@@ -179,7 +179,7 @@ export function RightPanel({ data }: RightPanelProps) {
 					<div className={styles.statRows}>
 						<StatRow label={t('panel.tasksDone')} value={session.tasks} />
 						<StatRow label={t('panel.stashesFound')} value={session.stashes} />
-						<StatRow label={t('panel.levelChanges')} value={session.level_changes} />
+						<StatRow label={t('panel.itemsLooted')} value={session.items} />
 					</div>
 				</div>
 			</div>

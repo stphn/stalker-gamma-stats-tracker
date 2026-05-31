@@ -41,6 +41,7 @@ async function push() {
         artifacts:           r.artifacts          ?? null,
         tasks:               r.tasks              ?? null,
         stashes:             r.stashes            ?? null,
+        items:               r.items              ?? null,
         death_location:      r.death_location      ?? null,
         death_location_name: r.death_location_name ?? null,
         death_pos_x:         r.death_pos_x         ?? null,

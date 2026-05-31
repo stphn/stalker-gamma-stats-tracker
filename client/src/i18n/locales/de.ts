@@ -25,6 +25,7 @@ export const de: Record<string, string> = {
 	'deathlog.artifacts': 'Artefakte',
 	'deathlog.tasks': 'Aufgaben',
 	'deathlog.stashes': 'Verstecke',
+	'deathlog.items': 'Gegenstände',
 
 	'location.live': 'Live',
 	'location.inMenu': 'Pausiert',
@@ -70,7 +71,7 @@ export const de: Record<string, string> = {
 	'panel.artifacts': 'Artefakte',
 	'panel.tasksDone': 'Aufgaben erledigt',
 	'panel.stashesFound': 'Verstecke gefunden',
-	'panel.levelChanges': 'Levelwechsel',
+	'panel.itemsLooted': 'Gegenstände erbeutet',
 
 	'pda.title': 'PDA — Gesamtstatistik',
 	'pda.combat': 'Kampf',

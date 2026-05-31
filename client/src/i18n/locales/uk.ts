@@ -25,6 +25,7 @@ export const uk: Record<string, string> = {
 	'deathlog.artifacts': 'Артефакти',
 	'deathlog.tasks': 'Завдання',
 	'deathlog.stashes': 'Схованки',
+	'deathlog.items': 'Предмети',
 
 	'location.live': 'Наживо',
 	'location.inMenu': 'Пауза',
@@ -70,7 +71,7 @@ export const uk: Record<string, string> = {
 	'panel.artifacts': 'Артефакти',
 	'panel.tasksDone': 'Завдань виконано',
 	'panel.stashesFound': 'Схованок знайдено',
-	'panel.levelChanges': 'Зміни локацій',
+	'panel.itemsLooted': 'Зібрано предметів',
 
 	'pda.title': 'КПК — Статистика за весь час',
 	'pda.combat': 'Бій',
