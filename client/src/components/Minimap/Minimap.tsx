@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import type { ActorInfo } from '../../types';
 import { NavigationArrow } from '@phosphor-icons/react';
 import { useI18n } from '../../i18n/I18nContext';
@@ -28,6 +29,7 @@ interface MinimapProps {
 
 export function Minimap({ actor, onExpand }: MinimapProps) {
 	const { t } = useI18n();
+	const rotRef = useRef({ last: 0, acc: 0 });
 	const levelId       = actor?.location ?? '';
 	const levelData     = levelIndex.get(levelId) ?? null;
 	const isUnderground = levelData?.underground ?? false;
@@ -38,6 +40,17 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 	const imgSrc  = isUnderground || !levelId ? null : mapUrl(`${levelId}.webp`);
 	const heading = actor?.heading ?? 0;
 	const color   = FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a';
+
+	// Unwrap heading into a continuous angle so the CSS transition always takes
+	// the shortest path. Otherwise a small turn across the 0/360 seam (e.g.
+	// 358°→2°) animates ~356° the long way → the map spins. Keyed on heading
+	// equality so it stays idempotent under StrictMode's double render.
+	if (heading !== rotRef.current.last) {
+		const delta = ((heading - rotRef.current.last + 540) % 360) - 180;
+		rotRef.current.acc += delta;
+		rotRef.current.last = heading;
+	}
+	const rotation = rotRef.current.acc;
 
 	if (!levelId) return null;
 
@@ -75,7 +88,7 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 			aria-label={t('minimap.openFull')}
 		>
 			<div className={styles.mapWrap}>
-				<div className={styles.rotor} style={{ transform: `rotate(${-heading}deg)` }}>
+				<div className={styles.rotor} style={{ transform: `rotate(${-rotation}deg)` }}>
 					{/* mapClip first — its box-shadow spreads into ring area behind the ring img */}
 					<div className={styles.mapClip}>{mapContent}</div>
 					{/* compassRing renders on top of the shadow */}
