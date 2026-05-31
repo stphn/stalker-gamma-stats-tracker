@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { GPUComputationRenderer } from 'three/addons/misc/GPUComputationRenderer.js';
 import fragmentShader from './shaders/fragment.glsl';
@@ -13,10 +13,17 @@ const PARAMS = {
 	strength: 0.8, // mouse delta multiplier
 };
 
+const FADE_SECONDS = 0.8; // crossfade duration between backdrops
+
 export function useStageGL(
 	containerRef: React.RefObject<HTMLDivElement | null>,
 	src: string | null,
 ) {
+	// Bridge so the persistent GL scene (built once) can receive new backdrops
+	// from the separate [src] effect without tearing the whole scene down.
+	const applyImageRef = useRef<(url: string | null) => void>(() => {});
+
+	// ── Build the scene once — survives src changes so swaps can crossfade ──
 	useEffect(() => {
 		const container = containerRef.current;
 		if (!container) return;
@@ -37,6 +44,7 @@ export function useStageGL(
 		// Retina ones — the fluid shader samples per canvas pixel, so low DPR
 		// otherwise shows soft/aliased stage images. Capped at 2 for GPU budget.
 		renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio, 2), 2));
+		const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
 
 		// ── Scene / Camera (orthographic — fills canvas exactly) ──────────────
 		const scene = new THREE.Scene();
@@ -47,27 +55,83 @@ export function useStageGL(
 		const raycaster = new THREE.Raycaster();
 		const mouseNDC = new THREE.Vector2();
 
-		// ── Geometry / Texture ────────────────────────────────────────────────
+		// ── Geometry / Texture loader ─────────────────────────────────────────
 		const geometry = new THREE.PlaneGeometry(1, 1);
 		const loader = new THREE.TextureLoader();
 
-		let texture: THREE.Texture | null = null;
-		const imageRes = new THREE.Vector2(1, 1);
+		// ── Material — holds two backdrops + a transition for crossfading ─────
+		const material = new THREE.ShaderMaterial({
+			vertexShader,
+			fragmentShader,
+			uniforms: {
+				uTexture: { value: null },
+				uNextTexture: { value: null },
+				uTransition: { value: 0 },
+				uGrid: { value: null },
+				uContainerResolution: { value: new THREE.Vector2() },
+				uImageResolution: { value: new THREE.Vector2(1, 1) },
+				uNextImageResolution: { value: new THREE.Vector2(1, 1) },
+			},
+		});
 
-		if (src) {
-			texture = loader.load(src, (tex) => {
-				const img = tex.image as HTMLImageElement | ImageBitmap;
-				const w = 'naturalWidth' in img ? img.naturalWidth : img.width;
-				const h = 'naturalHeight' in img ? img.naturalHeight : img.height;
-				imageRes.set(w, h);
-				material.uniforms.uImageResolution.value = imageRes;
-				// Max anisotropic filtering — keeps the image sharp when the shader
-				// samples it displaced / minified (big quality win at low DPR).
-				tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-				tex.needsUpdate = true;
+		// ── Crossfade state ───────────────────────────────────────────────────
+		let currentTex: THREE.Texture | null = null;
+		let pendingTex: THREE.Texture | null = null;
+		const pendingRes = new THREE.Vector2(1, 1);
+		let fading = false;
+		let fadeStart = 0;
+
+		const configure = (tex: THREE.Texture) => {
+			tex.colorSpace = THREE.SRGBColorSpace;
+			tex.anisotropy = maxAnisotropy;
+			tex.needsUpdate = true;
+		};
+		const resolutionOf = (tex: THREE.Texture) => {
+			const img = tex.image as HTMLImageElement | ImageBitmap;
+			const w = 'naturalWidth' in img ? img.naturalWidth : img.width;
+			const h = 'naturalHeight' in img ? img.naturalHeight : img.height;
+			return new THREE.Vector2(w, h);
+		};
+		// Finish a fade: the incoming texture becomes the steady-state one.
+		const promote = () => {
+			const old = currentTex;
+			currentTex = pendingTex;
+			material.uniforms.uTexture.value = pendingTex;
+			material.uniforms.uImageResolution.value.copy(pendingRes);
+			material.uniforms.uNextTexture.value = pendingTex;
+			material.uniforms.uNextImageResolution.value.copy(pendingRes);
+			material.uniforms.uTransition.value = 0;
+			pendingTex = null;
+			fading = false;
+			if (old && old !== currentTex) old.dispose();
+		};
+
+		applyImageRef.current = (url) => {
+			if (!url) return; // null = still resolving → keep the current backdrop
+			loader.load(url, (tex) => {
+				configure(tex);
+				const res = resolutionOf(tex);
+				if (!currentTex) {
+					// First backdrop — show it instantly (no fade-in from black).
+					currentTex = tex;
+					material.uniforms.uTexture.value = tex;
+					material.uniforms.uImageResolution.value.copy(res);
+					material.uniforms.uNextTexture.value = tex;
+					material.uniforms.uNextImageResolution.value.copy(res);
+					material.uniforms.uTransition.value = 0;
+					return;
+				}
+				// Land any in-flight fade before starting the next one.
+				if (fading) promote();
+				pendingTex = tex;
+				pendingRes.copy(res);
+				material.uniforms.uNextTexture.value = tex;
+				material.uniforms.uNextImageResolution.value.copy(res);
+				material.uniforms.uTransition.value = 0;
+				fadeStart = clock.getElapsedTime();
+				fading = true;
 			});
-			texture.colorSpace = THREE.SRGBColorSpace;
-		}
+		};
 
 		// ── GPGPU ─────────────────────────────────────────────────────────────
 		const gpgpuSize = Math.ceil(Math.sqrt(PARAMS.size)); // ~27
@@ -95,18 +159,6 @@ export function useStageGL(
 		gpgpu.setVariableDependencies(variable, [variable]);
 		const gpgpuErr = gpgpu.init();
 		if (gpgpuErr) console.error('GPGPU init:', gpgpuErr);
-
-		// ── Material ──────────────────────────────────────────────────────────
-		const material = new THREE.ShaderMaterial({
-			vertexShader,
-			fragmentShader,
-			uniforms: {
-				uTexture: { value: texture },
-				uGrid: { value: null },
-				uContainerResolution: { value: new THREE.Vector2() },
-				uImageResolution: { value: imageRes },
-			},
-		});
 
 		const mesh = new THREE.Mesh(geometry, material);
 		scene.add(mesh);
@@ -174,22 +226,40 @@ export function useStageGL(
 			material.uniforms.uGrid.value =
 				gpgpu.getCurrentRenderTarget(variable).texture;
 
+			// Advance the crossfade (smoothstep easing)
+			if (fading) {
+				const t = (time - fadeStart) / FADE_SECONDS;
+				if (t >= 1) {
+					material.uniforms.uTransition.value = 1;
+					promote();
+				} else {
+					material.uniforms.uTransition.value = t * t * (3 - 2 * t);
+				}
+			}
+
 			renderer.render(scene, camera);
 		}
 		tick();
 
 		// ── Cleanup ───────────────────────────────────────────────────────────
 		return () => {
+			applyImageRef.current = () => {};
 			cancelAnimationFrame(animId);
 			if (resizeId) clearTimeout(resizeId);
 			ro.disconnect();
 			container.removeEventListener('mousemove', onMouseMove);
 			mesh.geometry.dispose();
 			material.dispose();
-			texture?.dispose();
+			currentTex?.dispose();
+			pendingTex?.dispose();
 			gpgpu.dispose();
 			renderer.dispose();
 			canvas.remove();
 		};
-	}, [containerRef, src]);
+	}, [containerRef]);
+
+	// ── Feed new backdrops into the persistent scene ──────────────────────────
+	useEffect(() => {
+		applyImageRef.current(src);
+	}, [src]);
 }

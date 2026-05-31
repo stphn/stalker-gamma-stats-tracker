@@ -43,6 +43,10 @@ export default function App() {
 	// Warm the cache for every map in the background (current level first)
 	useMapPreload(displayActor?.location);
 
+	// Night picks the night/ backdrop variant — 20:00–06:00 in-game.
+	const gameHour = displayActor?.game_time?.h;
+	const night = gameHour != null && (gameHour >= 20 || gameHour < 6);
+
 	// Death detection — fires when last_run[0].start changes
 	const [deathTrigger, setDeathTrigger] = useState(0);
 	const [shaking, setShaking] = useState(false);
@@ -152,6 +156,7 @@ export default function App() {
 						<BloodSplatter trigger={deathTrigger} key={deathTrigger} />
 						<Stage
 							location={displayActor?.location}
+							night={night}
 							death={
 								showDeathScreen ? (
 									<DeathOverlay run={runs[0] ?? null} />

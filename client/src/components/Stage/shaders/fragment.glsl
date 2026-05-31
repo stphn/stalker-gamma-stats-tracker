@@ -1,7 +1,10 @@
 uniform sampler2D uTexture;
+uniform sampler2D uNextTexture;
+uniform float uTransition;
 uniform sampler2D uGrid;
 uniform vec2 uContainerResolution;
 uniform vec2 uImageResolution;
+uniform vec2 uNextImageResolution;
 
 varying vec2 vUv;
 
@@ -23,31 +26,37 @@ vec2 coverUvs(vec2 imageRes, vec2 containerRes) {
   );
 }
 
-void main() {
-  vec2 newUvs = coverUvs(uImageResolution, uContainerResolution);
-  vec2 squareUvs = coverUvs(vec2(1.0), uContainerResolution);
+// Sample one backdrop with the shared fluid displacement + RGB shift applied.
+vec3 sampleImage(sampler2D tex, vec2 imageRes, vec2 dispRG, vec2 shift, float strength) {
+  vec2 newUvs = coverUvs(imageRes, uContainerResolution);
+  vec2 finalUvs = newUvs - dispRG * 0.01;
 
+  vec2 redUvs   = finalUvs + shift * (1.0 + strength * 0.25);
+  vec2 greenUvs = finalUvs + shift * (1.0 + strength * 2.0);
+  vec2 blueUvs  = finalUvs + shift * (1.0 + strength * 1.5);
+
+  return vec3(
+    texture2D(tex, redUvs).r,
+    texture2D(tex, greenUvs).g,
+    texture2D(tex, blueUvs).b
+  );
+}
+
+void main() {
+  vec2 squareUvs = coverUvs(vec2(1.0), uContainerResolution);
   vec4 displacement = texture2D(uGrid, squareUvs);
 
-  // Displace the UVs by the grid direction vector
-  vec2 finalUvs = newUvs - displacement.rg * 0.01;
-
-  // Asymmetric RGB shift — each channel offset by a different amount
   vec2 shift = displacement.rg * 0.001;
+  float displacementStrength = clamp(length(displacement.rg), 0.0, 2.0);
 
-  float displacementStrength = length(displacement.rg);
-  displacementStrength = clamp(displacementStrength, 0.0, 2.0);
+  vec3 colorA = sampleImage(uTexture, uImageResolution, displacement.rg, shift, displacementStrength);
+  vec3 colorB = sampleImage(uNextTexture, uNextImageResolution, displacement.rg, shift, displacementStrength);
 
-  vec2 redUvs   = finalUvs + shift * (1.0 + displacementStrength * 0.25);
-  vec2 greenUvs = finalUvs + shift * (1.0 + displacementStrength * 2.0);
-  vec2 blueUvs  = finalUvs + shift * (1.0 + displacementStrength * 1.5);
-
-  float r = texture2D(uTexture, redUvs).r;
-  float g = texture2D(uTexture, greenUvs).g;
-  float b = texture2D(uTexture, blueUvs).b;
+  // Crossfade between the outgoing and incoming backdrop
+  vec3 color = mix(colorA, colorB, uTransition);
 
   // Gamma correction — linear → sRGB so WebGL matches CSS background-image rendering
-  vec3 color = pow(vec3(r, g, b), vec3(1.0 / 2.2));
+  color = pow(color, vec3(1.0 / 2.2));
 
   gl_FragColor = vec4(color, 1.0);
 }

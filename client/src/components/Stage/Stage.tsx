@@ -6,13 +6,14 @@ import { useStageGL } from './useStageGL';
 
 interface StageProps {
 	location?: string;
+	night?: boolean;
 	left?: ReactNode;
 	overlay?: ReactNode;
 	death?: ReactNode;
 }
 
-export function Stage({ location, left, overlay, death }: StageProps) {
-	const src = useLocationImage(location);
+export function Stage({ location, night, left, overlay, death }: StageProps) {
+	const src = useLocationImage(location, night);
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	useStageGL(containerRef, src);
