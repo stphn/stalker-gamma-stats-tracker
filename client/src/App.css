@@ -174,6 +174,53 @@
 	--accent: var(--accent-base);
 }
 
+/* ══════════════════════════════════════════════
+   THEMES — override Layer-2 semantic tokens only.
+   Aliases (--bg/--border/--text/--accent) and derived tokens resolve through
+   these at use-time, so re-skinning means setting the base tokens here.
+   Default theme ("zone") = the :root values above (no data-theme attribute).
+   Add a theme: copy this block, change the selector + values.
+   ══════════════════════════════════════════════ */
+:root[data-theme="dracula"] {
+	/* Surfaces */
+	--bg-base:    #21222c;
+	--bg-surface: #282a36;
+	--bg-subtle:  #343746; /* also drives --border */
+	--bg-raised:  #343746;
+	--bg-overlay: #44475a;
+	--bg-default: #44475a;
+
+	/* Text */
+	--text-primary:   #f8f8f2;
+	--text-secondary: #c4c6d4;
+	--text-disabled:  #6272a4;
+
+	/* Accent — Dracula purple */
+	--accent-base:   #bd93f9;
+	--accent-dim:    #7a6aa8;
+	--accent-bright: #d6b8ff;
+
+	/* Status */
+	--color-positive: #50fa7b;
+	--color-danger:   #ff5555;
+	--color-warning:  #ffb86c;
+	--color-info:     #8be9fd;
+
+	/* Glass / scrim */
+	--bg-glass:        hsl(232, 14%, 31%, 0.60);
+	--bg-glass-mobile: hsl(231, 15%, 12%, 0.96);
+	--bg-scrim:        hsl(231, 15%, 6%, 0.55);
+
+	/* Footer + accent-keyed glows */
+	--bg-footer:       #191a21;
+	--text-foot-label: #6272a4;
+	--text-foot-link:  #8be9fd;
+	--border-foot:     hsl(265, 89%, 78%, 0.12);
+	--glow-foot-link:  hsl(265, 89%, 78%, 0.40);
+	--glow-nav-link:   hsl(265, 89%, 78%, 0.40);
+	--scanline-color:  hsl(265, 89%, 78%, 0.25);
+}
+
 body {
 	background: var(--bg);
 	color: var(--text);

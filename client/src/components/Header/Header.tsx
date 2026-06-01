@@ -1,5 +1,6 @@
 import { useI18n } from '../../i18n/I18nContext';
 import { LanguageSwitcher } from '../LanguageSwitcher/LanguageSwitcher';
+import { ThemeSwitcher } from '../ThemeSwitcher/ThemeSwitcher';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -30,6 +31,8 @@ export function Header({ connected, gameState, onMapOpen }: HeaderProps) {
 				<a href="#" className={styles.navLink}>{t('nav.mods')}</a>
 				<span className={styles.navSep} aria-hidden="true">|</span>
 				<a href="#" className={styles.navLink}>{t('nav.about')}</a>
+				<span className={styles.navSep} aria-hidden="true">|</span>
+				<ThemeSwitcher />
 				<span className={styles.navSep} aria-hidden="true">|</span>
 				<LanguageSwitcher variant="select" />
 			</nav>
