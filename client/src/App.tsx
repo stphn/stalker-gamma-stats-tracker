@@ -43,9 +43,14 @@ export default function App() {
 	// Warm the cache for every map in the background (current level first)
 	useMapPreload(displayActor?.location);
 
-	// Night picks the night/ backdrop variant — 20:00–06:00 in-game.
-	const gameHour = displayActor?.game_time?.h;
-	const night = gameHour != null && (gameHour >= 20 || gameHour < 6);
+	// Night picks the night/ backdrop variant — 19:30–05:30 in-game (minute
+	// precision). Levels without a night/ folder just fall back to their normal
+	// images, so night art is opt-in per level.
+	const gt = displayActor?.game_time;
+	const gameMinutes = gt ? gt.h * 60 + gt.m : null;
+	const night =
+		gameMinutes != null &&
+		(gameMinutes >= 19 * 60 + 30 || gameMinutes < 5 * 60 + 30);
 
 	// Death detection — fires when last_run[0].start changes
 	const [deathTrigger, setDeathTrigger] = useState(0);
