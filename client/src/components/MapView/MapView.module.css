@@ -310,7 +310,9 @@
 	position: absolute;
 	width: 0;
 	height: 0;
-	z-index: 9;
+	/* Below the player (10) and companions (9): dimmed history sits behind the
+	   live markers. */
+	z-index: 8;
 	pointer-events: none;
 }
 
@@ -321,6 +323,10 @@
 	flex-direction: column;
 	align-items: center;
 	gap: 2px;
+	/* Dimmed white crosses read as quiet history; dark halo keeps them legible
+	   over bright level art. */
+	opacity: 0.5;
+	filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.95));
 }
 
 .deathCount {

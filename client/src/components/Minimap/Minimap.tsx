@@ -8,13 +8,19 @@ import { FACTION_COLORS } from '../../utils/constants';
 import styles from './Minimap.module.css';
 
 interface WorldBounds { minX: number; maxX: number; minZ: number; maxZ: number }
-interface LevelEntry  { id: string; name: string; underground: boolean; worldBounds?: WorldBounds }
+interface RawRect     { x1: number; y1: number; x2: number; y2: number }
+interface LevelEntry  { id: string; name: string; underground: boolean; worldBounds?: WorldBounds; rawRect?: RawRect }
 
 const levels: LevelEntry[] = (mapLevels as { levels: LevelEntry[] }).levels;
 const levelIndex = new Map(levels.map(l => [l.id, l]));
 
 const VIEW = 166;
 const COMPASS_ZOOM = 3;
+
+// Global stitched-map dimensions (matches MapView) — used to align the low-res
+// global backdrop that fills the circle when the player is near a level edge.
+const WORLD_W = 1024;
+const WORLD_H = 2634;
 
 function worldToUV(px: number, pz: number, b: WorldBounds) {
 	const u = (px - b.minX) / (b.maxX - b.minX);
@@ -64,18 +70,46 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 		const dW = aspect >= 1 ? VIEW * COMPASS_ZOOM : VIEW * COMPASS_ZOOM * aspect;
 		const dH = aspect >= 1 ? (VIEW * COMPASS_ZOOM) / aspect : VIEW * COMPASS_ZOOM;
 		const c  = VIEW / 2;
+
+		// Global backdrop: the stitched map scaled so this level's rawRect region
+		// matches the high-res level image exactly, then panned to the same world
+		// point. At a level edge the neighbouring terrain shows through instead of
+		// flat fill. Single cached image, GPU-composited transform — no per-frame work.
+		const rr = levelData!.rawRect;
+		let backdrop: React.ReactNode = null;
+		if (rr) {
+			const rw = rr.x2 - rr.x1;
+			const rh = rr.y2 - rr.y1;
+			const gW = (dW * WORLD_W) / rw;
+			const gH = (dH * WORLD_H) / rh;
+			backdrop = (
+				<div
+					className={styles.compassImg}
+					style={{
+						backgroundImage: `url(${mapUrl('global-web.webp')})`,
+						width: gW,
+						height: gH,
+						transform: `translate3d(${c - dW * (uv!.u + rr.x1 / rw)}px, ${c - dH * (uv!.v + rr.y1 / rh)}px, 0)`,
+					}}
+				/>
+			);
+		}
+
 		mapContent = (
-			<div
-				className={styles.compassImg}
-				style={{
-					backgroundImage: `url(${imgSrc})`,
-					width: dW,
-					height: dH,
-					// Pan via transform (GPU-composited) instead of left/top so the
-					// upscaled map doesn't repaint/flicker each frame while animating.
-					transform: `translate3d(${c - uv!.u * dW}px, ${c - uv!.v * dH}px, 0)`,
-				}}
-			/>
+			<>
+				{backdrop}
+				<div
+					className={styles.compassImg}
+					style={{
+						backgroundImage: `url(${imgSrc})`,
+						width: dW,
+						height: dH,
+						// Pan via transform (GPU-composited) instead of left/top so the
+						// upscaled map doesn't repaint/flicker each frame while animating.
+						transform: `translate3d(${c - uv!.u * dW}px, ${c - uv!.v * dH}px, 0)`,
+					}}
+				/>
+			</>
 		);
 	} else {
 		mapContent = <div className={styles.mapImg} style={{ backgroundImage: `url(${imgSrc})` }} />;

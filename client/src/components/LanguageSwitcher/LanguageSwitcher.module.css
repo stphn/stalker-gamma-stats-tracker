@@ -25,3 +25,39 @@
 	color: var(--accent-bright);
 	text-shadow: 0 0 8px rgba(184, 148, 72, 0.4);
 }
+
+/* ── Select-dropdown variant (header) ── */
+.select {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	font-weight: 600;
+	letter-spacing: 1px;
+	color: var(--accent-base);
+	background-color: color-mix(in srgb, var(--accent-base) 8%, transparent);
+	border: 1px solid color-mix(in srgb, var(--accent-base) 30%, transparent);
+	padding: 2px 22px 2px 8px;
+	cursor: pointer;
+	appearance: none;
+	-webkit-appearance: none;
+	/* Amber chevron drawn as a background so we don't need an extra element */
+	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='6' viewBox='0 0 8 6'><path d='M0 0l4 6 4-6z' fill='%23b89448'/></svg>");
+	background-repeat: no-repeat;
+	background-position: right 7px center;
+	transition: color 0.15s, border-color 0.15s, background-color 0.15s;
+}
+
+.select:hover {
+	color: var(--accent-bright);
+	border-color: color-mix(in srgb, var(--accent-base) 50%, transparent);
+}
+
+.select:focus-visible {
+	outline: none;
+	border-color: var(--accent-base);
+}
+
+/* Dropdown list items render with the OS palette — keep them legible/dark */
+.select option {
+	background: var(--bg-surface);
+	color: var(--text-primary);
+}

@@ -31,7 +31,7 @@ export function Header({ connected, gameState, onMapOpen }: HeaderProps) {
 				<span className={styles.navSep} aria-hidden="true">|</span>
 				<a href="#" className={styles.navLink}>{t('nav.about')}</a>
 				<span className={styles.navSep} aria-hidden="true">|</span>
-				<LanguageSwitcher />
+				<LanguageSwitcher variant="select" />
 			</nav>
 			<output className={styles.statusGroup} aria-label="Connection status">
 				<div className={`${styles.pill} ${styles[serverColor]}`}>

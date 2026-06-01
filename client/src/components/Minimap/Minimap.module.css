@@ -51,7 +51,9 @@
   height: 166px;
   border-radius: 50%;
   overflow: hidden;
-  /* Frost the stage behind the disc instead of leaning on a soft shadow */
+  /* Average ground tone sampled across the Zone maps (~rgb(50,48,35)) — a dark
+     olive that blends with the terrain instead of flashing through as a gap. */
+  background-color: #323023;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   /* Plain flat backing (no blur) fills the ring area behind the compass

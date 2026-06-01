@@ -16,6 +16,15 @@ export function fmt_time(seconds: number | undefined) {
 	return `${h}h ${m}m ${s}s`;
 }
 
+// Compact death-log stamp: day.month.yy + time to the second — players die many
+// times a day, so the time of day is what distinguishes runs. Full date is kept
+// on the row's hover title. Local time.
+export function fmt_run_datetime(epochSeconds: number) {
+	const d = new Date(epochSeconds * 1000);
+	const p = (n: number) => String(n).padStart(2, '0');
+	return `${p(d.getDate())}.${p(d.getMonth() + 1)}.${p(d.getFullYear() % 100)} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+
 const LOCALE_TAG: Record<string, string> = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', uk: 'uk-UA' };
 
 export function fmt_money(n: number | undefined, locale = 'en') {

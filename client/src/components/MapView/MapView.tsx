@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { NavigationArrow, Skull, SmileyXEyes, UserCircleDashed } from '@phosphor-icons/react';
+import { NavigationArrow, SmileyXEyes, UserCircleDashed } from '@phosphor-icons/react';
 import type { ActorInfo, Companion, Run } from '../../types';
 import { useI18n } from '../../i18n/I18nContext';
 import mapLevelsData from '../../data/map-levels.json';
@@ -11,6 +11,20 @@ import styles from './MapView.module.css';
 // World coordinate space (from rawRect in map-levels.json)
 const WORLD_W = 1024;
 const WORLD_H = 2634;
+
+// Death markers (and the dead-player marker) use the HUD gold — shape (skull) and
+// the legend toggle keep them distinct from the live player/companion markers.
+const DEATH_YELLOW = '#e8c46a';
+
+// Persisted legend toggles (default on when no stored choice yet).
+const LS_SHOW_DEATHS     = 'tracker_map_show_deaths';
+const LS_SHOW_COMPANIONS = 'tracker_map_show_companions';
+function loadToggle(key: string): boolean {
+	try { return localStorage.getItem(key) !== 'false'; } catch { return true; }
+}
+function saveToggle(key: string, value: boolean) {
+	try { localStorage.setItem(key, String(value)); } catch {}
+}
 
 interface RawRect     { x1: number; y1: number; x2: number; y2: number }
 interface WorldBounds { minX: number; maxX: number; minZ: number; maxZ: number }
@@ -57,8 +71,10 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 	const [pan,  setPan]                  = useState({ x: 0, y: 0 });
 	const [areaW, setAreaW]               = useState(480);
 	const [areaH, setAreaH]               = useState(800);
-	const [showDeaths, setShowDeaths]     = useState(true);
-	const [showCompanions, setShowCompanions] = useState(true);
+	const [showDeaths, setShowDeaths]     = useState(() => loadToggle(LS_SHOW_DEATHS));
+	const [showCompanions, setShowCompanions] = useState(() => loadToggle(LS_SHOW_COMPANIONS));
+	useEffect(() => { saveToggle(LS_SHOW_DEATHS, showDeaths); }, [showDeaths]);
+	useEffect(() => { saveToggle(LS_SHOW_COMPANIONS, showCompanions); }, [showCompanions]);
 
 	const drag = useRef({ active: false, startX: 0, startY: 0, panX: 0, panY: 0 });
 	// True once the user has zoomed/panned/followed — suppresses auto re-fit on resize
@@ -359,7 +375,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 								filter: 'drop-shadow(0 0 3px rgba(0,0,0,0.9))',
 							}}>
 								{gameState === 'dead'
-									? <Skull width="100%" height="100%" weight="fill" color="var(--color-danger)" />
+									? <SmileyXEyes width="100%" height="100%" weight="fill" color={DEATH_YELLOW} />
 									: <NavigationArrow width="100%" height="100%" weight="fill" color={FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a'} />
 								}
 							</div>
@@ -386,7 +402,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 						return (
 							<div key={dm.key} className={styles.deathOverlay} style={{ left: sx, top: sy }}>
 								<div className={styles.deathMarker}>
-									<SmileyXEyes size={20} weight="fill" color="var(--color-danger)" />
+									<div style={{ width: 22, height: 22 }}><SmileyXEyes width="100%" height="100%" weight="fill" color={DEATH_YELLOW} /></div>
 									{dm.count > 1 && <span className={styles.deathCount}>×{dm.count}</span>}
 								</div>
 							</div>
@@ -423,7 +439,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 								onClick={() => setShowDeaths(d => !d)}
 							>
 								<SmileyXEyes size={11} weight="fill" />
-								{t('map.legend.deaths')} ({deathMarkers.length})
+								{showDeaths ? t('map.legend.deathsHide') : t('map.legend.deathsShow')}
 							</button>
 						)}
 						{!!companions?.length && (
@@ -431,7 +447,8 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 								className={`${styles.legendBtn} ${showCompanions ? styles.legendBtnOn : ''}`}
 								onClick={() => setShowCompanions(c => !c)}
 							>
-								{t('map.legend.companions')} ({companions.length})
+								<UserCircleDashed size={11} weight="fill" />
+								{showCompanions ? t('map.legend.squadHide') : t('map.legend.squadShow')}
 							</button>
 						)}
 					</div>

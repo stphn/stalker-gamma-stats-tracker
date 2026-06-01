@@ -1,18 +1,18 @@
-import { Atom, CalendarDots, CaretDoubleDown, CaretDoubleUp, Clock, Coins, Crosshair, Flag, Package, PersonSimpleRun, Radioactive, Skull, Vault } from '@phosphor-icons/react';
 import { useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from './types';
 import { useI18n } from './i18n/I18nContext';
 import { useMapPreload } from './hooks/useMapPreload';
 import { useRuns } from './useRuns';
 import { useStats } from './useStats';
-import { fmt_money, fmt_time } from './utils/formatters';
 import './App.css';
 
 import { BloodSplatter } from './components/BloodSplatter/BloodSplatter';
 import { Companions } from './components/Companions/Companions';
+import { DeathLog } from './components/DeathLog/DeathLog';
 import { DeathOverlay } from './components/DeathOverlay/DeathOverlay';
 import { DebugPanel } from './components/DebugPanel/DebugPanel';
 import { Header } from './components/Header/Header';
+import { LanguageSwitcher } from './components/LanguageSwitcher/LanguageSwitcher';
 import { Location } from './components/Location/Location';
 import { GameAchievementsPanel } from './components/GameAchievements/GameAchievements';
 import { MapView } from './components/MapView/MapView';
@@ -23,7 +23,7 @@ import { Stage } from './components/Stage/Stage';
 import { StatsTabs } from './components/StatsTabs/StatsTabs';
 
 export default function App() {
-	const { t, locale } = useI18n();
+	const { t } = useI18n();
 	const { data, connected, stale } = useStats();
 	const { runs, total: totalRuns } = useRuns();
 	const gameLive =
@@ -56,9 +56,6 @@ export default function App() {
 	const [deathTrigger, setDeathTrigger] = useState(0);
 	const [shaking, setShaking] = useState(false);
 	const [mapOpen, setMapOpen] = useState(false);
-	const [showAllRuns, setShowAllRuns] = useState(false);
-	const DEATHLOG_PREVIEW = 4;
-	const visibleRuns = showAllRuns ? runs : runs.slice(0, DEATHLOG_PREVIEW);
 
 	// Freshly-died row highlight (flash only — no scrolling)
 	const [highlightStart, setHighlightStart] = useState<number | null>(null);
@@ -122,6 +119,7 @@ export default function App() {
 	return (
 		<div style={{ overflow: 'hidden' }}>
 		<div className={shaking ? 'app death-shake' : 'app'}>
+			<a className="skip-link" href="#main">{t('a11y.skipToContent')}</a>
 			<Header connected={connected} gameState={gameState} onMapOpen={() => setMapOpen(true)} />
 			{debug && (
 				<DebugPanel
@@ -147,11 +145,12 @@ export default function App() {
 			)}
 
 			{!data ? (
-				<output className="empty">
+				<output id="main" className="empty">
 					{connected ? t('empty.waiting') : t('empty.connecting')}
 				</output>
 			) : (
 				<main
+					id="main"
 					className="layout"
 					aria-label="Stats dashboard"
 					aria-busy={stale}
@@ -193,70 +192,7 @@ export default function App() {
 					</div>
 
 					{runs.length > 0 && (
-						<div className="death-log-wrap">
-						<div className="death-log-title">
-							<Skull size={16} weight="fill" />
-							<span>{t('deathlog.title')}</span>
-						</div>
-						<section className="death-log" aria-label="Death log">
-							<div className="death-header" aria-hidden="true">
-								<span><PersonSimpleRun size={12} weight="bold" />{t('deathlog.run')}</span>
-								<span><CalendarDots size={12} weight="bold" />{t('deathlog.date')}</span>
-								<span><Radioactive size={12} weight="bold" />{t('deathlog.location')}</span>
-								<span><Clock size={12} weight="bold" />{t('deathlog.time')}</span>
-								<span><Crosshair size={12} weight="bold" />{t('deathlog.kills')}</span>
-								<span><Coins size={12} weight="bold" />{t('deathlog.earned')}</span>
-								<span><Atom size={12} weight="bold" />{t('deathlog.artifacts')}</span>
-								<span><Flag size={12} weight="bold" />{t('deathlog.tasks')}</span>
-								<span><Vault size={12} weight="bold" />{t('deathlog.stashes')}</span>
-								<span><Package size={12} weight="bold" />{t('deathlog.items')}</span>
-							</div>
-							{visibleRuns.map((run, i) => {
-								// Newest run sits on top but carries the highest ordinal:
-								// total runs minus its offset from the top (fallback to fetched length).
-								const runNo = (totalRuns || runs.length) - i;
-								const date = new Date(run.start * 1000)
-									.toLocaleDateString('en-GB', {
-										day: '2-digit',
-										month: '2-digit',
-										year: 'numeric',
-									})
-									.replace(/\//g, '.');
-								return (
-									<article
-										key={run.start}
-										className={run.start === highlightStart ? 'death-row death-row--new' : 'death-row'}
-										aria-label={`Run ${runNo} on ${date}`}
-									>
-										<span className="death-run">#{runNo}</span>
-										<time className="death-date" dateTime={new Date(run.start * 1000).toISOString()}>{date}</time>
-										<span className="death-zone">{run.death_location_name ?? (run.death_location ? t(`level.${run.death_location}`) : '—')}</span>
-										<span>{fmt_time(run.playtime ?? 0)}</span>
-										<span>{run.kills?.total ?? 0}</span>
-										<span>{fmt_money(run.rubles_earned ?? 0, locale)}</span>
-										<span>{run.artifacts ?? 0}</span>
-										<span>{run.tasks ?? 0}</span>
-										<span>{run.stashes ?? 0}</span>
-										<span>{run.items ?? 0}</span>
-									</article>
-								);
-							})}
-							{runs.length > DEATHLOG_PREVIEW && (
-								<button
-									type="button"
-									className="death-log-toggle"
-									onClick={() => setShowAllRuns((v) => !v)}
-									aria-expanded={showAllRuns}
-								>
-									{showAllRuns ? (
-										<><CaretDoubleUp size={12} weight="bold" />{t('deathlog.showLess')}<CaretDoubleUp size={12} weight="bold" /></>
-									) : (
-										<><CaretDoubleDown size={12} weight="bold" />{t('deathlog.showAll', { count: runs.length })}<CaretDoubleDown size={12} weight="bold" /></>
-									)}
-								</button>
-							)}
-						</section>
-						</div>
+						<DeathLog runs={runs} totalRuns={totalRuns} highlightStart={highlightStart} />
 					)}
 
 					<StatsTabs data={data} />
@@ -299,6 +235,8 @@ export default function App() {
 					>
 						GitHub
 					</a>
+					<span className="foot-sep" aria-hidden="true">|</span>
+					<LanguageSwitcher />
 				</div>
 				<img
 				src="/stalker-gamma.webp"

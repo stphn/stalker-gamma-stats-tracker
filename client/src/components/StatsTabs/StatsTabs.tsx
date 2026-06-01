@@ -27,6 +27,8 @@ export function StatsTabs({ data }: StatsTabsProps) {
 					<button
 						type="button"
 						role="tab"
+						id="tab-pda"
+						aria-controls="panel-stats"
 						aria-selected={active === 'pda'}
 						className={`${styles.tab} ${active === 'pda' ? styles.tabActive : ''}`}
 						onClick={() => setTab('pda')}
@@ -37,6 +39,8 @@ export function StatsTabs({ data }: StatsTabsProps) {
 				<button
 					type="button"
 					role="tab"
+					id="tab-alltime"
+					aria-controls="panel-stats"
 					aria-selected={active === 'alltime'}
 					className={`${styles.tab} ${active === 'alltime' ? styles.tabActive : ''}`}
 					onClick={() => setTab('alltime')}
@@ -45,11 +49,13 @@ export function StatsTabs({ data }: StatsTabsProps) {
 				</button>
 			</div>
 
-			{active === 'pda' && data.alltime_official ? (
-				<PdaPanel pda={data.alltime_official} achievements={data.game_achievements} />
-			) : (
-				<AllTimePanel stats={data.alltime} />
-			)}
+			<div role="tabpanel" id="panel-stats" aria-labelledby={`tab-${active}`} tabIndex={0}>
+				{active === 'pda' && data.alltime_official ? (
+					<PdaPanel pda={data.alltime_official} achievements={data.game_achievements} />
+				) : (
+					<AllTimePanel stats={data.alltime} />
+				)}
+			</div>
 		</section>
 	);
 }
