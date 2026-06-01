@@ -56,7 +56,11 @@ const COLUMNS: ColumnDef[] = [
 ];
 
 const COL_BY_KEY = new Map(COLUMNS.map(c => [c.key, c]));
-const PREVIEW = 4;
+const PREVIEW = 3;
+
+// Fields always shown in the stacked (mobile) card; the rest are revealed by
+// the per-card expand button. Desktop shows every column regardless.
+const PRIMARY = new Set<SortKey>(['run', 'date', 'location', 'time', 'kills']);
 
 interface DeathLogProps {
 	runs: Run[];
@@ -71,6 +75,15 @@ export function DeathLog({ runs, totalRuns, highlightStart }: DeathLogProps) {
 	const [sortKey, setSortKey] = useState<SortKey>('date');
 	const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 	const [showAll, setShowAll] = useState(false);
+	// Per-card field expansion (stacked/mobile only): set of run.start values.
+	const [expanded, setExpanded] = useState<Set<number>>(new Set());
+	const toggleExpand = (start: number) =>
+		setExpanded(prev => {
+			const next = new Set(prev);
+			if (next.has(start)) next.delete(start);
+			else next.add(start);
+			return next;
+		});
 
 	const zoneOf = (run: Run) =>
 		run.death_location_name ?? (run.death_location ? t(`level.${run.death_location}`) : '—');
@@ -175,17 +188,39 @@ export function DeathLog({ runs, totalRuns, highlightStart }: DeathLogProps) {
 							const runNo = runNoByStart.get(run.start) ?? 0;
 							const zone = zoneOf(run);
 							const ctx: CellCtx = { t, locale, runNo, zone };
+							const isExp = expanded.has(run.start);
+							const rowClass = [
+								run.start === highlightStart ? 'death-row--new' : '',
+								isExp ? 'is-expanded' : '',
+							].filter(Boolean).join(' ');
 							return (
 								<tr
 									key={run.start}
-									className={run.start === highlightStart ? 'death-row--new' : undefined}
+									className={rowClass || undefined}
 									aria-label={`Run ${runNo}, ${fmt_run_datetime(run.start)}, ${zone}, ${fmt_time(run.playtime ?? 0)}, ${run.kills?.total ?? 0} ${t('deathlog.kills')}`}
 								>
 									{COLUMNS.map(col => (
-										<td key={col.key} data-label={t(col.labelKey)} className={col.cellClass}>
+										<td
+											key={col.key}
+											data-label={t(col.labelKey)}
+											className={[col.cellClass, PRIMARY.has(col.key) ? '' : 'death-extra'].filter(Boolean).join(' ') || undefined}
+										>
 											{col.render(run, ctx)}
 										</td>
 									))}
+									{/* Per-card expand (stacked view only; hidden on desktop via CSS) */}
+									<td className="death-expand-cell">
+										<button
+											type="button"
+											className="death-expand"
+											onClick={() => toggleExpand(run.start)}
+											aria-expanded={isExp}
+										>
+											{isExp
+												? <><CaretDoubleUp size={11} weight="bold" />{t('layout.showLess')}</>
+												: <><CaretDoubleDown size={11} weight="bold" />{t('layout.showMore')}</>}
+										</button>
+									</td>
 								</tr>
 							);
 						})}

@@ -433,6 +433,9 @@ body {
 .death-num { text-align: right; }
 th.death-num .death-sort { justify-content: flex-end; width: 100%; }
 
+/* Per-card expand control only exists in the stacked (mobile) view. */
+.death-expand-cell { display: none; }
+
 /* Data cells */
 .death-log tbody td {
 	font-size: var(--text-sm);
@@ -565,6 +568,35 @@ th.death-num .death-sort { justify-content: flex-end; width: 100%; }
 
 	/* Right-align utility is redundant in the flex card row. */
 	.death-num { text-align: right; }
+
+	/* Trim each card to the primary fields; the rest expand per-card. */
+	.death-log td.death-extra { display: none; }
+	.death-log tr.is-expanded td.death-extra { display: flex; }
+
+	/* Per-card expand button — full-width row under the visible fields. */
+	.death-log td.death-expand-cell {
+		display: block;
+		padding: 0;
+		border-bottom: none;
+	}
+	.death-log td.death-expand-cell::before { content: none; }
+	.death-expand {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		padding: 6px var(--pad-lg);
+		font-family: var(--font-display);
+		font-size: var(--text-2xs);
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		color: var(--accent-base);
+		background: color-mix(in srgb, var(--accent-base) 6%, transparent);
+		border: none;
+		cursor: pointer;
+	}
+	.death-expand:hover { color: var(--accent-bright); }
 }
 
 /* ── Death effect keyframes ── */

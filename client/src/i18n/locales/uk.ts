@@ -21,6 +21,8 @@ export const uk: Record<string, string> = {
 	'deathlog.sortBy': 'Сортувати за',
 	'deathlog.sortAsc': 'За зростанням — натисніть, щоб змінити',
 	'deathlog.sortDesc': 'За спаданням — натисніть, щоб змінити',
+	'layout.showMore': 'Показати більше',
+	'layout.showLess': 'Показати менше',
 	'deathlog.showLess': 'Згорнути',
 	'deathlog.date': 'Дата',
 	'deathlog.run': 'Забіг',

@@ -21,6 +21,8 @@ export const de: Record<string, string> = {
 	'deathlog.sortBy': 'Sortieren nach',
 	'deathlog.sortAsc': 'Aufsteigend sortiert — zum Umkehren tippen',
 	'deathlog.sortDesc': 'Absteigend sortiert — zum Umkehren tippen',
+	'layout.showMore': 'Mehr anzeigen',
+	'layout.showLess': 'Weniger anzeigen',
 	'deathlog.showLess': 'Weniger anzeigen',
 	'deathlog.date': 'Datum',
 	'deathlog.run': 'Lauf',

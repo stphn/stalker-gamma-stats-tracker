@@ -21,6 +21,8 @@ export const fr: Record<string, string> = {
 	'deathlog.sortBy': 'Trier par',
 	'deathlog.sortAsc': 'Tri croissant — appuyer pour inverser',
 	'deathlog.sortDesc': 'Tri décroissant — appuyer pour inverser',
+	'layout.showMore': 'Afficher plus',
+	'layout.showLess': 'Afficher moins',
 	'deathlog.showLess': 'Réduire',
 	'deathlog.date': 'Date',
 	'deathlog.run': 'Partie',

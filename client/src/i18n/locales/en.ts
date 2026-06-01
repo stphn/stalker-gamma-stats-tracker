@@ -23,6 +23,8 @@ export const en: Record<string, string> = {
 	'deathlog.sortBy': 'Sort by',
 	'deathlog.sortAsc': 'Sorted ascending — tap to reverse',
 	'deathlog.sortDesc': 'Sorted descending — tap to reverse',
+	'layout.showMore': 'Show more',
+	'layout.showLess': 'Show less',
 	'deathlog.showLess': 'Show less',
 	'deathlog.date': 'Date',
 	'deathlog.run': 'Run',
