@@ -169,13 +169,15 @@ export default function App() {
 							left={
 								displayActor && (
 									<>
-										<Location
-											location={displayActor.location}
-											locationName={displayActor.location_name}
-											gameTime={displayActor.game_time}
-											gameState={gameState}
-										/>
-										<Minimap actor={displayActor} onExpand={() => setMapOpen(true)} />
+										<div className="compass-row">
+											<Minimap actor={displayActor} onExpand={() => setMapOpen(true)} />
+											<Location
+												location={displayActor.location}
+												locationName={displayActor.location_name}
+												gameTime={displayActor.game_time}
+												gameState={gameState}
+											/>
+										</div>
 										<div className="actors">
 											<Player actor={displayActor} />
 											{data.companions && data.companions.length > 0 && (

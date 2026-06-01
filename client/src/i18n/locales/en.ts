@@ -141,6 +141,7 @@ export const en: Record<string, string> = {
 	// Player / companions
 	'player.super': 'Stalker',
 	'player.rank': 'Rank',
+	'player.health': 'Health',
 	'player.experience': 'Experience',
 	'player.rubles': 'Rubles',
 	'companions.squad': 'Squad',

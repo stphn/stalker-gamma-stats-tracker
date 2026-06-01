@@ -6,10 +6,10 @@ import {
 import styles from './FactionIcon.module.css';
 
 const SIZES = {
-	xs: { box: 12, img: 10 },
-	sm: { box: 24, img: 20 },
-	md: { box: 32, img: 26 },
-	lg: { box: 64, img: 54 },
+	xs: { box: 17, img: 14 },
+	sm: { box: 28, img: 23 },
+	md: { box: 38, img: 31 },
+	lg: { box: 72, img: 62 },
 } as const;
 
 interface FactionIconProps {

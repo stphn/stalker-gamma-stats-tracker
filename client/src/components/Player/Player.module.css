@@ -91,3 +91,34 @@
 	height: 20px;
 	background: var(--white-divider);
 }
+
+/* ── Health bar ── */
+.hpRow {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 10px;
+}
+
+.hpTrack {
+	flex: 1;
+	height: 5px;
+	background: var(--white-track);
+	border-radius: 1px;
+	overflow: hidden;
+}
+
+.hpFill {
+	height: 100%;
+	border-radius: 1px;
+	transition: width 0.5s;
+}
+
+.hpValue {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	font-weight: 700;
+	line-height: 1;
+	min-width: 4ch;
+	text-align: right;
+}

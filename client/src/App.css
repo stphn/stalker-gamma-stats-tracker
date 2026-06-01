@@ -1,195 +1,210 @@
 :root {
-	/* ══════════════════════════════════════════════
+  /* ══════════════════════════════════════════════
 	   LAYER 1 — PRIMITIVES
 	   HSL scale. Only edit values here.
 	   ══════════════════════════════════════════════ */
 
-	/* ── Green (Zone moss, concrete, dark surfaces) ── */
-	--green-950: hsl(120, 12%,  6%);   /* near-black, faint green */
-	--green-900: hsl(120, 14%,  9%);   /* dark moss-concrete */
-	--green-850: hsl(114, 15%, 10%);   /* subtle divide */
-	--green-800: hsl(112, 15%, 12%);   /* dim interior wall */
-	--green-750: hsl(110, 16%, 14%);   /* raised panel */
-	--green-700: hsl(112, 18%, 16%);   /* mid surface / foot chrome */
-	--green-600: hsl(108, 13%, 23%);   /* disabled text */
-	--green-500: hsl( 90, 23%, 28%);   /* foot-link, muted active */
-	--green-400: hsl( 80, 14%, 44%);   /* secondary text, fog */
-	--green-100: hsl( 44, 28%, 76%);   /* warm parchment text */
+  /* ── Green (Zone moss, concrete, dark surfaces) ── */
+  --green-950: hsl(120, 12%, 6%); /* near-black, faint green */
+  --green-900: hsl(120, 14%, 9%); /* dark moss-concrete */
+  --green-850: hsl(114, 15%, 10%); /* subtle divide */
+  --green-800: hsl(112, 15%, 12%); /* dim interior wall */
+  --green-750: hsl(110, 16%, 14%); /* raised panel */
+  --green-700: hsl(112, 18%, 16%); /* mid surface / foot chrome */
+  --green-600: hsl(108, 13%, 23%); /* disabled text */
+  --green-500: hsl(90, 23%, 28%); /* foot-link, muted active */
+  --green-400: hsl(80, 14%, 44%); /* secondary text, fog */
+  --green-100: hsl(44, 28%, 76%); /* warm parchment text */
 
-	/* ── Amber (marshwater, accent) ── */
-	--amber-700: hsl(38, 45%, 28%);    /* deep marsh gold */
-	--amber-500: hsl(38, 45%, 50%);    /* Tarkovsky sepia amber */
-	--amber-400: hsl(38, 60%, 59%);    /* sunlit water glint */
+  /* ── Amber (marshwater, accent) ── */
+  --amber-700: hsl(38, 45%, 28%); /* deep marsh gold */
+  --amber-500: hsl(38, 45%, 50%); /* Tarkovsky sepia amber */
+  --amber-400: hsl(38, 60%, 59%); /* sunlit water glint */
 
-	/* ── Rust (blood, danger) ── */
-	--rust-600: hsl(15, 62%, 34%);     /* rust-blood, not bright red */
-	--rust-400: hsl( 0, 52%, 57%);     /* dev/debug danger highlight */
+  /* ── Rust (blood, danger) ── */
+  --rust-600: hsl(15, 62%, 34%); /* rust-blood, not bright red */
+  --rust-400: hsl(0, 52%, 57%); /* dev/debug danger highlight */
 
-	/* ── Orange (decay, warning) ── */
-	--orange-500: hsl(32, 59%, 45%);
+  /* ── Orange (decay, warning) ── */
+  --orange-500: hsl(32, 59%, 45%);
 
-	/* ── Teal (celadon mist, info) ── */
-	--teal-500: hsl(172, 20%, 44%);
+  /* ── Teal (celadon mist, info) ── */
+  --teal-500: hsl(172, 20%, 44%);
 
-	/* ── Zone green (overgrown, positive) ── */
-	--zone-500: hsl(100, 20%, 47%);
+  /* ── Zone green (overgrown, positive) ── */
+  --zone-500: hsl(100, 20%, 47%);
 
-	/* ── Neutral grays (glass surfaces, chrome) ── */
-	--gray-950: hsl(0, 0%,  5%);       /* deep scrim base */
-	--gray-800: hsl(0, 0%, 11%);       /* footer bg */
-	--gray-600: hsl(0, 0%, 16%);       /* glass card surface */
+  /* ── Neutral grays (glass surfaces, chrome) ── */
+  --gray-950: hsl(0, 0%, 5%); /* deep scrim base */
+  --gray-800: hsl(0, 0%, 11%); /* footer bg */
+  --gray-600: hsl(0, 0%, 16%); /* glass card surface */
 
-	/* ── Title gradient (pure silver-gray) ── */
-	--silver-100: hsl(0, 0%, 96%);
-	--silver-300: hsl(0, 0%, 78%);
-	--silver-600: hsl(0, 0%, 41%);
+  /* ── Title gradient (pure silver-gray) ── */
+  --silver-100: hsl(0, 0%, 96%);
+  --silver-300: hsl(0, 0%, 78%);
+  --silver-600: hsl(0, 0%, 41%);
 
-	/* ══════════════════════════════════════════════
+  /* ══════════════════════════════════════════════
 	   LAYER 2 — SEMANTIC TOKENS
 	   Map primitives to purpose. Components use these.
 	   ══════════════════════════════════════════════ */
 
-	/* ── Default theme: Dark (modern) — charcoal-navy surfaces with a warm taupe
+  /* ── Default theme: Dark (modern) — charcoal-navy surfaces with a warm taupe
 	   accent and cream text (sampled palette). Layer-1 green/amber primitives
 	   above are kept for a possible Zone theme. ── */
 
-	/* Surfaces — charcoal-navy → slate */
-	--bg-base:    #1a1f25;
-	--bg-surface: #232830;
-	--bg-subtle:  #3b3f46; /* border */
-	--bg-raised:  #2b3038;
-	--bg-overlay: #3b3f46;
-	--bg-default: #454a52;
+  /* Surfaces — charcoal-navy → slate */
+  --bg-base: #1a1f25;
+  --bg-surface: #232830;
+  --bg-subtle: #3b3f46; /* border */
+  --bg-raised: #2b3038;
+  --bg-overlay: #3b3f46;
+  --bg-default: #454a52;
 
-	/* Text — warm cream */
-	--text-primary:   #e2d6be;
-	--text-secondary: #a8a290;
-	--text-disabled:  #6b6c63;
+  /* Text — warm cream */
+  --text-primary: #e2d6be;
+  --text-secondary: #a8a290;
+  --text-disabled: #6b6c63;
 
-	/* Accent — warm taupe */
-	--accent-base:   #b8ab92;
-	--accent-dim:    #8d8476;
-	--accent-bright: #d8c9a9;
+  /* Accent — warm taupe */
+  --accent-base: #b8ab92;
+  --accent-dim: #8d8476;
+  --accent-bright: #d8c9a9;
 
-	/* Status — tuned to the warm/earthy palette but kept distinct */
-	--color-positive: #8fae6e;
-	--color-danger:   #c96f63;
-	--color-warning:  #d8b27a;
-	--color-info:     #7d97b0;
+  /* Status — tuned to the warm/earthy palette but kept distinct */
+  --color-positive: #8fae6e;
+  --color-danger: #c96f63;
+  --color-warning: #d8b27a;
+  --color-info: #7d97b0;
 
-	/* Decorative hue palette — earthy, distinct on the dark surfaces */
-	--hue-red:    #c96f63;
-	--hue-orange: #c08a5a;
-	--hue-gold:   #cbb074;
-	--hue-green:  #8fae6e;
-	--hue-teal:   #6fa39a;
-	--hue-blue:   #7d97b0;
-	--hue-purple: #a088b0;
+  /* Decorative hue palette — earthy, distinct on the dark surfaces */
+  --hue-red: #c96f63;
+  --hue-orange: #c08a5a;
+  --hue-gold: #cbb074;
+  --hue-green: #8fae6e;
+  --hue-teal: #6fa39a;
+  --hue-blue: #7d97b0;
+  --hue-purple: #a088b0;
 
-	/* Glass / translucent — navy-tinted */
-	--bg-glass:        hsl(216, 16%, 22%, 0.60);
-	--bg-glass-mobile: hsl(216, 18%, 10%, 0.96);
-	--bg-scrim:        hsl(216, 20%,  6%, 0.55);
+  /* Glass / translucent — navy-tinted */
+  --bg-glass: hsl(216, 16%, 22%, 0.6);
+  --bg-glass-mobile: hsl(216, 18%, 10%, 0.96);
+  --bg-scrim: hsl(216, 20%, 6%, 0.55);
 
-	/* Footer chrome */
-	--bg-footer:        #1a1f25;
-	--text-foot-label:  #6b6c63;
-	--text-foot-link:   #b8ab92;
-	--text-foot-sep:    #3b3f46;
-	--border-foot:      hsl(38, 24%, 65%, 0.14);
-	--glow-foot-link:   hsl(38, 24%, 65%, 0.35);
+  /* Footer chrome */
+  --bg-footer: #1a1f25;
+  --text-foot-label: #6b6c63;
+  --text-foot-link: #b8ab92;
+  --text-foot-sep: #3b3f46;
+  --border-foot: hsl(38, 24%, 65%, 0.14);
+  --glow-foot-link: hsl(38, 24%, 65%, 0.35);
 
-	/* Header title gradient */
-	--title-grad-top:    var(--silver-100);
-	--title-grad-mid:    var(--silver-300);
-	--title-grad-bottom: var(--silver-600);
+  /* Header title gradient */
+  --title-grad-top: var(--silver-100);
+  --title-grad-mid: var(--silver-300);
+  --title-grad-bottom: var(--silver-600);
 
-	/* Nav glow */
-	--glow-nav-link: hsl(38, 24%, 65%, 0.35);
+  /* Nav glow */
+  --glow-nav-link: hsl(38, 24%, 65%, 0.35);
 
-	/* Dev danger button */
-	--color-dev:              var(--rust-400);
-	--bg-dev:                 hsl(0, 0%, 0%, 0.60);
-	--border-dev:             hsl(0, 52%, 57%, 0.35);
-	--bg-dev-hover:           hsl(0, 52%, 57%, 0.15);
-	--border-dev-hover:       hsl(0, 52%, 57%, 0.70);
+  /* Dev danger button */
+  --color-dev: var(--rust-400);
+  --bg-dev: hsl(0, 0%, 0%, 0.6);
+  --border-dev: hsl(0, 52%, 57%, 0.35);
+  --bg-dev-hover: hsl(0, 52%, 57%, 0.15);
+  --border-dev-hover: hsl(0, 52%, 57%, 0.7);
 
-	/* Misc overlays */
-	--white-divider: hsl(0, 0%, 100%, 0.15);
-	--white-track:   hsl(0, 0%, 85%,  0.25);
-	--border-glass:  hsl(0, 0%, 100%, 0.06);
-	--scanline-color: hsl(38, 24%, 65%, 0.18);
+  /* Misc overlays */
+  --white-divider: hsl(0, 0%, 100%, 0.15);
+  --white-track: hsl(0, 0%, 85%, 0.25);
+  --border-glass: hsl(0, 0%, 100%, 0.06);
+  --scanline-color: hsl(38, 24%, 65%, 0.18);
 
-	/* ── Layered elevation shadows ──
+  /* ── Layered elevation shadows ──
 	   Tint via --shadow-color (H S% L%), dim via --shadow-strength (0–1).
 	   Themes override either: light themes lighten the tint + drop strength. */
-	--shadow-color: 0deg 0% 2%;
-	--shadow-strength: 1;
-	--shadow-elevation-low:
-		0.3px 0.5px 0.7px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
-		0.4px 0.8px 1px -1.2px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
-		1px 2px 2.5px -2.5px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength)));
-	--shadow-elevation-medium:
-		0.3px 0.5px 0.7px hsl(var(--shadow-color) / calc(0.36 * var(--shadow-strength))),
-		0.8px 1.6px 2px -0.8px hsl(var(--shadow-color) / calc(0.36 * var(--shadow-strength))),
-		2.1px 4.1px 5.2px -1.7px hsl(var(--shadow-color) / calc(0.36 * var(--shadow-strength))),
-		5px 10px 12.6px -2.5px hsl(var(--shadow-color) / calc(0.36 * var(--shadow-strength)));
-	--shadow-elevation-high:
-		0.3px 0.5px 0.7px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
-		1.5px 2.9px 3.7px -0.4px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
-		2.7px 5.4px 6.8px -0.7px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
-		4.5px 8.9px 11.2px -1.1px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
-		7.1px 14.3px 18px -1.4px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
-		11.2px 22.3px 28.1px -1.8px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
-		17px 33.9px 42.7px -2.1px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
-		25px 50px 62.9px -2.5px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength)));
-	/* Text equivalent — same falloff, no spread (text-shadow has none) */
-	--shadow-text-elevation:
-		0 0.5px 0.7px hsl(var(--shadow-color) / calc(0.55 * var(--shadow-strength))),
-		0 1.6px 2px hsl(var(--shadow-color) / calc(0.45 * var(--shadow-strength))),
-		0 4.1px 5.2px hsl(var(--shadow-color) / calc(0.38 * var(--shadow-strength))),
-		0 10px 12.6px hsl(var(--shadow-color) / calc(0.32 * var(--shadow-strength)));
+  --shadow-color: 0deg 0% 2%;
+  --shadow-strength: 1;
+  --shadow-elevation-low:
+    0.3px 0.5px 0.7px
+      hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+    0.4px 0.8px 1px -1.2px
+      hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+    1px 2px 2.5px -2.5px
+      hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength)));
+  --shadow-elevation-medium:
+    0.3px 0.5px 0.7px
+      hsl(var(--shadow-color) / calc(0.36 * var(--shadow-strength))),
+    0.8px 1.6px 2px -0.8px
+      hsl(var(--shadow-color) / calc(0.36 * var(--shadow-strength))),
+    2.1px 4.1px 5.2px -1.7px
+      hsl(var(--shadow-color) / calc(0.36 * var(--shadow-strength))),
+    5px 10px 12.6px -2.5px
+      hsl(var(--shadow-color) / calc(0.36 * var(--shadow-strength)));
+  --shadow-elevation-high:
+    0.3px 0.5px 0.7px
+      hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+    1.5px 2.9px 3.7px -0.4px
+      hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+    2.7px 5.4px 6.8px -0.7px
+      hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+    4.5px 8.9px 11.2px -1.1px
+      hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+    7.1px 14.3px 18px -1.4px
+      hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+    11.2px 22.3px 28.1px -1.8px
+      hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+    17px 33.9px 42.7px -2.1px
+      hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+    25px 50px 62.9px -2.5px
+      hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength)));
+  /* Text equivalent — same falloff, no spread (text-shadow has none) */
+  --shadow-text-elevation:
+    0 0.5px 0.7px hsl(var(--shadow-color) / calc(0.55 * var(--shadow-strength))),
+    0 1.6px 2px hsl(var(--shadow-color) / calc(0.45 * var(--shadow-strength))),
+    0 4.1px 5.2px hsl(var(--shadow-color) / calc(0.38 * var(--shadow-strength))),
+    0 10px 12.6px hsl(var(--shadow-color) / calc(0.32 * var(--shadow-strength)));
 
-	/* ── Aliases (shorthand for common tokens) ── */
-	--bg:       var(--bg-base);
-	--surface:  var(--bg-surface);
-	--border:   var(--bg-subtle);
-	--text:     var(--text-primary);
-	--text-dim: var(--text-secondary);
-	--accent:   var(--accent-base);
+  /* ── Aliases (shorthand for common tokens) ── */
+  --bg: var(--bg-base);
+  --surface: var(--bg-surface);
+  --border: var(--bg-subtle);
+  --text: var(--text-primary);
+  --text-dim: var(--text-secondary);
+  --accent: var(--accent-base);
 
-	/* ── Type scale — fluid, min bumped for mobile readability ── */
-	--text-display: clamp(34px, 4.03vw, 58px);
-	--text-3xl: clamp(23px, 2.64vw, 38px);
-	--text-2xl: clamp(19px, 2.08vw, 30px);
-	--text-xl: clamp(17px, 1.81vw, 26px);
-	--text-lg: clamp(17px, 1.53vw, 22px);
-	--text-md: clamp(15px, 1.39vw, 20px);
-	--text-base: clamp(14px, 1.25vw, 18px);
-	--text-sm: clamp(13px, 1.11vw, 16px);
-	--text-xs: clamp(12px, 0.97vw, 14px);
-	--text-2xs: clamp(11px, 0.83vw, 12px);
+  /* ── Type scale — fluid, min bumped for mobile readability ── */
+  --text-display: clamp(34px, 4.03vw, 58px);
+  --text-3xl: clamp(23px, 2.64vw, 38px);
+  --text-2xl: clamp(19px, 2.08vw, 30px);
+  --text-xl: clamp(17px, 1.81vw, 26px);
+  --text-lg: clamp(17px, 1.53vw, 22px);
+  --text-md: clamp(15px, 1.39vw, 20px);
+  --text-base: clamp(14px, 1.25vw, 18px);
+  --text-sm: clamp(13px, 1.11vw, 16px);
+  --text-xs: clamp(12px, 0.97vw, 14px);
+  --text-2xs: clamp(11px, 0.83vw, 12px);
 
-	/* ── Fluid padding ── */
-	--pad-xs: clamp(4px, 0.56vw, 8px);
-	--pad-sm: clamp(8px, 0.83vw, 12px);
-	--pad-md: clamp(12px, 1.39vw, 20px);
-	--pad-lg: clamp(16px, 1.94vw, 28px);
-	--pad-xl: clamp(20px, 2.50vw, 36px);
+  /* ── Fluid padding ── */
+  --pad-xs: clamp(4px, 0.56vw, 8px);
+  --pad-sm: clamp(8px, 0.83vw, 12px);
+  --pad-md: clamp(12px, 1.39vw, 20px);
+  --pad-lg: clamp(16px, 1.94vw, 28px);
+  --pad-xl: clamp(20px, 2.5vw, 36px);
 
-	/* ── Fonts ── */
-	--font-display: "Chakra Petch", "Courier New", monospace;
-	--font-body: "IBM Plex Sans", -apple-system, sans-serif;
+  /* ── Fonts ── */
+  --font-display: "Chakra Petch", "Courier New", monospace;
+  --font-body: "IBM Plex Sans", -apple-system, sans-serif;
 
-	/* ── Aliases ── */
-	--bg: var(--bg-base);
-	--surface: var(--bg-surface);
-	--border: var(--bg-subtle);
-	--text: var(--text-primary);
-	--text-dim: var(--text-secondary);
-	--accent: var(--accent-base);
-	/* Header chrome — defaults to the footer tone; themes may override. */
-	--bg-header: var(--bg-footer);
+  /* ── Aliases ── */
+  --bg: var(--bg-base);
+  --surface: var(--bg-surface);
+  --border: var(--bg-subtle);
+  --text: var(--text-primary);
+  --text-dim: var(--text-secondary);
+  --accent: var(--accent-base);
+  /* Header chrome — defaults to the footer tone; themes may override. */
+  --bg-header: var(--bg-footer);
 }
 
 /* ══════════════════════════════════════════════
@@ -200,126 +215,126 @@
    Add a theme: copy this block, change the selector + values.
    ══════════════════════════════════════════════ */
 :root[data-theme="nord"] {
-	/* Surfaces — Polar Night */
-	--bg-base:    #242933;
-	--bg-surface: #2e3440;
-	--bg-subtle:  #3b4252; /* also drives --border */
-	--bg-raised:  #3b4252;
-	--bg-overlay: #434c5e;
-	--bg-default: #434c5e;
+  /* Surfaces — Polar Night */
+  --bg-base: #242933;
+  --bg-surface: #2e3440;
+  --bg-subtle: #3b4252; /* also drives --border */
+  --bg-raised: #3b4252;
+  --bg-overlay: #434c5e;
+  --bg-default: #434c5e;
 
-	/* Text — Snow Storm */
-	--text-primary:   #eceff4;
-	--text-secondary: #d8dee9;
-	--text-disabled:  #4c566a;
+  /* Text — Snow Storm */
+  --text-primary: #eceff4;
+  --text-secondary: #d8dee9;
+  --text-disabled: #4c566a;
 
-	/* Accent — Frost */
-	--accent-base:   #88c0d0;
-	--accent-dim:    #5e81ac;
-	--accent-bright: #a6d8e2;
+  /* Accent — Frost */
+  --accent-base: #88c0d0;
+  --accent-dim: #5e81ac;
+  --accent-bright: #a6d8e2;
 
-	/* Status — Aurora */
-	--color-positive: #a3be8c;
-	--color-danger:   #bf616a;
-	--color-warning:  #ebcb8b;
-	--color-info:     #81a1c1;
+  /* Status — Aurora */
+  --color-positive: #a3be8c;
+  --color-danger: #bf616a;
+  --color-warning: #ebcb8b;
+  --color-info: #81a1c1;
 
-	/* Glass / scrim */
-	--bg-glass:        hsl(220, 16%, 28%, 0.60);
-	--bg-glass-mobile: hsl(220, 16%, 14%, 0.96);
-	--bg-scrim:        hsl(220, 16%, 8%, 0.55);
+  /* Glass / scrim */
+  --bg-glass: hsl(220, 16%, 28%, 0.6);
+  --bg-glass-mobile: hsl(220, 16%, 14%, 0.96);
+  --bg-scrim: hsl(220, 16%, 8%, 0.55);
 
-	/* Footer + accent-keyed glows */
-	--bg-footer:       #242933;
-	--text-foot-label: #4c566a;
-	--text-foot-link:  #88c0d0;
-	--border-foot:     hsl(193, 43%, 67%, 0.12);
-	--glow-foot-link:  hsl(193, 43%, 67%, 0.40);
-	--glow-nav-link:   hsl(193, 43%, 67%, 0.40);
-	--scanline-color:  hsl(193, 43%, 67%, 0.25);
+  /* Footer + accent-keyed glows */
+  --bg-footer: #242933;
+  --text-foot-label: #4c566a;
+  --text-foot-link: #88c0d0;
+  --border-foot: hsl(193, 43%, 67%, 0.12);
+  --glow-foot-link: hsl(193, 43%, 67%, 0.4);
+  --glow-nav-link: hsl(193, 43%, 67%, 0.4);
+  --scanline-color: hsl(193, 43%, 67%, 0.25);
 
-	/* Decorative hue palette — Aurora + Frost */
-	--hue-red:    #bf616a;
-	--hue-orange: #d08770;
-	--hue-gold:   #ebcb8b;
-	--hue-green:  #a3be8c;
-	--hue-teal:   #8fbcbb;
-	--hue-blue:   #81a1c1;
-	--hue-purple: #b48ead;
+  /* Decorative hue palette — Aurora + Frost */
+  --hue-red: #bf616a;
+  --hue-orange: #d08770;
+  --hue-gold: #ebcb8b;
+  --hue-green: #a3be8c;
+  --hue-teal: #8fbcbb;
+  --hue-blue: #81a1c1;
+  --hue-purple: #b48ead;
 }
 
 /* Light — warm earthy palette (taupe/cream surfaces + sage accent), sampled from
    the reference. Text is a derived dark warm tone (the palette itself is too
    low-contrast for body copy). Extra overrides flip the dark-first bits. */
 :root[data-theme="light"] {
-	/* Surfaces — warm greige page, cream cards (stronger steps for hierarchy) */
-	--bg-base:    #e4e1d2;
-	--bg-surface: #faf8ee;
-	--bg-subtle:  #c9c6b4; /* border/divider — taupe-gray, clearer */
-	--bg-raised:  #fffdf5;
-	--bg-overlay: #edeadd;
-	--bg-default: #d6d3c1;
+  /* Surfaces — warm greige page, cream cards (stronger steps for hierarchy) */
+  --bg-base: #e4e1d2;
+  --bg-surface: #faf8ee;
+  --bg-subtle: #c9c6b4; /* border/divider — taupe-gray, clearer */
+  --bg-raised: #fffdf5;
+  --bg-overlay: #edeadd;
+  --bg-default: #d6d3c1;
 
-	/* Text — dark warm olive */
-	--text-primary:   #36342b;
-	--text-secondary: #67634f;
-	--text-disabled:  #9b9580;
+  /* Text — dark warm olive */
+  --text-primary: #36342b;
+  --text-secondary: #67634f;
+  --text-disabled: #9b9580;
 
-	/* Accent — sage green, a touch deeper/richer */
-	--accent-base:   #6b8a4e;
-	--accent-dim:    #9fb088;
-	--accent-bright: #50702e;
+  /* Accent — sage green, a touch deeper/richer */
+  --accent-base: #6b8a4e;
+  --accent-dim: #9fb088;
+  --accent-bright: #50702e;
 
-	/* Status — richer, clearly distinct */
-	--color-positive: #4e8a36;
-	--color-danger:   #b23a2e;
-	--color-warning:  #c0891e;
-	--color-info:     #3a6ea5;
+  /* Status — richer, clearly distinct */
+  --color-positive: #4e8a36;
+  --color-danger: #b23a2e;
+  --color-warning: #c0891e;
+  --color-info: #3a6ea5;
 
-	/* Decorative hue palette — fuller, varied hues that pop on the warm light bg */
-	--hue-red:    #c0392b;
-	--hue-orange: #d2691e;
-	--hue-gold:   #c19a2e;
-	--hue-green:  #5a8f3c;
-	--hue-teal:   #2f8f82;
-	--hue-blue:   #3a6ea5;
-	--hue-purple: #7d4f9c;
+  /* Decorative hue palette — fuller, varied hues that pop on the warm light bg */
+  --hue-red: #c0392b;
+  --hue-orange: #d2691e;
+  --hue-gold: #c19a2e;
+  --hue-green: #5a8f3c;
+  --hue-teal: #2f8f82;
+  --hue-blue: #3a6ea5;
+  --hue-purple: #7d4f9c;
 
-	/* Glass / scrim — warm light translucent (must not darken the page) */
-	--bg-glass:        hsl(50, 25%, 92%, 0.75);
-	--bg-glass-mobile: hsl(50, 25%, 95%, 0.96);
-	--bg-scrim:        hsl(50, 12%, 82%, 0.55);
+  /* Glass / scrim — warm light translucent (must not darken the page) */
+  --bg-glass: hsl(50, 25%, 92%, 0.75);
+  --bg-glass-mobile: hsl(50, 25%, 95%, 0.96);
+  --bg-scrim: hsl(50, 12%, 82%, 0.55);
 
-	/* Footer + accent-keyed glows */
-	--bg-footer:       #dedcce;
-	--text-foot-label: #8a8573;
-	--text-foot-link:  #6f7d5a;
-	--text-foot-sep:   #c7c4b5;
-	--border-foot:     hsl(82, 17%, 42%, 0.22);
-	--glow-foot-link:  hsl(82, 17%, 42%, 0.28);
-	--glow-nav-link:   hsl(82, 17%, 42%, 0.28);
-	--scanline-color:  hsl(82, 17%, 42%, 0.08);
+  /* Footer + accent-keyed glows */
+  --bg-footer: #dedcce;
+  --text-foot-label: #8a8573;
+  --text-foot-link: #6f7d5a;
+  --text-foot-sep: #c7c4b5;
+  --border-foot: hsl(82, 17%, 42%, 0.22);
+  --glow-foot-link: hsl(82, 17%, 42%, 0.28);
+  --glow-nav-link: hsl(82, 17%, 42%, 0.28);
+  --scanline-color: hsl(82, 17%, 42%, 0.08);
 
-	/* Title gradient — dark warm on light */
-	--title-grad-top:    #4a463a;
-	--title-grad-mid:    #635d4c;
-	--title-grad-bottom: #322f26;
+  /* Title gradient — dark warm on light */
+  --title-grad-top: #4a463a;
+  --title-grad-mid: #635d4c;
+  --title-grad-bottom: #322f26;
 
-	/* Overlays that assume a dark bg → flip to dark-on-light */
-	--white-divider: hsl(40, 10%, 20%, 0.10);
-	--white-track:   hsl(40, 10%, 20%, 0.12);
-	--border-glass:  hsl(40, 10%, 20%, 0.08);
+  /* Overlays that assume a dark bg → flip to dark-on-light */
+  --white-divider: hsl(40, 10%, 20%, 0.1);
+  --white-track: hsl(40, 10%, 20%, 0.12);
+  --border-glass: hsl(40, 10%, 20%, 0.08);
 
-	/* Soft, warm-tinted shadow — far lighter than the dark themes' near-black. */
-	--shadow-color: 40deg 18% 42%;
-	--shadow-strength: 0.45;
+  /* Soft, warm-tinted shadow — far lighter than the dark themes' near-black. */
+  --shadow-color: 40deg 18% 42%;
+  --shadow-strength: 0.45;
 }
 
 body {
-	background: var(--bg);
-	color: var(--text);
-	font-family: var(--font-body);
-	font-size: var(--text-md);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--text-md);
 }
 
 /* ── HUD corner brackets utility ──
@@ -330,286 +345,366 @@ body {
      --hud-inset: distance from edge          (default 5px)
 ── */
 .hud-frame {
-	position: absolute;
-	inset: var(--hud-inset, 5px);
-	pointer-events: none;
-	z-index: 3;
-	background:
-		linear-gradient(to right,  var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 0    0    / var(--hud-size, 10px) 1px  no-repeat,
-		linear-gradient(to bottom, var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 0    0    / 1px  var(--hud-size, 10px) no-repeat,
-		linear-gradient(to left,   var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 100% 0    / var(--hud-size, 10px) 1px  no-repeat,
-		linear-gradient(to bottom, var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 100% 0    / 1px  var(--hud-size, 10px) no-repeat,
-		linear-gradient(to right,  var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 0    100% / var(--hud-size, 10px) 1px  no-repeat,
-		linear-gradient(to top,    var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 0    100% / 1px  var(--hud-size, 10px) no-repeat,
-		linear-gradient(to left,   var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 100% 100% / var(--hud-size, 10px) 1px  no-repeat,
-		linear-gradient(to top,    var(--hud-color, var(--accent-dim)) var(--hud-size, 10px), transparent var(--hud-size, 10px)) 100% 100% / 1px  var(--hud-size, 10px) no-repeat;
+  position: absolute;
+  inset: var(--hud-inset, 5px);
+  pointer-events: none;
+  z-index: 3;
+  background:
+    linear-gradient(
+        to right,
+        var(--hud-color, var(--accent-dim)) var(--hud-size, 10px),
+        transparent var(--hud-size, 10px)
+      )
+      0 0 / var(--hud-size, 10px) 1px no-repeat,
+    linear-gradient(
+        to bottom,
+        var(--hud-color, var(--accent-dim)) var(--hud-size, 10px),
+        transparent var(--hud-size, 10px)
+      )
+      0 0 / 1px var(--hud-size, 10px) no-repeat,
+    linear-gradient(
+        to left,
+        var(--hud-color, var(--accent-dim)) var(--hud-size, 10px),
+        transparent var(--hud-size, 10px)
+      )
+      100% 0 / var(--hud-size, 10px) 1px no-repeat,
+    linear-gradient(
+        to bottom,
+        var(--hud-color, var(--accent-dim)) var(--hud-size, 10px),
+        transparent var(--hud-size, 10px)
+      )
+      100% 0 / 1px var(--hud-size, 10px) no-repeat,
+    linear-gradient(
+        to right,
+        var(--hud-color, var(--accent-dim)) var(--hud-size, 10px),
+        transparent var(--hud-size, 10px)
+      )
+      0 100% / var(--hud-size, 10px) 1px no-repeat,
+    linear-gradient(
+        to top,
+        var(--hud-color, var(--accent-dim)) var(--hud-size, 10px),
+        transparent var(--hud-size, 10px)
+      )
+      0 100% / 1px var(--hud-size, 10px) no-repeat,
+    linear-gradient(
+        to left,
+        var(--hud-color, var(--accent-dim)) var(--hud-size, 10px),
+        transparent var(--hud-size, 10px)
+      )
+      100% 100% / var(--hud-size, 10px) 1px no-repeat,
+    linear-gradient(
+        to top,
+        var(--hud-color, var(--accent-dim)) var(--hud-size, 10px),
+        transparent var(--hud-size, 10px)
+      )
+      100% 100% / 1px var(--hud-size, 10px) no-repeat;
 }
 
 /* ── App shell ── */
 .app {
-	container-type: inline-size;
-	container-name: app;
+  container-type: inline-size;
+  container-name: app;
 }
 
 .death-shake {
-	animation: blood-shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  animation: blood-shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
 }
 
 @container app (max-width: 400px) {
-	.app > header {
-		padding: var(--pad-sm);
-	}
+  .app > header {
+    padding: var(--pad-sm);
+  }
 }
 
 /* ── Layout ── */
 .layout {
-	container-type: inline-size;
-	container-name: layout;
-	display: flex;
-	flex-direction: column;
+  container-type: inline-size;
+  container-name: layout;
+  display: flex;
+  flex-direction: column;
 }
 
 .stage-row {
-	position: relative;
+  position: relative;
 }
 
 .death-log-wrap {
-	width: 100%;
-	/* Lift above the panels below so its drop shadow lands on them */
-	position: relative;
-	z-index: 3;
-	background-color: var(--bg-base);
-	background-image: url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M82.42 180h-1.415L0 98.995v-2.827L6.167 90 0 83.833V81.004L81.005 0h2.827L90 6.167 96.167 0H98.996L180 81.005v2.827L173.833 90 180 96.167V98.996L98.995 180h-2.827L90 173.833 83.833 180H82.42zm0-1.414L1.413 97.58 8.994 90l-7.58-7.58L82.42 1.413 90 8.994l7.58-7.58 81.006 81.005-7.58 7.58 7.58 7.58-81.005 81.006-7.58-7.58-7.58 7.58zM175.196 0h-25.832c1.033 2.924 2.616 5.59 4.625 7.868C152.145 9.682 151 12.208 151 15c0 5.523 4.477 10 10 10 1.657 0 3 1.343 3 3v4h16V0h-4.803c.51.883.803 1.907.803 3 0 3.314-2.686 6-6 6s-6-2.686-6-6c0-1.093.292-2.117.803-3h10.394-13.685C161.18.938 161 1.948 161 3v4c-4.418 0-8 3.582-8 8s3.582 8 8 8c2.76 0 5 2.24 5 5v2h4v-4h2v4h4v-4h2v4h2V0h-4.803zm-15.783 0c-.27.954-.414 1.96-.414 3v2.2c-1.25.254-2.414.74-3.447 1.412-1.716-1.93-3.098-4.164-4.054-6.612h7.914zM180 17h-3l2.143-10H180v10zm-30.635 163c-.884-2.502-1.365-5.195-1.365-8 0-13.255 10.748-24 23.99-24H180v32h-30.635zm12.147 0c.5-1.416 1.345-2.67 2.434-3.66l-1.345-1.48c-1.498 1.364-2.62 3.136-3.186 5.14H151.5c-.97-2.48-1.5-5.177-1.5-8 0-12.15 9.84-22 22-22h8v30h-18.488zm13.685 0c-1.037-1.793-2.976-3-5.197-3-2.22 0-4.16 1.207-5.197 3h10.394zM0 148h8.01C21.26 148 32 158.742 32 172c0 2.805-.48 5.498-1.366 8H0v-32zm0 2h8c12.15 0 22 9.847 22 22 0 2.822-.53 5.52-1.5 8h-7.914c-.567-2.004-1.688-3.776-3.187-5.14l-1.346 1.48c1.09.99 1.933 2.244 2.434 3.66H0v-30zm15.197 30c-1.037-1.793-2.976-3-5.197-3-2.22 0-4.16 1.207-5.197 3h10.394zM0 32h16v-4c0-1.657 1.343-3 3-3 5.523 0 10-4.477 10-10 0-2.794-1.145-5.32-2.992-7.134C28.018 5.586 29.6 2.924 30.634 0H0v32zm0-2h2v-4h2v4h4v-4h2v4h4v-2c0-2.76 2.24-5 5-5 4.418 0 8-3.582 8-8s-3.582-8-8-8V3c0-1.052-.18-2.062-.512-3H0v30zM28.5 0c-.954 2.448-2.335 4.683-4.05 6.613-1.035-.672-2.2-1.16-3.45-1.413V3c0-1.04-.144-2.046-.414-3H28.5zM0 17h3L.857 7H0v10zM15.197 0c.51.883.803 1.907.803 3 0 3.314-2.686 6-6 6S4 6.314 4 3c0-1.093.292-2.117.803-3h10.394zM109 115c-1.657 0-3 1.343-3 3v4H74v-4c0-1.657-1.343-3-3-3-5.523 0-10-4.477-10-10 0-2.793 1.145-5.318 2.99-7.132C60.262 93.638 58 88.084 58 82c0-13.255 10.748-24 23.99-24h16.02C111.26 58 122 68.742 122 82c0 6.082-2.263 11.636-5.992 15.866C117.855 99.68 119 102.206 119 105c0 5.523-4.477 10-10 10zm0-2c-2.76 0-5 2.24-5 5v2h-4v-4h-2v4h-4v-4h-2v4h-4v-4h-2v4h-4v-4h-2v4h-4v-2c0-2.76-2.24-5-5-5-4.418 0-8-3.582-8-8s3.582-8 8-8v-4c0-2.64 1.136-5.013 2.946-6.66L72.6 84.86C70.39 86.874 69 89.775 69 93v2.2c-1.25.254-2.414.74-3.447 1.412C62.098 92.727 60 87.61 60 82c0-12.15 9.84-22 22-22h16c12.15 0 22 9.847 22 22 0 5.61-2.097 10.728-5.55 14.613-1.035-.672-2.2-1.16-3.45-1.413V93c0-3.226-1.39-6.127-3.6-8.14l-1.346 1.48C107.864 87.987 109 90.36 109 93v4c4.418 0 8 3.582 8 8s-3.582 8-8 8zM90.857 97L93 107h-6l2.143-10h1.714zM80 99c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm20 0c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6z' fill='%23C8A85A' fill-opacity='0.06' fill-rule='evenodd'/%3E%3C/svg%3E");
-	background-size: 180px 180px;
-	animation: pattern-drift 25s linear infinite;
-	box-shadow:
-		inset 0  9px 16px -8px hsl(var(--shadow-color) / calc(0.65 * var(--shadow-strength))),
-		inset 0 -9px 16px -8px hsl(var(--shadow-color) / calc(0.35 * var(--shadow-strength))),
-		var(--shadow-elevation-medium);
+  width: 100%;
+  /* Lift above the panels below so its drop shadow lands on them */
+  position: relative;
+  z-index: 3;
+  background-color: var(--bg-base);
+  background-image: url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M82.42 180h-1.415L0 98.995v-2.827L6.167 90 0 83.833V81.004L81.005 0h2.827L90 6.167 96.167 0H98.996L180 81.005v2.827L173.833 90 180 96.167V98.996L98.995 180h-2.827L90 173.833 83.833 180H82.42zm0-1.414L1.413 97.58 8.994 90l-7.58-7.58L82.42 1.413 90 8.994l7.58-7.58 81.006 81.005-7.58 7.58 7.58 7.58-81.005 81.006-7.58-7.58-7.58 7.58zM175.196 0h-25.832c1.033 2.924 2.616 5.59 4.625 7.868C152.145 9.682 151 12.208 151 15c0 5.523 4.477 10 10 10 1.657 0 3 1.343 3 3v4h16V0h-4.803c.51.883.803 1.907.803 3 0 3.314-2.686 6-6 6s-6-2.686-6-6c0-1.093.292-2.117.803-3h10.394-13.685C161.18.938 161 1.948 161 3v4c-4.418 0-8 3.582-8 8s3.582 8 8 8c2.76 0 5 2.24 5 5v2h4v-4h2v4h4v-4h2v4h2V0h-4.803zm-15.783 0c-.27.954-.414 1.96-.414 3v2.2c-1.25.254-2.414.74-3.447 1.412-1.716-1.93-3.098-4.164-4.054-6.612h7.914zM180 17h-3l2.143-10H180v10zm-30.635 163c-.884-2.502-1.365-5.195-1.365-8 0-13.255 10.748-24 23.99-24H180v32h-30.635zm12.147 0c.5-1.416 1.345-2.67 2.434-3.66l-1.345-1.48c-1.498 1.364-2.62 3.136-3.186 5.14H151.5c-.97-2.48-1.5-5.177-1.5-8 0-12.15 9.84-22 22-22h8v30h-18.488zm13.685 0c-1.037-1.793-2.976-3-5.197-3-2.22 0-4.16 1.207-5.197 3h10.394zM0 148h8.01C21.26 148 32 158.742 32 172c0 2.805-.48 5.498-1.366 8H0v-32zm0 2h8c12.15 0 22 9.847 22 22 0 2.822-.53 5.52-1.5 8h-7.914c-.567-2.004-1.688-3.776-3.187-5.14l-1.346 1.48c1.09.99 1.933 2.244 2.434 3.66H0v-30zm15.197 30c-1.037-1.793-2.976-3-5.197-3-2.22 0-4.16 1.207-5.197 3h10.394zM0 32h16v-4c0-1.657 1.343-3 3-3 5.523 0 10-4.477 10-10 0-2.794-1.145-5.32-2.992-7.134C28.018 5.586 29.6 2.924 30.634 0H0v32zm0-2h2v-4h2v4h4v-4h2v4h4v-2c0-2.76 2.24-5 5-5 4.418 0 8-3.582 8-8s-3.582-8-8-8V3c0-1.052-.18-2.062-.512-3H0v30zM28.5 0c-.954 2.448-2.335 4.683-4.05 6.613-1.035-.672-2.2-1.16-3.45-1.413V3c0-1.04-.144-2.046-.414-3H28.5zM0 17h3L.857 7H0v10zM15.197 0c.51.883.803 1.907.803 3 0 3.314-2.686 6-6 6S4 6.314 4 3c0-1.093.292-2.117.803-3h10.394zM109 115c-1.657 0-3 1.343-3 3v4H74v-4c0-1.657-1.343-3-3-3-5.523 0-10-4.477-10-10 0-2.793 1.145-5.318 2.99-7.132C60.262 93.638 58 88.084 58 82c0-13.255 10.748-24 23.99-24h16.02C111.26 58 122 68.742 122 82c0 6.082-2.263 11.636-5.992 15.866C117.855 99.68 119 102.206 119 105c0 5.523-4.477 10-10 10zm0-2c-2.76 0-5 2.24-5 5v2h-4v-4h-2v4h-4v-4h-2v4h-4v-4h-2v4h-4v-4h-2v4h-4v-2c0-2.76-2.24-5-5-5-4.418 0-8-3.582-8-8s3.582-8 8-8v-4c0-2.64 1.136-5.013 2.946-6.66L72.6 84.86C70.39 86.874 69 89.775 69 93v2.2c-1.25.254-2.414.74-3.447 1.412C62.098 92.727 60 87.61 60 82c0-12.15 9.84-22 22-22h16c12.15 0 22 9.847 22 22 0 5.61-2.097 10.728-5.55 14.613-1.035-.672-2.2-1.16-3.45-1.413V93c0-3.226-1.39-6.127-3.6-8.14l-1.346 1.48C107.864 87.987 109 90.36 109 93v4c4.418 0 8 3.582 8 8s-3.582 8-8 8zM90.857 97L93 107h-6l2.143-10h1.714zM80 99c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm20 0c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6z' fill='%23C8A85A' fill-opacity='0.06' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  animation: pattern-drift 25s linear infinite;
+  box-shadow:
+    inset 0 9px 16px -8px
+      hsl(var(--shadow-color) / calc(0.65 * var(--shadow-strength))),
+    inset 0 -9px 16px -8px
+      hsl(var(--shadow-color) / calc(0.35 * var(--shadow-strength))),
+    var(--shadow-elevation-medium);
 }
 
 @keyframes pattern-drift {
-	from { background-position: 0 0; }
-	to   { background-position: 180px 180px; }
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 180px 180px;
+  }
 }
 
 /* Desktop: sidebar floats over the right edge of the stage image */
 .sidebar {
-	position: absolute;
-	right: var(--pad-lg);
-	bottom: calc(var(--pad-lg) + 2px);
-	z-index: 2;
-	width: clamp(300px, 26.4vw, 480px);
-	overflow-y: auto;
-	background: var(--bg-glass);
-	backdrop-filter: blur(6px);
-	-webkit-backdrop-filter: blur(6px);
-	border-left: 1px solid var(--border-glass);
-	box-shadow: var(--shadow-elevation-high);
+  position: absolute;
+  right: var(--pad-lg);
+  bottom: calc(var(--pad-lg) + 2px);
+  z-index: 2;
+  width: clamp(300px, 26.4vw, 480px);
+  overflow-y: auto;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-left: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-elevation-high);
 }
 
 /* Mobile: sidebar drops below, full-width, opaque */
 @container layout (max-width: 900px) {
-	.sidebar {
-		position: static;
-		width: 100%;
-		backdrop-filter: none;
-		-webkit-backdrop-filter: none;
-		background: var(--bg-glass-mobile);
-		border-left: none;
-		border-top: 1px solid var(--border);
-	}
+  .sidebar {
+    position: static;
+    width: 100%;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--bg-glass-mobile);
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
 }
 
 /* ── Actors strip (player + companions in stage) ── */
 .actors {
-	display: grid;
-	grid-template-columns: max-content max-content;
-	align-items: end;
-	gap: var(--pad-sm);
+  display: grid;
+  grid-template-columns: max-content max-content;
+  align-items: end;
+  gap: var(--pad-sm);
+}
+
+/* Compass + location/time side by side (location to the right of the compass) */
+.compass-row {
+  display: flex;
+  align-items: center;
+  gap: var(--pad-lg);
 }
 
 @container layout (max-width: 900px) {
-	.actors {
-		grid-template-columns: max-content 1fr;
-	}
+  .actors {
+    grid-template-columns: max-content 1fr;
+  }
 }
 
 @container layout (max-width: 600px) {
-	.actors {
-		grid-template-columns: 1fr;
-	}
+  .actors {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ── Death log ── */
 .death-log-title {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	padding: var(--pad-md) var(--pad-lg) var(--pad-sm);
-	font-family: var(--font-display);
-	font-size: var(--text-md);
-	font-weight: 700;
-	letter-spacing: 2px;
-	text-transform: uppercase;
-	color: var(--color-danger);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: var(--pad-md) var(--pad-lg) var(--pad-sm);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-danger);
 }
 
 .death-log-toggle {
-	width: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 6px;
-	padding: var(--pad-sm) 0 var(--pad-md);
-	font-family: var(--font-display);
-	font-size: var(--text-2xs);
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	color: var(--text-dim);
-	background: none;
-	border: none;
-	cursor: pointer;
-	transition: color 0.15s;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: var(--pad-sm) 0 var(--pad-md);
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s;
 }
 
 .death-log-toggle:hover {
-	color: var(--accent-bright);
+  color: var(--accent-bright);
 }
 
 /* Horizontal-scroll wrapper — keeps the table usable on the in-between width
    range (before it stacks). Thin, subtle, mostly-invisible scrollbar. */
 .death-log-scroll {
-	background: var(--bg-scrim);
-	backdrop-filter: blur(8px);
-	-webkit-backdrop-filter: blur(8px);
-	overflow-x: auto;
-	/* Bottom room so the (thin) horizontal scrollbar never sits over the last row. */
-	padding-bottom: 6px;
-	scrollbar-width: thin;
-	scrollbar-color: color-mix(in srgb, var(--accent-base) 35%, transparent) transparent;
+  background: var(--bg-scrim);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  overflow-x: auto;
+  /* Bottom room so the (thin) horizontal scrollbar never sits over the last row. */
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent-base) 35%, transparent)
+    transparent;
 }
 .death-log-scroll::-webkit-scrollbar {
-	height: 6px;
+  height: 6px;
 }
 .death-log-scroll::-webkit-scrollbar-thumb {
-	background: color-mix(in srgb, var(--accent-base) 30%, transparent);
-	border-radius: 3px;
+  background: color-mix(in srgb, var(--accent-base) 30%, transparent);
+  border-radius: 3px;
 }
 .death-log-scroll::-webkit-scrollbar-thumb:hover {
-	background: color-mix(in srgb, var(--accent-base) 55%, transparent);
+  background: color-mix(in srgb, var(--accent-base) 55%, transparent);
 }
 .death-log-scroll::-webkit-scrollbar-track {
-	background: transparent;
+  background: transparent;
 }
 
 /* Mobile sort control — hidden on desktop (the header row does the sorting). */
 .death-sortbar {
-	display: none;
+  display: none;
 }
 
 @container layout (max-width: 900px) {
-	.death-log-scroll { background: hsl(0, 0%, 0%, 0.62); }
+  .death-log-scroll {
+    background: hsl(0, 0%, 0%, 0.62);
+  }
 }
 @container layout (max-width: 700px) {
-	.death-log-scroll { background: hsl(0, 0%, 0%, 0.70); }
+  .death-log-scroll {
+    background: hsl(0, 0%, 0%, 0.7);
+  }
 }
 @container layout (max-width: 550px) {
-	.death-log-scroll { background: hsl(0, 0%, 0%, 0.78); }
+  .death-log-scroll {
+    background: hsl(0, 0%, 0%, 0.78);
+  }
 }
 @container layout (max-width: 400px) {
-	.death-log-scroll { background: hsl(0, 0%, 0%, 0.85); }
+  .death-log-scroll {
+    background: hsl(0, 0%, 0%, 0.85);
+  }
 }
 
 /* Semantic table — content-sized columns, packed to the left */
 .death-log {
-	border-collapse: collapse;
-	font-family: var(--font-display);
-	width: auto;
-	margin: var(--pad-sm) 0;
+  border-collapse: collapse;
+  font-family: var(--font-display);
+  width: auto;
+  margin: var(--pad-sm) 0;
 }
 
 .death-log th,
 .death-log td {
-	white-space: nowrap;
-	padding: var(--pad-xs) var(--pad-md);
-	text-align: left;
+  white-space: nowrap;
+  padding: var(--pad-xs) var(--pad-md);
+  text-align: left;
 }
 
 .death-log th:first-child,
 .death-log td:first-child {
-	padding-left: var(--pad-lg);
+  padding-left: var(--pad-lg);
 }
 .death-log th:last-child,
 .death-log td:last-child {
-	padding-right: var(--pad-lg);
+  padding-right: var(--pad-lg);
 }
 
 .death-log thead th {
-	border-bottom: 1px solid var(--border);
-	vertical-align: bottom;
+  border-bottom: 1px solid var(--border);
+  vertical-align: bottom;
 }
 
 /* Sortable header button */
 .death-sort {
-	display: inline-flex;
-	align-items: center;
-	gap: 5px;
-	font-family: var(--font-display);
-	font-size: var(--text-2xs);
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	color: var(--text-dim);
-	background: none;
-	border: none;
-	padding: 0;
-	cursor: pointer;
-	transition: color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.15s;
 }
-.death-sort svg { flex-shrink: 0; }
-.death-sort:hover { color: var(--accent-base); }
-.death-sort--active { color: var(--accent-bright); }
+.death-sort svg {
+  flex-shrink: 0;
+}
+.death-sort:hover {
+  color: var(--accent-base);
+}
+.death-sort--active {
+  color: var(--accent-bright);
+}
 
 /* Numeric columns right-align (and push their header button to the right) */
-.death-num { text-align: right; }
-th.death-num .death-sort { justify-content: flex-end; width: 100%; }
+.death-num {
+  text-align: right;
+}
+th.death-num .death-sort {
+  justify-content: flex-end;
+  width: 100%;
+}
 
 /* Per-card expand control only exists in the stacked (mobile) view. */
-.death-expand-cell { display: none; }
+.death-expand-cell {
+  display: none;
+}
 
 /* Data cells */
 .death-log tbody td {
-	font-size: var(--text-sm);
-	color: var(--text);
-	border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+  font-size: var(--text-sm);
+  color: var(--text);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
 }
 .death-log tbody tr:last-child td {
-	border-bottom: none;
+  border-bottom: none;
 }
 
 .death-zone {
-	color: var(--text-dim);
-	font-style: italic;
+  color: var(--text-dim);
+  font-style: italic;
 }
 
 .death-date {
-	color: var(--text-dim);
+  color: var(--text-dim);
 }
 
 .death-run {
-	color: var(--color-danger);
-	font-weight: 700;
+  color: var(--color-danger);
+  font-weight: 700;
 }
 
 /* Freshly-died row — red flash that fades as attention lands on it */
 .death-row--new td {
-	animation: death-row-flash 5s ease-out;
+  animation: death-row-flash 5s ease-out;
 }
 
 @keyframes death-row-flash {
-	0%   { background: hsl(0, 60%, 32%, 0.55); }
-	12%  { background: hsl(0, 60%, 32%, 0.38); }
-	100% { background: hsl(0, 60%, 32%, 0); }
+  0% {
+    background: hsl(0, 60%, 32%, 0.55);
+  }
+  12% {
+    background: hsl(0, 60%, 32%, 0.38);
+  }
+  100% {
+    background: hsl(0, 60%, 32%, 0);
+  }
 }
 
 /* ══ Stacked layout — small viewports turn each row into a labelled card ══
@@ -617,297 +712,342 @@ th.death-num .death-sort { justify-content: flex-end; width: 100%; }
    name comes from each cell's data-label, and the hidden header's sort job
    moves to the .death-sortbar control above the table. */
 @container layout (max-width: 600px) {
-	.death-sortbar {
-		display: flex;
-		align-items: center;
-		gap: var(--pad-sm);
-		padding: 0 var(--pad-lg) var(--pad-sm);
-	}
+  .death-sortbar {
+    display: flex;
+    align-items: center;
+    gap: var(--pad-sm);
+    padding: 0 var(--pad-lg) var(--pad-sm);
+  }
 
-	.death-sortbar-select {
-		flex: 1;
-		min-width: 0;
-		font-family: var(--font-display);
-		font-size: var(--text-2xs);
-		letter-spacing: 1px;
-		text-transform: uppercase;
-		color: var(--accent-base);
-		background: color-mix(in srgb, var(--accent-base) 8%, transparent);
-		border: 1px solid color-mix(in srgb, var(--accent-base) 30%, transparent);
-		padding: 4px 8px;
-	}
+  .death-sortbar-select {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-2xs);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent-base);
+    background: color-mix(in srgb, var(--accent-base) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent-base) 30%, transparent);
+    padding: 4px 8px;
+  }
 
-	.death-sortbar-dir {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 28px;
-		height: 28px;
-		color: var(--accent-base);
-		background: color-mix(in srgb, var(--accent-base) 8%, transparent);
-		border: 1px solid color-mix(in srgb, var(--accent-base) 30%, transparent);
-		cursor: pointer;
-	}
-	.death-sortbar-dir:hover { color: var(--accent-bright); }
+  .death-sortbar-dir {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: var(--accent-base);
+    background: color-mix(in srgb, var(--accent-base) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent-base) 30%, transparent);
+    cursor: pointer;
+  }
+  .death-sortbar-dir:hover {
+    color: var(--accent-bright);
+  }
 
-	/* The scroll wrapper no longer scrolls — cards fill the width. */
-	.death-log-scroll { overflow-x: visible; }
+  /* The scroll wrapper no longer scrolls — cards fill the width. */
+  .death-log-scroll {
+    overflow-x: visible;
+  }
 
-	/* Block elements fill the container minus their own margins — do NOT set
+  /* Block elements fill the container minus their own margins — do NOT set
 	   width:100% on the row, or 100% + horizontal margins overflows right. */
-	.death-log,
-	.death-log tbody,
-	.death-log tr,
-	.death-log td {
-		display: block;
-		width: auto;
-	}
+  .death-log,
+  .death-log tbody,
+  .death-log tr,
+  .death-log td {
+    display: block;
+    width: auto;
+  }
 
-	/* Hide the header row (off-screen, still in the a11y tree). */
-	.death-log thead {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		overflow: hidden;
-		clip: rect(0, 0, 0, 0);
-	}
+  /* Hide the header row (off-screen, still in the a11y tree). */
+  .death-log thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
 
-	.death-log tr {
-		border: 1px solid var(--border);
-		margin: 0 var(--pad-lg) var(--pad-sm);
-		padding: var(--pad-xs) 0;
-		background: color-mix(in srgb, var(--bg-surface) 60%, transparent);
-	}
+  .death-log tr {
+    border: 1px solid var(--border);
+    margin: 0 var(--pad-lg) var(--pad-sm);
+    padding: var(--pad-xs) 0;
+    background: color-mix(in srgb, var(--bg-surface) 60%, transparent);
+  }
 
-	/* Each cell: label on the left (from data-label), value on the right.
+  /* Each cell: label on the left (from data-label), value on the right.
 	   Uniform --pad-lg horizontal padding so right-aligned values always clear
 	   the card edge (and the viewport scrollbar). */
-	.death-log td,
-	.death-log tbody td,
-	.death-log td:first-child,
-	.death-log td:last-child {
-		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: var(--pad-md);
-		text-align: right;
-		white-space: normal;
-		border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
-		padding: 4px var(--pad-lg);
-	}
-	.death-log td:last-child { border-bottom: none; }
+  .death-log td,
+  .death-log tbody td,
+  .death-log td:first-child,
+  .death-log td:last-child {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--pad-md);
+    text-align: right;
+    white-space: normal;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+    padding: 4px var(--pad-lg);
+  }
+  .death-log td:last-child {
+    border-bottom: none;
+  }
 
-	.death-log td::before {
-		content: attr(data-label);
-		flex-shrink: 0;
-		text-align: left;
-		font-size: var(--text-2xs);
-		letter-spacing: 1px;
-		text-transform: uppercase;
-		color: var(--text-dim);
-	}
+  .death-log td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    text-align: left;
+    font-size: var(--text-2xs);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
 
-	/* Right-align utility is redundant in the flex card row. */
-	.death-num { text-align: right; }
+  /* Right-align utility is redundant in the flex card row. */
+  .death-num {
+    text-align: right;
+  }
 
-	/* Trim each card to the primary fields; the rest expand per-card. */
-	.death-log td.death-extra { display: none; }
-	.death-log tr.is-expanded td.death-extra { display: flex; }
+  /* Trim each card to the primary fields; the rest expand per-card. */
+  .death-log td.death-extra {
+    display: none;
+  }
+  .death-log tr.is-expanded td.death-extra {
+    display: flex;
+  }
 
-	/* Per-card expand button — full-width row under the visible fields. */
-	.death-log td.death-expand-cell {
-		display: block;
-		padding: 0;
-		border-bottom: none;
-	}
-	.death-log td.death-expand-cell::before { content: none; }
-	.death-expand {
-		width: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 6px;
-		padding: 6px var(--pad-lg);
-		font-family: var(--font-display);
-		font-size: var(--text-2xs);
-		letter-spacing: 1px;
-		text-transform: uppercase;
-		color: var(--accent-base);
-		background: color-mix(in srgb, var(--accent-base) 6%, transparent);
-		border: none;
-		cursor: pointer;
-	}
-	.death-expand:hover { color: var(--accent-bright); }
+  /* Per-card expand button — full-width row under the visible fields. */
+  .death-log td.death-expand-cell {
+    display: block;
+    padding: 0;
+    border-bottom: none;
+  }
+  .death-log td.death-expand-cell::before {
+    content: none;
+  }
+  .death-expand {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px var(--pad-lg);
+    font-family: var(--font-display);
+    font-size: var(--text-2xs);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent-base);
+    background: color-mix(in srgb, var(--accent-base) 6%, transparent);
+    border: none;
+    cursor: pointer;
+  }
+  .death-expand:hover {
+    color: var(--accent-bright);
+  }
 }
 
 /* ── Death effect keyframes ── */
 @keyframes blood-shake {
-	0%   { transform: translate(0,    0);   }
-	15%  { transform: translate(-5px, 3px); }
-	30%  { transform: translate(5px, -4px); }
-	45%  { transform: translate(-4px, 5px); }
-	60%  { transform: translate(4px, -3px); }
-	75%  { transform: translate(-2px, 3px); }
-	90%  { transform: translate(1px, -1px); }
-	100% { transform: translate(0,    0);   }
+  0% {
+    transform: translate(0, 0);
+  }
+  15% {
+    transform: translate(-5px, 3px);
+  }
+  30% {
+    transform: translate(5px, -4px);
+  }
+  45% {
+    transform: translate(-4px, 5px);
+  }
+  60% {
+    transform: translate(4px, -3px);
+  }
+  75% {
+    transform: translate(-2px, 3px);
+  }
+  90% {
+    transform: translate(1px, -1px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
 }
 
 @keyframes vignette-flash {
-	0%   { opacity: 0; }
-	7%   { opacity: 1; }
-	55%  { opacity: 0.55; }
-	100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+  7% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 /* ── Dev helpers ── */
 .dev-death-btn {
-	position: absolute;
-	bottom: var(--pad-sm);
-	left: 50%;
-	transform: translateX(-50%);
-	z-index: 30;
-	font-family: var(--font-display);
-	font-size: var(--text-2xs);
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	color: var(--color-dev);
-	background: var(--bg-dev);
-	border: 1px solid var(--border-dev);
-	padding: 4px 12px;
-	cursor: pointer;
-	clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
-	transition: background 0.15s, border-color 0.15s;
+  position: absolute;
+  bottom: var(--pad-sm);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-dev);
+  background: var(--bg-dev);
+  border: 1px solid var(--border-dev);
+  padding: 4px 12px;
+  cursor: pointer;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 }
 
 .dev-death-btn:hover {
-	background: var(--bg-dev-hover);
-	border-color: var(--border-dev-hover);
+  background: var(--bg-dev-hover);
+  border-color: var(--border-dev-hover);
 }
 
 /* ── Accessibility utilities ── */
 /* Visually hidden but available to screen readers (JAWS/VoiceOver). */
 .sr-only {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	padding: 0;
-	margin: -1px;
-	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
-	white-space: nowrap;
-	border: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* Skip link — hidden until focused, then drops into view at top-left. */
 .skip-link {
-	position: absolute;
-	left: 8px;
-	top: -40px;
-	z-index: 1000;
-	background: var(--bg-surface);
-	color: var(--accent-bright);
-	border: 1px solid var(--accent-base);
-	padding: 8px 14px;
-	font-family: var(--font-display);
-	font-size: var(--text-2xs);
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	text-decoration: none;
-	transition: top 0.15s ease-out;
+  position: absolute;
+  left: 8px;
+  top: -40px;
+  z-index: 1000;
+  background: var(--bg-surface);
+  color: var(--accent-bright);
+  border: 1px solid var(--accent-base);
+  padding: 8px 14px;
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: top 0.15s ease-out;
 }
 
 .skip-link:focus {
-	top: 8px;
-	outline: 2px solid var(--accent-bright);
-	outline-offset: 2px;
+  top: 8px;
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 2px;
 }
 
 /* ── Empty state ── */
 .empty {
-	text-align: center;
-	padding: 80px 0;
-	color: var(--text-dim);
-	letter-spacing: 2px;
-	text-transform: uppercase;
-	font-size: var(--text-md);
+  text-align: center;
+  padding: 80px 0;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: var(--text-md);
 }
 
 /* ── Footer ── */
 .site-footer {
-	display: grid;
-	grid-template-columns: auto 1fr auto;
-	align-items: center;
-	gap: var(--pad-lg);
-	background: var(--bg-footer);
-	border-top: 1px solid var(--border-foot);
-	padding: var(--pad-sm) var(--pad-lg);
-	position: relative;
-	box-shadow:
-		inset 0 1px 10px hsl(var(--shadow-color) / calc(0.5 * var(--shadow-strength))),
-		0 -2px 16px hsl(var(--shadow-color) / calc(0.6 * var(--shadow-strength)));
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--pad-lg);
+  background: var(--bg-footer);
+  border-top: 1px solid var(--border-foot);
+  padding: var(--pad-sm) var(--pad-lg);
+  position: relative;
+  box-shadow:
+    inset 0 1px 10px
+      hsl(var(--shadow-color) / calc(0.5 * var(--shadow-strength))),
+    0 -2px 16px hsl(var(--shadow-color) / calc(0.6 * var(--shadow-strength)));
 }
 
 /* Same grain overlay as header */
 .site-footer::after {
-	content: '';
-	position: absolute;
-	inset: 0;
-	pointer-events: none;
-	opacity: 0.08;
-	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-	background-size: 200px 200px;
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
 }
 
 .foot-label {
-	font-family: var(--font-display);
-	font-size: var(--text-2xs);
-	letter-spacing: 1.5px;
-	text-transform: uppercase;
-	color: var(--text-foot-label);
-	white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-foot-label);
+  white-space: nowrap;
 }
 
 .foot-links {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .foot-link {
-	font-family: var(--font-display);
-	font-size: var(--text-2xs);
-	font-weight: 600;
-	letter-spacing: 1.5px;
-	text-transform: uppercase;
-	text-decoration: none;
-	color: var(--text-foot-link);
-	transition: color 0.15s;
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text-foot-link);
+  transition: color 0.15s;
 }
 
 .foot-link:hover {
-	color: var(--accent-base);
-	text-shadow: 0 0 10px var(--glow-foot-link);
+  color: var(--accent-base);
+  text-shadow: 0 0 10px var(--glow-foot-link);
 }
 
 .foot-sep {
-	font-family: var(--font-display);
-	font-size: var(--text-2xs);
-	color: var(--text-foot-sep);
-	user-select: none;
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  color: var(--text-foot-sep);
+  user-select: none;
 }
 
 .foot-gamma {
-	display: block;
-	height: 28px;
-	width: auto;
-	object-fit: contain;
-	filter: brightness(0.75) saturate(1.1);
-	opacity: 0.85;
-	transition: filter 0.2s, opacity 0.2s;
+  display: block;
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0.75) saturate(1.1);
+  opacity: 0.85;
+  transition:
+    filter 0.2s,
+    opacity 0.2s;
 }
 
 .foot-gamma:hover {
-	filter: brightness(1) saturate(1.2);
-	opacity: 1;
+  filter: brightness(1) saturate(1.2);
+  opacity: 1;
 }

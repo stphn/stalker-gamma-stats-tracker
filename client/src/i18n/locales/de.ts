@@ -130,6 +130,7 @@ export const de: Record<string, string> = {
 
 	'player.super': 'Stalker',
 	'player.rank': 'Rang',
+	'player.health': 'Gesundheit',
 	'player.experience': 'Erfahrung',
 	'player.rubles': 'Rubel',
 	'companions.squad': 'Trupp',

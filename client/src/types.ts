@@ -88,6 +88,7 @@ export interface Companion {
 	health: number;
 	faction: string;
 	rank: number;
+	reputation?: number;
 	pos_x?: number;
 	pos_z?: number;
 	level?: string;
@@ -105,6 +106,7 @@ export interface ActorInfo {
 	pos_x?: number;
 	pos_z?: number;
 	heading?: number; // facing in degrees, 0 = north, clockwise
+	health?: number; // 0–100
 }
 
 export interface StatsData {

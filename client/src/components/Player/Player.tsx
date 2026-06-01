@@ -3,6 +3,7 @@ import { useI18n } from '../../i18n/I18nContext';
 import { FACTION_COLORS } from '../../utils/constants';
 import {
 	fmt_money,
+	hp_color,
 	rank_label,
 	rep_color,
 	rep_label,
@@ -63,6 +64,27 @@ export function Player({ actor }: PlayerProps) {
 						</dd>
 					</div>
 				</dl>
+				{actor.health != null && (
+					<div className={styles.hpRow}>
+						<span className={styles.statLabel}>{t('player.health')}</span>
+						<div
+							className={styles.hpTrack}
+							role="meter"
+							aria-label={t('player.health')}
+							aria-valuenow={actor.health}
+							aria-valuemin={0}
+							aria-valuemax={100}
+						>
+							<div
+								className={styles.hpFill}
+								style={{ width: `${actor.health}%`, background: hp_color(actor.health) }}
+							/>
+						</div>
+						<span className={styles.hpValue} style={{ color: hp_color(actor.health) }}>
+							{actor.health}%
+						</span>
+					</div>
+				)}
 			</div>
 		</section>
 	);
