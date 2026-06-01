@@ -49,52 +49,55 @@
 	   Map primitives to purpose. Components use these.
 	   ══════════════════════════════════════════════ */
 
-	/* Surfaces */
-	--bg-base:    var(--green-950);
-	--bg-surface: var(--green-900);
-	--bg-subtle:  var(--green-850);
-	--bg-raised:  var(--green-800);
-	--bg-overlay: var(--green-750);
-	--bg-default: var(--green-700);
+	/* ── Default theme: Dark (modern) — charcoal-navy surfaces with a warm taupe
+	   accent and cream text (sampled palette). Layer-1 green/amber primitives
+	   above are kept for a possible Zone theme. ── */
 
-	/* Text */
-	--text-primary:   var(--green-100);
-	--text-secondary: var(--green-400);
-	--text-disabled:  var(--green-600);
+	/* Surfaces — charcoal-navy → slate */
+	--bg-base:    #1a1f25;
+	--bg-surface: #232830;
+	--bg-subtle:  #3b3f46; /* border */
+	--bg-raised:  #2b3038;
+	--bg-overlay: #3b3f46;
+	--bg-default: #454a52;
 
-	/* Accent */
-	--accent-base:   var(--amber-500);
-	--accent-dim:    var(--amber-700);
-	--accent-bright: var(--amber-400);
+	/* Text — warm cream */
+	--text-primary:   #e2d6be;
+	--text-secondary: #a8a290;
+	--text-disabled:  #6b6c63;
 
-	/* Status — reserved for real states (LEDs, HP, reputation, dead/stale). */
-	--color-positive: var(--zone-500);
-	--color-danger:   var(--rust-600);
-	--color-warning:  var(--orange-500);
-	--color-info:     var(--teal-500);
+	/* Accent — warm taupe */
+	--accent-base:   #b8ab92;
+	--accent-dim:    #8d8476;
+	--accent-bright: #d8c9a9;
 
-	/* Decorative hue palette — categorical accents, NOT status (e.g. panel
-	   headers). Themeable per theme; muted here to match the Zone aesthetic. */
-	--hue-red:    #c85a5a;
-	--hue-orange: #c87a3a;
-	--hue-gold:   #c8a85a;
-	--hue-green:  #8ab45a;
-	--hue-teal:   #5ab4b4;
-	--hue-blue:   #5a8ab4;
-	--hue-purple: #9a7ab4;
+	/* Status — tuned to the warm/earthy palette but kept distinct */
+	--color-positive: #8fae6e;
+	--color-danger:   #c96f63;
+	--color-warning:  #d8b27a;
+	--color-info:     #7d97b0;
 
-	/* Glass / translucent */
-	--bg-glass:        hsl(0, 0%, 16%, 0.60);
-	--bg-glass-mobile: hsl(0, 0%,  5%, 0.96);
-	--bg-scrim:        hsl(0, 0%,  0%, 0.55);
+	/* Decorative hue palette — earthy, distinct on the dark surfaces */
+	--hue-red:    #c96f63;
+	--hue-orange: #c08a5a;
+	--hue-gold:   #cbb074;
+	--hue-green:  #8fae6e;
+	--hue-teal:   #6fa39a;
+	--hue-blue:   #7d97b0;
+	--hue-purple: #a088b0;
+
+	/* Glass / translucent — navy-tinted */
+	--bg-glass:        hsl(216, 16%, 22%, 0.60);
+	--bg-glass-mobile: hsl(216, 18%, 10%, 0.96);
+	--bg-scrim:        hsl(216, 20%,  6%, 0.55);
 
 	/* Footer chrome */
-	--bg-footer:        var(--gray-800);
-	--text-foot-label:  var(--green-700);
-	--text-foot-link:   var(--green-500);
-	--text-foot-sep:    var(--green-750);
-	--border-foot:      hsl(38, 45%, 50%, 0.12);
-	--glow-foot-link:   hsl(38, 45%, 50%, 0.40);
+	--bg-footer:        #1a1f25;
+	--text-foot-label:  #6b6c63;
+	--text-foot-link:   #b8ab92;
+	--text-foot-sep:    #3b3f46;
+	--border-foot:      hsl(38, 24%, 65%, 0.14);
+	--glow-foot-link:   hsl(38, 24%, 65%, 0.35);
 
 	/* Header title gradient */
 	--title-grad-top:    var(--silver-100);
@@ -102,7 +105,7 @@
 	--title-grad-bottom: var(--silver-600);
 
 	/* Nav glow */
-	--glow-nav-link: hsl(38, 45%, 50%, 0.40);
+	--glow-nav-link: hsl(38, 24%, 65%, 0.35);
 
 	/* Dev danger button */
 	--color-dev:              var(--rust-400);
@@ -115,34 +118,37 @@
 	--white-divider: hsl(0, 0%, 100%, 0.15);
 	--white-track:   hsl(0, 0%, 85%,  0.25);
 	--border-glass:  hsl(0, 0%, 100%, 0.06);
-	--scanline-color: hsl(38, 45%, 50%, 0.25);
+	--scanline-color: hsl(38, 24%, 65%, 0.18);
 
-	/* ── Layered elevation shadows (neutral dark — depth, no color cast) ── */
+	/* ── Layered elevation shadows ──
+	   Tint via --shadow-color (H S% L%), dim via --shadow-strength (0–1).
+	   Themes override either: light themes lighten the tint + drop strength. */
 	--shadow-color: 0deg 0% 2%;
+	--shadow-strength: 1;
 	--shadow-elevation-low:
-		0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.34),
-		0.4px 0.8px 1px -1.2px hsl(var(--shadow-color) / 0.34),
-		1px 2px 2.5px -2.5px hsl(var(--shadow-color) / 0.34);
+		0.3px 0.5px 0.7px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+		0.4px 0.8px 1px -1.2px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+		1px 2px 2.5px -2.5px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength)));
 	--shadow-elevation-medium:
-		0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.36),
-		0.8px 1.6px 2px -0.8px hsl(var(--shadow-color) / 0.36),
-		2.1px 4.1px 5.2px -1.7px hsl(var(--shadow-color) / 0.36),
-		5px 10px 12.6px -2.5px hsl(var(--shadow-color) / 0.36);
+		0.3px 0.5px 0.7px hsl(var(--shadow-color) / calc(0.36 * var(--shadow-strength))),
+		0.8px 1.6px 2px -0.8px hsl(var(--shadow-color) / calc(0.36 * var(--shadow-strength))),
+		2.1px 4.1px 5.2px -1.7px hsl(var(--shadow-color) / calc(0.36 * var(--shadow-strength))),
+		5px 10px 12.6px -2.5px hsl(var(--shadow-color) / calc(0.36 * var(--shadow-strength)));
 	--shadow-elevation-high:
-		0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.34),
-		1.5px 2.9px 3.7px -0.4px hsl(var(--shadow-color) / 0.34),
-		2.7px 5.4px 6.8px -0.7px hsl(var(--shadow-color) / 0.34),
-		4.5px 8.9px 11.2px -1.1px hsl(var(--shadow-color) / 0.34),
-		7.1px 14.3px 18px -1.4px hsl(var(--shadow-color) / 0.34),
-		11.2px 22.3px 28.1px -1.8px hsl(var(--shadow-color) / 0.34),
-		17px 33.9px 42.7px -2.1px hsl(var(--shadow-color) / 0.34),
-		25px 50px 62.9px -2.5px hsl(var(--shadow-color) / 0.34);
+		0.3px 0.5px 0.7px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+		1.5px 2.9px 3.7px -0.4px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+		2.7px 5.4px 6.8px -0.7px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+		4.5px 8.9px 11.2px -1.1px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+		7.1px 14.3px 18px -1.4px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+		11.2px 22.3px 28.1px -1.8px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+		17px 33.9px 42.7px -2.1px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
+		25px 50px 62.9px -2.5px hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength)));
 	/* Text equivalent — same falloff, no spread (text-shadow has none) */
 	--shadow-text-elevation:
-		0 0.5px 0.7px hsl(var(--shadow-color) / 0.55),
-		0 1.6px 2px hsl(var(--shadow-color) / 0.45),
-		0 4.1px 5.2px hsl(var(--shadow-color) / 0.38),
-		0 10px 12.6px hsl(var(--shadow-color) / 0.32);
+		0 0.5px 0.7px hsl(var(--shadow-color) / calc(0.55 * var(--shadow-strength))),
+		0 1.6px 2px hsl(var(--shadow-color) / calc(0.45 * var(--shadow-strength))),
+		0 4.1px 5.2px hsl(var(--shadow-color) / calc(0.38 * var(--shadow-strength))),
+		0 10px 12.6px hsl(var(--shadow-color) / calc(0.32 * var(--shadow-strength)));
 
 	/* ── Aliases (shorthand for common tokens) ── */
 	--bg:       var(--bg-base);
@@ -182,6 +188,8 @@
 	--text: var(--text-primary);
 	--text-dim: var(--text-secondary);
 	--accent: var(--accent-base);
+	/* Header chrome — defaults to the footer tone; themes may override. */
+	--bg-header: var(--bg-footer);
 }
 
 /* ══════════════════════════════════════════════
@@ -191,53 +199,120 @@
    Default theme ("zone") = the :root values above (no data-theme attribute).
    Add a theme: copy this block, change the selector + values.
    ══════════════════════════════════════════════ */
-:root[data-theme="dracula"] {
-	/* Surfaces */
-	--bg-base:    #21222c;
-	--bg-surface: #282a36;
-	--bg-subtle:  #343746; /* also drives --border */
-	--bg-raised:  #343746;
-	--bg-overlay: #44475a;
-	--bg-default: #44475a;
+:root[data-theme="nord"] {
+	/* Surfaces — Polar Night */
+	--bg-base:    #242933;
+	--bg-surface: #2e3440;
+	--bg-subtle:  #3b4252; /* also drives --border */
+	--bg-raised:  #3b4252;
+	--bg-overlay: #434c5e;
+	--bg-default: #434c5e;
 
-	/* Text */
-	--text-primary:   #f8f8f2;
-	--text-secondary: #c4c6d4;
-	--text-disabled:  #6272a4;
+	/* Text — Snow Storm */
+	--text-primary:   #eceff4;
+	--text-secondary: #d8dee9;
+	--text-disabled:  #4c566a;
 
-	/* Accent — Dracula purple */
-	--accent-base:   #bd93f9;
-	--accent-dim:    #7a6aa8;
-	--accent-bright: #d6b8ff;
+	/* Accent — Frost */
+	--accent-base:   #88c0d0;
+	--accent-dim:    #5e81ac;
+	--accent-bright: #a6d8e2;
 
-	/* Status */
-	--color-positive: #50fa7b;
-	--color-danger:   #ff5555;
-	--color-warning:  #ffb86c;
-	--color-info:     #8be9fd;
-
-	/* Decorative hue palette (Dracula has no true blue → cyan stands in). */
-	--hue-red:    #ff5555;
-	--hue-orange: #ffb86c;
-	--hue-gold:   #f1fa8c;
-	--hue-green:  #50fa7b;
-	--hue-teal:   #8be9fd;
-	--hue-blue:   #8be9fd;
-	--hue-purple: #bd93f9;
+	/* Status — Aurora */
+	--color-positive: #a3be8c;
+	--color-danger:   #bf616a;
+	--color-warning:  #ebcb8b;
+	--color-info:     #81a1c1;
 
 	/* Glass / scrim */
-	--bg-glass:        hsl(232, 14%, 31%, 0.60);
-	--bg-glass-mobile: hsl(231, 15%, 12%, 0.96);
-	--bg-scrim:        hsl(231, 15%, 6%, 0.55);
+	--bg-glass:        hsl(220, 16%, 28%, 0.60);
+	--bg-glass-mobile: hsl(220, 16%, 14%, 0.96);
+	--bg-scrim:        hsl(220, 16%, 8%, 0.55);
 
 	/* Footer + accent-keyed glows */
-	--bg-footer:       #191a21;
-	--text-foot-label: #6272a4;
-	--text-foot-link:  #8be9fd;
-	--border-foot:     hsl(265, 89%, 78%, 0.12);
-	--glow-foot-link:  hsl(265, 89%, 78%, 0.40);
-	--glow-nav-link:   hsl(265, 89%, 78%, 0.40);
-	--scanline-color:  hsl(265, 89%, 78%, 0.25);
+	--bg-footer:       #242933;
+	--text-foot-label: #4c566a;
+	--text-foot-link:  #88c0d0;
+	--border-foot:     hsl(193, 43%, 67%, 0.12);
+	--glow-foot-link:  hsl(193, 43%, 67%, 0.40);
+	--glow-nav-link:   hsl(193, 43%, 67%, 0.40);
+	--scanline-color:  hsl(193, 43%, 67%, 0.25);
+
+	/* Decorative hue palette — Aurora + Frost */
+	--hue-red:    #bf616a;
+	--hue-orange: #d08770;
+	--hue-gold:   #ebcb8b;
+	--hue-green:  #a3be8c;
+	--hue-teal:   #8fbcbb;
+	--hue-blue:   #81a1c1;
+	--hue-purple: #b48ead;
+}
+
+/* Light — warm earthy palette (taupe/cream surfaces + sage accent), sampled from
+   the reference. Text is a derived dark warm tone (the palette itself is too
+   low-contrast for body copy). Extra overrides flip the dark-first bits. */
+:root[data-theme="light"] {
+	/* Surfaces — warm greige page, cream cards (stronger steps for hierarchy) */
+	--bg-base:    #e4e1d2;
+	--bg-surface: #faf8ee;
+	--bg-subtle:  #c9c6b4; /* border/divider — taupe-gray, clearer */
+	--bg-raised:  #fffdf5;
+	--bg-overlay: #edeadd;
+	--bg-default: #d6d3c1;
+
+	/* Text — dark warm olive */
+	--text-primary:   #36342b;
+	--text-secondary: #67634f;
+	--text-disabled:  #9b9580;
+
+	/* Accent — sage green, a touch deeper/richer */
+	--accent-base:   #6b8a4e;
+	--accent-dim:    #9fb088;
+	--accent-bright: #50702e;
+
+	/* Status — richer, clearly distinct */
+	--color-positive: #4e8a36;
+	--color-danger:   #b23a2e;
+	--color-warning:  #c0891e;
+	--color-info:     #3a6ea5;
+
+	/* Decorative hue palette — fuller, varied hues that pop on the warm light bg */
+	--hue-red:    #c0392b;
+	--hue-orange: #d2691e;
+	--hue-gold:   #c19a2e;
+	--hue-green:  #5a8f3c;
+	--hue-teal:   #2f8f82;
+	--hue-blue:   #3a6ea5;
+	--hue-purple: #7d4f9c;
+
+	/* Glass / scrim — warm light translucent (must not darken the page) */
+	--bg-glass:        hsl(50, 25%, 92%, 0.75);
+	--bg-glass-mobile: hsl(50, 25%, 95%, 0.96);
+	--bg-scrim:        hsl(50, 12%, 82%, 0.55);
+
+	/* Footer + accent-keyed glows */
+	--bg-footer:       #dedcce;
+	--text-foot-label: #8a8573;
+	--text-foot-link:  #6f7d5a;
+	--text-foot-sep:   #c7c4b5;
+	--border-foot:     hsl(82, 17%, 42%, 0.22);
+	--glow-foot-link:  hsl(82, 17%, 42%, 0.28);
+	--glow-nav-link:   hsl(82, 17%, 42%, 0.28);
+	--scanline-color:  hsl(82, 17%, 42%, 0.08);
+
+	/* Title gradient — dark warm on light */
+	--title-grad-top:    #4a463a;
+	--title-grad-mid:    #635d4c;
+	--title-grad-bottom: #322f26;
+
+	/* Overlays that assume a dark bg → flip to dark-on-light */
+	--white-divider: hsl(40, 10%, 20%, 0.10);
+	--white-track:   hsl(40, 10%, 20%, 0.12);
+	--border-glass:  hsl(40, 10%, 20%, 0.08);
+
+	/* Soft, warm-tinted shadow — far lighter than the dark themes' near-black. */
+	--shadow-color: 40deg 18% 42%;
+	--shadow-strength: 0.45;
 }
 
 body {
@@ -308,8 +383,8 @@ body {
 	background-size: 180px 180px;
 	animation: pattern-drift 25s linear infinite;
 	box-shadow:
-		inset 0  8px 20px rgba(0, 0, 0, 0.65),
-		inset 0 -4px 12px rgba(0, 0, 0, 0.35),
+		inset 0  9px 16px -8px hsl(var(--shadow-color) / calc(0.65 * var(--shadow-strength))),
+		inset 0 -9px 16px -8px hsl(var(--shadow-color) / calc(0.35 * var(--shadow-strength))),
 		var(--shadow-elevation-medium);
 }
 
@@ -768,8 +843,8 @@ th.death-num .death-sort { justify-content: flex-end; width: 100%; }
 	padding: var(--pad-sm) var(--pad-lg);
 	position: relative;
 	box-shadow:
-		inset 0 1px 10px rgba(0, 0, 0, 0.5),
-		0 -2px 16px rgba(0, 0, 0, 0.6);
+		inset 0 1px 10px hsl(var(--shadow-color) / calc(0.5 * var(--shadow-strength))),
+		0 -2px 16px hsl(var(--shadow-color) / calc(0.6 * var(--shadow-strength)));
 }
 
 /* Same grain overlay as header */

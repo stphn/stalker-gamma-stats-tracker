@@ -4,8 +4,9 @@ import styles from '../LanguageSwitcher/LanguageSwitcher.module.css';
 
 /** Add a theme: add an entry here + a `:root[data-theme="id"]` block in App.css. */
 export const THEMES = [
-	{ id: 'zone', label: 'Zone' },
-	{ id: 'dracula', label: 'Dracula' },
+	{ id: 'zone', label: 'Pripyat' },
+	{ id: 'nord', label: 'Emission' },
+	{ id: 'light', label: 'Field Notes' },
 ] as const;
 
 export type ThemeId = (typeof THEMES)[number]['id'];
@@ -20,7 +21,11 @@ export function applyTheme(id: string) {
 }
 
 export function getStoredTheme(): string {
-	try { return localStorage.getItem(STORAGE_KEY) ?? 'zone'; } catch { return 'zone'; }
+	try {
+		const v = localStorage.getItem(STORAGE_KEY);
+		// Fall back to default if the stored id is no longer a known theme.
+		return v && THEMES.some(t => t.id === v) ? v : 'zone';
+	} catch { return 'zone'; }
 }
 
 export function ThemeSwitcher() {

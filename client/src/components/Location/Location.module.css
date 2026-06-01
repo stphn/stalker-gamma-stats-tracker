@@ -25,8 +25,10 @@
 	font-family: var(--font-display);
 	font-size: var(--text-xl);
 	font-weight: 700;
-	color: var(--text-primary);
-	text-shadow: var(--shadow-text-elevation);
+	/* Sits over the (always-dark) stage imagery, so keep it light + dark-shadowed
+	   regardless of theme — theme --text-primary flips dark on the Light theme. */
+	color: #ebe7da;
+	text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
 }
 
 .badge {
