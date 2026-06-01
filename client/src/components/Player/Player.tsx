@@ -41,7 +41,7 @@ export function Player({ actor }: PlayerProps) {
 				<dl className={styles.statsRow}>
 					<div className={styles.stat}>
 						<dt className={styles.statLabel}>{t('player.rank')}</dt>
-						<dd className={styles.statValue} style={{ color: '#c8a85a' }}>
+						<dd className={styles.statValue} style={{ color: 'var(--accent-base)' }}>
 							{t(rank_label(actor.rank))}
 						</dd>
 					</div>
@@ -58,7 +58,7 @@ export function Player({ actor }: PlayerProps) {
 					<div className={styles.separator} aria-hidden="true" />
 					<div className={styles.stat}>
 						<dt className={styles.statLabel}>{t('player.rubles')}</dt>
-						<dd className={styles.statValue} style={{ color: '#c8a85a' }}>
+						<dd className={styles.statValue} style={{ color: 'var(--accent-base)' }}>
 							{fmt_money(actor.money, locale)}
 						</dd>
 					</div>

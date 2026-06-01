@@ -54,16 +54,17 @@ export function rep_label(r: number) {
 	return 'rep.terrible';
 }
 
+// Return theme tokens (used in inline styles) so colours follow the active theme.
 export function rep_color(r: number) {
-	if (r >= 2000) return '#2ecc71';
-	if (r >= 500) return '#27ae60';
-	if (r >= -500) return '#95a5a6';
-	if (r >= -2000) return '#e67e22';
-	return '#e74c3c';
+	if (r >= 2000) return 'var(--color-positive)';
+	if (r >= 500) return 'var(--color-positive)';
+	if (r >= -500) return 'var(--text-disabled)';
+	if (r >= -2000) return 'var(--color-warning)';
+	return 'var(--color-danger)';
 }
 
 export function hp_color(pct: number) {
-	if (pct >= 60) return '#2ecc71';
-	if (pct >= 30) return '#e8a838';
-	return '#e74c3c';
+	if (pct >= 60) return 'var(--color-positive)';
+	if (pct >= 30) return 'var(--color-warning)';
+	return 'var(--color-danger)';
 }

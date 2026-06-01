@@ -19,14 +19,14 @@ export function RightPanel({ data }: RightPanelProps) {
 		<div className={styles.root}>
 			{/* Kills */}
 			<div className={styles.panel}>
-				<CardHeader label={t('kills.title')} accentColor="#c85a5a" icon={<Skull size={14} weight="fill" color="#c85a5a" />} />
+				<CardHeader label={t('kills.title')} accentColor="var(--hue-red)" icon={<Skull size={14} weight="fill" color="var(--hue-red)" />} />
 				<KillsBreakdown kills={session.kills} label={t('kills.title')} />
 			</div>
 
 			{/* Economy + Exploration */}
 			<div className={styles.bottomRow}>
 				<div className={styles.panel}>
-					<CardHeader label={t('panel.economy')} accentColor="#5a8ab4" icon={<Coins size={14} weight="bold" />} />
+					<CardHeader label={t('panel.economy')} accentColor="var(--hue-blue)" icon={<Coins size={14} weight="bold" />} />
 					<div className={styles.statRows}>
 						<StatRow label={t('panel.earned')} value={fmt_money(session.rubles_earned, locale)} />
 						<StatRow label={t('panel.spent')} value={fmt_money(session.rubles_spent, locale)} />
@@ -34,7 +34,7 @@ export function RightPanel({ data }: RightPanelProps) {
 					</div>
 				</div>
 				<div className={styles.panel}>
-					<CardHeader label={t('panel.exploration')} accentColor="#8ab45a" icon={<Compass size={14} weight="bold" />} />
+					<CardHeader label={t('panel.exploration')} accentColor="var(--hue-green)" icon={<Compass size={14} weight="bold" />} />
 					<div className={styles.statRows}>
 						<StatRow label={t('panel.tasksDone')} value={session.tasks} />
 						<StatRow label={t('panel.stashesFound')} value={session.stashes} />

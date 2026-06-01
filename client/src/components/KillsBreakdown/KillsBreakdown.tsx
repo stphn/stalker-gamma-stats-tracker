@@ -73,7 +73,7 @@ function KillsDonut({
 					cy={size / 2}
 					r={r}
 					fill="none"
-					stroke="#2a2a2a"
+					style={{ stroke: 'var(--border)' }}
 					strokeWidth={thickness}
 				/>
 				{arcs.map((arc) => (

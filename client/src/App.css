@@ -67,11 +67,21 @@
 	--accent-dim:    var(--amber-700);
 	--accent-bright: var(--amber-400);
 
-	/* Status */
+	/* Status — reserved for real states (LEDs, HP, reputation, dead/stale). */
 	--color-positive: var(--zone-500);
 	--color-danger:   var(--rust-600);
 	--color-warning:  var(--orange-500);
 	--color-info:     var(--teal-500);
+
+	/* Decorative hue palette — categorical accents, NOT status (e.g. panel
+	   headers). Themeable per theme; muted here to match the Zone aesthetic. */
+	--hue-red:    #c85a5a;
+	--hue-orange: #c87a3a;
+	--hue-gold:   #c8a85a;
+	--hue-green:  #8ab45a;
+	--hue-teal:   #5ab4b4;
+	--hue-blue:   #5a8ab4;
+	--hue-purple: #9a7ab4;
 
 	/* Glass / translucent */
 	--bg-glass:        hsl(0, 0%, 16%, 0.60);
@@ -205,6 +215,15 @@
 	--color-danger:   #ff5555;
 	--color-warning:  #ffb86c;
 	--color-info:     #8be9fd;
+
+	/* Decorative hue palette (Dracula has no true blue → cyan stands in). */
+	--hue-red:    #ff5555;
+	--hue-orange: #ffb86c;
+	--hue-gold:   #f1fa8c;
+	--hue-green:  #50fa7b;
+	--hue-teal:   #8be9fd;
+	--hue-blue:   #8be9fd;
+	--hue-purple: #bd93f9;
 
 	/* Glass / scrim */
 	--bg-glass:        hsl(232, 14%, 31%, 0.60);

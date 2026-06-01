@@ -12,9 +12,10 @@ import styles from './MapView.module.css';
 const WORLD_W = 1024;
 const WORLD_H = 2634;
 
-// Death markers (and the dead-player marker) use the HUD gold — shape (skull) and
-// the legend toggle keep them distinct from the live player/companion markers.
-const DEATH_YELLOW = '#e8c46a';
+// Death markers (and the dead-player marker) use the theme accent — shape (skull)
+// and the legend toggle keep them distinct from the live player/companion markers.
+// var() resolves in Phosphor's color prop and inline styles, so they follow the theme.
+const DEATH_YELLOW = 'var(--accent-base)';
 
 // Persisted legend toggles (default on when no stored choice yet).
 const LS_SHOW_DEATHS     = 'tracker_map_show_deaths';
