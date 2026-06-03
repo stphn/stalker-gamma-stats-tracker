@@ -25,15 +25,18 @@
   }
 }
 
+/* Matches the other section headers (StatsTabs / GameAchievements / ZoneNews):
+   text-xs, 1px tracking, divider rule. Keeps the death-red as its one accent. */
 .title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: var(--pad-md) var(--pad-lg) var(--pad-sm);
+  gap: 6px;
+  padding: var(--pad-sm) var(--pad-lg);
+  border-bottom: 1px solid var(--border);
   font-family: var(--font-display);
-  font-size: var(--text-md);
+  font-size: var(--text-xs);
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--color-danger);
 }

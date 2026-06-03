@@ -356,7 +356,7 @@ export function DeathLog({ runs, totalRuns, highlightStart }: DeathLogProps) {
       ref={wrapRef}
     >
       <div className={styles.title}>
-        <SkullIcon size={16} weight="fill" />
+        <SkullIcon size={14} weight="fill" />
         <span>{t("deathlog.title")}</span>
       </div>
 
