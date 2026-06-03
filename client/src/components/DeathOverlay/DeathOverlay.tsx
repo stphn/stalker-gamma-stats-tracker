@@ -1,4 +1,4 @@
-import { Skull } from '@phosphor-icons/react';
+import { SkullIcon } from '@phosphor-icons/react';
 import { useI18n } from '../../i18n/I18nContext';
 import type { Run } from '../../types';
 import { fmt_time } from '../../utils/formatters';
@@ -23,7 +23,7 @@ export function DeathOverlay({ run }: Props) {
 		<div className={styles.root} role="alert" aria-label={t('death.title')}>
 			<div className={styles.scrim} aria-hidden="true" />
 			<div className={styles.card}>
-				<Skull className={styles.skull} weight="fill" aria-hidden="true" />
+				<SkullIcon className={styles.skull} weight="fill" aria-hidden="true" />
 				<h2 className={styles.title}>{t('death.title')}</h2>
 
 				{run && (

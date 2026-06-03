@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import type { ActorInfo } from '../../types';
-import { NavigationArrow } from '@phosphor-icons/react';
+import { NavigationArrowIcon } from '@phosphor-icons/react';
 import { useI18n } from '../../i18n/I18nContext';
 import mapLevels from '../../data/map-levels.json';
 import { mapUrl } from '../../utils/mapsBase';
@@ -140,7 +140,7 @@ export function Minimap({ actor, onExpand }: MinimapProps) {
 							transform: 'translate(-50%, -50%) rotate(45deg)',
 							filter: `drop-shadow(0 0 3px rgba(0,0,0,1)) drop-shadow(0 0 2px ${color})`,
 						}}>
-							<NavigationArrow width="100%" height="100%" weight="fill" color={color} />
+							<NavigationArrowIcon width="100%" height="100%" weight="fill" color={color} />
 						</div>
 					</div>
 				)}

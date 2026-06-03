@@ -21,6 +21,7 @@ import { Player } from './components/Player/Player';
 import { RightPanel } from './components/RightPanel/RightPanel';
 import { Stage } from './components/Stage/Stage';
 import { StatsTabs } from './components/StatsTabs/StatsTabs';
+import { ZoneNews } from './components/ZoneNews/ZoneNews';
 
 export default function App() {
 	const { t } = useI18n();
@@ -193,6 +194,8 @@ export default function App() {
 						</aside>
 					</div>
 
+					<ZoneNews news={data.news ?? []} />
+
 					{runs.length > 0 && (
 						<DeathLog runs={runs} totalRuns={totalRuns} highlightStart={highlightStart} />
 					)}
@@ -202,6 +205,8 @@ export default function App() {
 						<GameAchievementsPanel
 							pda={data.alltime_official}
 							gameAchievements={data.game_achievements}
+							alltime={data.alltime}
+							custom={data.achievements}
 						/>
 					)}
 				</main>

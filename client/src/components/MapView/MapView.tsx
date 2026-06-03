@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { NavigationArrow, SmileyXEyes, UserCircleDashed } from '@phosphor-icons/react';
+import { NavigationArrowIcon, SmileyXEyesIcon, UserCircleDashedIcon } from '@phosphor-icons/react';
 import type { ActorInfo, Companion, Run } from '../../types';
 import { useI18n } from '../../i18n/I18nContext';
 import mapLevelsData from '../../data/map-levels.json';
@@ -376,8 +376,8 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 								filter: 'drop-shadow(0 0 3px rgba(0,0,0,0.9))',
 							}}>
 								{gameState === 'dead'
-									? <SmileyXEyes width="100%" height="100%" weight="fill" color={DEATH_YELLOW} />
-									: <NavigationArrow width="100%" height="100%" weight="fill" color={FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a'} />
+									? <SmileyXEyesIcon width="100%" height="100%" weight="fill" color={DEATH_YELLOW} />
+									: <NavigationArrowIcon width="100%" height="100%" weight="fill" color={FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a'} />
 								}
 							</div>
 						</div>
@@ -403,7 +403,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 						return (
 							<div key={dm.key} className={styles.deathOverlay} style={{ left: sx, top: sy }}>
 								<div className={styles.deathMarker}>
-									<div style={{ width: 22, height: 22 }}><SmileyXEyes width="100%" height="100%" weight="fill" color={DEATH_YELLOW} /></div>
+									<div style={{ width: 22, height: 22 }}><SmileyXEyesIcon width="100%" height="100%" weight="fill" color={DEATH_YELLOW} /></div>
 									{dm.count > 1 && <span className={styles.deathCount}>×{dm.count}</span>}
 								</div>
 							</div>
@@ -422,7 +422,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 						return (
 							<div key={c.name} className={styles.companionOverlay} style={{ left: sx, top: sy }}>
 								<div className={styles.companionMarker}>
-									<UserCircleDashed size={22} weight="fill" color={factionColor} />
+									<UserCircleDashedIcon size={22} weight="fill" color={factionColor} />
 									<span className={styles.companionName} style={{ color: factionColor }}>{c.name}</span>
 									<div className={styles.companionHpTrack}>
 										<div className={styles.companionHpFill} style={{ width: `${c.health}%`, background: hp_color(c.health) }} />
@@ -439,7 +439,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 								className={`${styles.legendBtn} ${showDeaths ? styles.legendBtnOn : ''}`}
 								onClick={() => setShowDeaths(d => !d)}
 							>
-								<SmileyXEyes size={11} weight="fill" />
+								<SmileyXEyesIcon size={11} weight="fill" />
 								{showDeaths ? t('map.legend.deathsHide') : t('map.legend.deathsShow')}
 							</button>
 						)}
@@ -448,7 +448,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 								className={`${styles.legendBtn} ${showCompanions ? styles.legendBtnOn : ''}`}
 								onClick={() => setShowCompanions(c => !c)}
 							>
-								<UserCircleDashed size={11} weight="fill" />
+								<UserCircleDashedIcon size={11} weight="fill" />
 								{showCompanions ? t('map.legend.squadHide') : t('map.legend.squadShow')}
 							</button>
 						)}

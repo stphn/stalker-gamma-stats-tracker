@@ -66,6 +66,21 @@ export interface GameAchievements {
 	total: number;
 }
 
+/** A curated in-game "Zone News" tip captured by the mod. */
+export interface NewsItem {
+	/**
+	 * Event category for routing one stream to many surfaces (ticker / toast /
+	 * stacked notifications / feed). 'loot' = item pickup, 'event' = world tip.
+	 */
+	kind?: string;
+	/** Display text (already localized by the game). */
+	text: string;
+	/** Unix seconds when the tip fired. */
+	at: number;
+	/** Raw caption key (events) or item section (loot) — for grouping/filtering. */
+	key?: string;
+}
+
 export interface PdaStats extends StatsBlock {
 	current_money?: number;
 	tasks_failed: number;
@@ -120,4 +135,5 @@ export interface StatsData {
 	last_run?: SessionBlock[];
 	achievements: Record<string, Achievement>;
 	game_achievements: GameAchievements;
+	news?: NewsItem[];
 }

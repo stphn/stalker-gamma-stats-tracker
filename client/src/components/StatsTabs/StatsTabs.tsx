@@ -22,8 +22,10 @@ export function StatsTabs({ data }: StatsTabsProps) {
 
 	return (
 		<section className={styles.root}>
-			<div className={styles.tabBar} role="tablist" aria-label={t('tab.ariaLabel')}>
-				{hasPda && (
+			<div className={styles.head}>
+				<span className={styles.heading}>{t('stats.heading')}</span>
+				<div className={styles.tabBar} role="tablist" aria-label={t('tab.ariaLabel')}>
+					{hasPda && (
 					<button
 						type="button"
 						role="tab"
@@ -47,6 +49,7 @@ export function StatsTabs({ data }: StatsTabsProps) {
 				>
 					{t('tab.alltime')}
 				</button>
+				</div>
 			</div>
 
 			<div role="tabpanel" id="panel-stats" aria-labelledby={`tab-${active}`} tabIndex={0}>

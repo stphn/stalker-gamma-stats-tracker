@@ -1,6 +1,8 @@
-import type { GameAchievements, PdaStats } from '../../types';
+import { useState } from 'react';
+import { LockIcon, LockOpenIcon } from '@phosphor-icons/react';
+import type { Achievement, GameAchievements, PdaStats, StatsBlock } from '../../types';
 import { useI18n } from '../../i18n/I18nContext';
-import { CardHeader } from '../CardHeader/CardHeader';
+import { fmt_time } from '../../utils/formatters';
 import styles from './GameAchievements.module.css';
 
 interface Def {
@@ -25,7 +27,9 @@ const ACHIEVEMENTS: Def[] = [
 		name: 'Radiotherapy',
 		requirement: 'Survive 25 emissions & psy-storms',
 		reward: 'Chance to survive without taking cover',
-		progress: (pda) => ({ value: n(pda.emissions) + n(pda.psi_storms), max: 25 }),
+		// Native requirement is 25 emissions AND 25 psi-storms, counted
+		// separately — so progress is gated by whichever is still behind.
+		progress: (pda) => ({ value: Math.min(n(pda.emissions), n(pda.psi_storms)), max: 25 }),
 	},
 	{
 		id: 'infopreneur',
@@ -91,7 +95,9 @@ const ACHIEVEMENTS: Def[] = [
 		name: 'Completionist',
 		requirement: 'Unlock all other achievements',
 		reward: 'The road has been long, but you\'ve arrived triumphant',
-		progress: (_, ga) => ({ value: ga.earned, max: ACHIEVEMENTS.length - 1 }),
+		// Unlocks at "all but ≤1 locked" — gate on the game's own achievement
+		// total (minus completionist itself), not our hardcoded list length.
+		progress: (_, ga) => ({ value: ga.earned, max: Math.max(1, (ga.total || ACHIEVEMENTS.length) - 1) }),
 	},
 	{
 		id: 'wishful_thinking',
@@ -111,7 +117,9 @@ const ACHIEVEMENTS: Def[] = [
 		name: 'Geologist',
 		requirement: 'Detect 50 artefacts',
 		reward: 'Increased chance to find artefacts after emissions',
-		progress: (pda) => ({ value: n(pda.artifacts), max: 50 }),
+		// No bar: the game counts artefacts *detected* (via detector), but our
+		// only artefact stat is those *obtained* — which outpaces it and would
+		// show a misleading near-full bar on a locked card.
 	},
 	{
 		id: 'patriarch',
@@ -182,54 +190,139 @@ const ACHIEVEMENTS: Def[] = [
 	},
 ];
 
+/** Custom T.R.A.C.K.E.R. milestones — mirror of the mod's `ACH` table.
+   Progress is derived client-side from cross-save `alltime` stats. */
+interface CustomDef {
+	id: string;
+	max: number;
+	value: (s: StatsBlock) => number;
+	/** Optional label formatter (playtime → h/m, big numbers → grouped). */
+	fmt?: (v: number) => string;
+}
+
+const fmtNum = (v: number) => v.toLocaleString('en-US');
+
+const CUSTOM: CustomDef[] = [
+	{ id: 'first_blood', max: 1, value: (s) => n(s.kills.total) },
+	{ id: 'killer_100', max: 100, value: (s) => n(s.kills.total) },
+	{ id: 'killer_500', max: 500, value: (s) => n(s.kills.total) },
+	{ id: 'killer_1000', max: 1000, value: (s) => n(s.kills.total) },
+	{ id: 'mutant_50', max: 50, value: (s) => n(s.kills.mutant) },
+	{ id: 'bandit_50', max: 50, value: (s) => n(s.kills.bandit) },
+	{ id: 'military_50', max: 50, value: (s) => n(s.kills.military) },
+	{ id: 'first_death', max: 1, value: (s) => n(s.deaths) },
+	{ id: 'deaths_10', max: 10, value: (s) => n(s.deaths) },
+	{ id: 'task_1', max: 1, value: (s) => n(s.tasks) },
+	{ id: 'task_25', max: 25, value: (s) => n(s.tasks) },
+	{ id: 'task_100', max: 100, value: (s) => n(s.tasks) },
+	{ id: 'artifact_1', max: 1, value: (s) => n(s.artifacts) },
+	{ id: 'artifact_10', max: 10, value: (s) => n(s.artifacts) },
+	{ id: 'stash_10', max: 10, value: (s) => n(s.stashes) },
+	{ id: 'rich_100k', max: 100000, value: (s) => n(s.rubles_earned), fmt: fmtNum },
+	{ id: 'explorer_25', max: 25, value: (s) => n(s.level_changes) },
+	{ id: 'veteran_10h', max: 36000, value: (s) => n(s.playtime), fmt: fmt_time },
+	{ id: 'veteran_50h', max: 180000, value: (s) => n(s.playtime), fmt: fmt_time },
+];
+
 interface GameAchievementsPanelProps {
 	pda: PdaStats;
 	gameAchievements: GameAchievements;
+	/** Cross-save cumulative stats — drives custom achievement progress. */
+	alltime: StatsBlock;
+	/** Unlocked custom achievements (keyed by id), emitted by the mod. */
+	custom: Record<string, Achievement>;
 }
 
-export function GameAchievementsPanel({ pda, gameAchievements }: GameAchievementsPanelProps) {
+type AchTab = 'official' | 'custom';
+
+interface Prog {
+	value: number;
+	max: number;
+	fmt?: (v: number) => string;
+}
+
+export function GameAchievementsPanel({ pda, gameAchievements, alltime, custom }: GameAchievementsPanelProps) {
 	const { t } = useI18n();
+	const [tab, setTab] = useState<AchTab>('official');
 	const { earned, unlocked } = gameAchievements;
-	const total = ACHIEVEMENTS.length;
+	const officialTotal = ACHIEVEMENTS.length;
+
+	// A custom milestone counts as earned if the mod persisted it OR our alltime
+	// stats already meet the bar — the latter avoids a full bar on a locked card.
+	const isCustomUnlocked = (def: CustomDef) =>
+		!!custom[def.id] || def.value(alltime) >= def.max;
+	const customEarned = CUSTOM.filter(isCustomUnlocked).length;
+
+	const card = (id: string, isUnlocked: boolean, prog: Prog | null, reward?: string) => {
+		const pct = prog ? Math.min(100, (prog.value / prog.max) * 100) : 0;
+		const f = prog?.fmt ?? String;
+		const name = t(`ach.${id}.name`);
+		return (
+			<article
+				key={id}
+				className={isUnlocked ? `${styles.card} ${styles.unlocked}` : styles.card}
+				aria-label={name}
+			>
+				<div className={styles.name}>
+					<span className={styles.icon} aria-hidden="true">
+					{isUnlocked
+						? <LockOpenIcon size={16} weight="fill" />
+						: <LockIcon size={16} weight="fill" />}
+				</span>
+					{name}
+				</div>
+				<p className={styles.req}>{t(`ach.${id}.req`)}</p>
+				{reward && <p className={styles.reward}>{reward}</p>}
+				{prog && (
+					<>
+						<div className={styles.barWrap} role="progressbar" aria-valuenow={Math.min(prog.value, prog.max)} aria-valuemax={prog.max}>
+							<div className={styles.bar} style={{ width: `${pct}%` }} />
+						</div>
+						{/* Clamp the label: some bars read a proxy stat that can outpace
+						    the game's own counter, so never show >100% on a locked card. */}
+						<span className={styles.barLabel}>{f(Math.min(prog.value, prog.max))} / {f(prog.max)}</span>
+					</>
+				)}
+			</article>
+		);
+	};
 
 	return (
 		<section className={styles.root}>
-			<CardHeader
-				label={t('ach.title', { earned, total })}
-				accentColor="transparent"
-			/>
-			<div className={styles.grid}>
-				{ACHIEVEMENTS.map((def) => {
-					const isUnlocked = !!unlocked[def.id];
-					const prog = !isUnlocked && def.progress ? def.progress(pda, gameAchievements) : null;
-					const pct = prog ? Math.min(100, (prog.value / prog.max) * 100) : 0;
-					const name = t(`ach.${def.id}.name`);
+			<div className={styles.head}>
+				<span className={styles.heading}>{t('ach.heading')}</span>
+				<div className={styles.tabBar} role="tablist" aria-label={t('ach.heading')}>
+					<button
+						type="button" role="tab" id="ach-tab-official" aria-controls="ach-panel"
+						aria-selected={tab === 'official'}
+						className={`${styles.tab} ${tab === 'official' ? styles.tabActive : ''}`}
+						onClick={() => setTab('official')}
+					>
+						{t('ach.tab.official', { earned, total: officialTotal })}
+					</button>
+					<button
+						type="button" role="tab" id="ach-tab-custom" aria-controls="ach-panel"
+						aria-selected={tab === 'custom'}
+						className={`${styles.tab} ${tab === 'custom' ? styles.tabActive : ''}`}
+						onClick={() => setTab('custom')}
+					>
+						{t('ach.tab.custom', { earned: customEarned, total: CUSTOM.length })}
+					</button>
+				</div>
+			</div>
 
-					return (
-						<article
-							key={def.id}
-							className={isUnlocked ? `${styles.card} ${styles.unlocked}` : styles.card}
-							aria-label={name}
-						>
-							<div className={styles.name}>
-								<span className={styles.icon} aria-hidden="true">
-									{isUnlocked ? '✓' : '○'}
-								</span>
-								{name}
-							</div>
-							<p className={styles.req}>{t(`ach.${def.id}.req`)}</p>
-							<p className={styles.reward}>{t(`ach.${def.id}.reward`)}</p>
-							{prog && (
-								<>
-									<div className={styles.barWrap} role="progressbar" aria-valuenow={prog.value} aria-valuemax={prog.max}>
-										<div className={styles.bar} style={{ width: `${pct}%` }} />
-									</div>
-									<span className={styles.barLabel}>{prog.value} / {prog.max}</span>
-								</>
-							)}
-						</article>
-					);
-				})}
+			<div className={styles.grid} role="tabpanel" id="ach-panel" aria-labelledby={`ach-tab-${tab}`}>
+				{tab === 'official'
+					? ACHIEVEMENTS.map((def) => {
+						const isUnlocked = !!unlocked[def.id];
+						const prog = !isUnlocked && def.progress ? def.progress(pda, gameAchievements) : null;
+						return card(def.id, isUnlocked, prog, t(`ach.${def.id}.reward`));
+					})
+					: CUSTOM.map((def) => {
+						const isUnlocked = isCustomUnlocked(def);
+						const prog = isUnlocked ? null : { value: def.value(alltime), max: def.max, fmt: def.fmt };
+						return card(def.id, isUnlocked, prog);
+					})}
 			</div>
 		</section>
 	);
