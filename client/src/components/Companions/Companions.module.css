@@ -64,28 +64,6 @@
 	flex: 1;
 }
 
-.meta {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	flex-wrap: wrap;
-}
-
-.rank {
-	font-family: var(--font-display);
-	font-size: var(--text-2xs);
-	letter-spacing: 0.5px;
-	text-transform: uppercase;
-	color: var(--accent-dim);
-}
-
-.rep {
-	font-family: var(--font-display);
-	font-size: var(--text-2xs);
-	letter-spacing: 0.5px;
-	text-transform: uppercase;
-}
-
 .hpRow {
 	display: flex;
 	align-items: center;
@@ -94,7 +72,7 @@
 
 .hpTrack {
 	flex: 1;
-	height: 5px;
+	height: var(--hp-bar-height);
 	background: var(--white-track);
 	border-radius: 1px;
 	overflow: hidden;

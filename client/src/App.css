@@ -173,6 +173,9 @@
   --text-dim: var(--text-secondary);
   --accent: var(--accent-base);
 
+  /* Shared HP-bar track height so every health bar matches. */
+  --hp-bar-height: 5px;
+
   /* ── Type scale — fluid, min bumped for mobile readability ── */
   --text-display: clamp(34px, 4.03vw, 58px);
   --text-3xl: clamp(23px, 2.64vw, 38px);

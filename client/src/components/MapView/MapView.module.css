@@ -454,7 +454,7 @@
 
 .companionHpTrack {
 	width: 36px;
-	height: 3px;
+	height: var(--hp-bar-height);
 	background: rgba(255, 255, 255, 0.1);
 }
 

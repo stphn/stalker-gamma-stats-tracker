@@ -19,10 +19,9 @@
 	background: var(--bg-glass);
 	padding: 8px 12px;
 	display: grid;
-	gap: 6px;
 	box-shadow: var(--shadow-elevation-medium);
-	/* Distribute name → stats → HP across the full card height. */
-	align-content: space-between;
+	/* Pack content to the bottom of the card. */
+	align-content: end;
 }
 
 .nameSection {
@@ -32,7 +31,7 @@
 
 .name {
 	font-family: var(--font-display);
-	font-size: var(--text-xl);
+	font-size: var(--text-2xl);
 	font-weight: 700;
 	color: var(--text-primary);
 	line-height: 1.1;
@@ -75,7 +74,7 @@
 
 .statLabel {
 	font-family: var(--font-display);
-	font-size: 6px;
+	font-size: 9px;
 	font-weight: 400;
 	letter-spacing: 1px;
 	text-transform: uppercase;
@@ -100,14 +99,21 @@
 /* ── Health bar ── */
 .hpRow {
 	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	margin-top: 2px;
+}
+
+/* Track + value sit on one line below the label */
+.hpBarRow {
+	display: flex;
 	align-items: center;
 	gap: 8px;
-	margin-top: 10px;
 }
 
 .hpTrack {
 	flex: 1;
-	height: 5px;
+	height: var(--hp-bar-height);
 	background: var(--white-track);
 	border-radius: 1px;
 	overflow: hidden;

@@ -67,6 +67,7 @@ export function Player({ actor }: PlayerProps) {
 				{actor.health != null && (
 					<div className={styles.hpRow}>
 						<span className={styles.statLabel}>{t('player.health')}</span>
+						<div className={styles.hpBarRow}>
 						<div
 							className={styles.hpTrack}
 							role="meter"
@@ -83,6 +84,7 @@ export function Player({ actor }: PlayerProps) {
 						<span className={styles.hpValue} style={{ color: hp_color(actor.health) }}>
 							{actor.health}%
 						</span>
+					</div>
 					</div>
 				)}
 			</div>

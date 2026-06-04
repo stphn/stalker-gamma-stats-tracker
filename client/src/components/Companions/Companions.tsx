@@ -1,6 +1,6 @@
 import type { Companion } from '../../types';
 import { useI18n } from '../../i18n/I18nContext';
-import { hp_color, rank_label, rep_color, rep_label } from '../../utils/formatters';
+import { hp_color } from '../../utils/formatters';
 import { FactionIcon } from '../FactionIcon/FactionIcon';
 import styles from './Companions.module.css';
 
@@ -23,14 +23,6 @@ export function Companions({ companions }: CompanionsProps) {
 							<div className={styles.nameRow}>
 								<FactionIcon faction={c.faction} size="xs" />
 								<span className={styles.name}>{c.name}</span>
-							</div>
-							<div className={styles.meta}>
-								<span className={styles.rank}>{t(rank_label(c.rank))}</span>
-								{c.reputation != null && (
-									<span className={styles.rep} style={{ color: rep_color(c.reputation) }}>
-										{t(rep_label(c.reputation))}
-									</span>
-								)}
 							</div>
 							<div className={styles.hpRow}>
 								<div
