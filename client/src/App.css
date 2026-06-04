@@ -87,7 +87,7 @@
   --hue-purple: #a088b0;
 
   /* Glass / translucent — navy-tinted */
-  --bg-glass: hsl(216, 16%, 22%, 0.6);
+  --bg-glass: hsl(216, 16%, 22%, 0.85);
   --bg-glass-mobile: hsl(216, 18%, 10%, 0.96);
   --bg-scrim: hsl(216, 20%, 6%, 0.55);
 
@@ -124,7 +124,7 @@
 	   Tint via --shadow-color (H S% L%), dim via --shadow-strength (0–1).
 	   Themes override either: light themes lighten the tint + drop strength. */
   --shadow-color: 0deg 0% 2%;
-  --shadow-strength: 1;
+  --shadow-strength: 0.5;
   --shadow-elevation-low:
     0.3px 0.5px 0.7px
       hsl(var(--shadow-color) / calc(0.34 * var(--shadow-strength))),
@@ -240,7 +240,7 @@
   --color-info: #81a1c1;
 
   /* Glass / scrim */
-  --bg-glass: hsl(220, 16%, 28%, 0.6);
+  --bg-glass: hsl(220, 16%, 28%, 0.85);
   --bg-glass-mobile: hsl(220, 16%, 14%, 0.96);
   --bg-scrim: hsl(220, 16%, 8%, 0.55);
 
@@ -301,7 +301,7 @@
   --hue-purple: #7d4f9c;
 
   /* Glass / scrim — warm light translucent (must not darken the page) */
-  --bg-glass: hsl(50, 25%, 92%, 0.75);
+  --bg-glass: hsl(50, 25%, 92%, 0.9);
   --bg-glass-mobile: hsl(50, 25%, 95%, 0.96);
   --bg-scrim: hsl(50, 12%, 82%, 0.55);
 
@@ -428,30 +428,25 @@ body {
   position: relative;
 }
 
-/* Desktop: sidebar floats over the right edge of the stage image */
+/* Desktop: sidebar floats over the right edge of the stage image. The glass
+   surface now lives on the inner .stats container (RightPanel), so the compass
+   above it stays a separate, frameless container. */
 .sidebar {
   position: absolute;
   right: var(--pad-lg);
-  bottom: calc(var(--pad-lg) + 2px);
+  top: calc(var(--pad-lg) + 2px);
   z-index: 2;
   width: clamp(300px, 26.4vw, 480px);
-  overflow-y: auto;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border-left: 1px solid var(--border-glass);
-  box-shadow: var(--shadow-elevation-high);
+  /* No overflow here: it has no height cap so it never scrolled vertically, but
+     it promoted overflow-x to auto (→ stray horizontal scrollbar) and would clip
+     the inner .stats glass shadow. */
 }
 
-/* Mobile: sidebar drops below, full-width, opaque */
+/* Mobile: sidebar drops below, full-width */
 @container layout (max-width: 900px) {
   .sidebar {
     position: static;
     width: 100%;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    background: var(--bg-glass-mobile);
-    border-left: none;
-    border-top: 1px solid var(--border);
   }
 }
 
@@ -459,15 +454,9 @@ body {
 .actors {
   display: grid;
   grid-template-columns: max-content max-content;
-  align-items: end;
+  /* stretch so the squad column matches the player card's height */
+  align-items: stretch;
   gap: var(--pad-sm);
-}
-
-/* Compass + location/time side by side (location to the right of the compass) */
-.compass-row {
-  display: flex;
-  align-items: center;
-  gap: var(--pad-lg);
 }
 
 @container layout (max-width: 900px) {

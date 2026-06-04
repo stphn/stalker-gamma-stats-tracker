@@ -3,7 +3,9 @@
 	grid-template-columns: 1fr auto;
 	align-items: center;
 	gap: 8px;
-	padding: var(--pad-xs) var(--pad-sm);
+	/* --row-pad-x lets a parent (e.g. RightPanel) flush rows to the edge so they
+	   line up with the header label; defaults to the normal inset elsewhere. */
+	padding: var(--pad-xs) var(--row-pad-x, var(--pad-sm));
 	background: var(--bg-surface);
 	border-bottom: 1px solid var(--bg-subtle);
 }

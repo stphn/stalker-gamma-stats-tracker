@@ -1,23 +1,45 @@
 .root {
 	display: grid;
+	grid-template-columns: minmax(0, 1fr);
 	gap: var(--pad-sm);
-	padding: var(--pad-sm);
-	align-content: end;
+	align-content: start;
 }
 
-.panel {
-	background: var(--bg-surface);
-	border: 1px solid var(--bg-subtle);
+/* Session stats = one glass card, styled like the actor/squad cards. Nested
+   "surface" boxes are flattened by overriding the tokens the shared children
+   (CardHeader/StatRow/KillsBreakdown) read, so their header + rows sit cleanly
+   on the glass instead of stacking opaque boxes. */
+.stats {
 	display: grid;
-	padding: 1px;
-	gap: 1px;
+	gap: var(--pad-md);
+	padding: var(--pad-md);
+	background: var(--bg-glass);
+	box-shadow: var(--shadow-elevation-medium);
+	--bg-surface: transparent;
+	--bg-raised: transparent;
+	/* Flush rows to the card edge so they line up under the header labels. */
+	--row-pad-x: 0px;
 }
 
-/* Economy / Exploration row */
+/* Mobile: opaque so it stays readable in the static, full-width sidebar. */
+@container layout (max-width: 900px) {
+	.stats {
+		background: var(--bg-glass-mobile);
+	}
+}
+
+/* Each stat group is just a section on the glass — header + rows, no box. */
+.panel {
+	display: grid;
+	gap: var(--pad-xs);
+	min-width: 0;
+}
+
+/* Economy / Exploration side by side */
 .bottomRow {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: var(--pad-sm);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	gap: var(--pad-md);
 }
 
 .statRows {

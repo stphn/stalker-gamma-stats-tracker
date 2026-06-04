@@ -134,7 +134,8 @@
 }
 
 /* Reset cursor on UI panels — bare image area keeps crosshair */
-.left > * {
+.bottomLeft > *,
+.compass > * {
 	cursor: default;
 }
 
@@ -159,15 +160,40 @@
 	cursor: default;
 }
 
-/* ── Content overlay ── */
-.left {
+/* ── Content overlay — a corner grid: bottom-left content + top-right compass.
+   pointer-events:none lets the bare image keep its crosshair / GL interactions;
+   the actual UI cells re-enable pointer events. ── */
+.content {
 	position: absolute;
 	inset: 0;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-template-rows: 1fr auto;
+	gap: var(--pad-lg);
+	padding: var(--pad-lg);
+	z-index: 1;
+	pointer-events: none;
+}
+
+/* Location + actors — bottom-left */
+.bottomLeft {
+	grid-column: 1;
+	grid-row: 2;
+	justify-self: start;
+	align-self: end;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-end;
 	gap: var(--pad-xl);
-	padding: var(--pad-lg);
-	z-index: 1;
+	pointer-events: auto;
+}
+
+/* Compass — bottom-right corner */
+.compass {
+	grid-column: 2;
+	grid-row: 2;
+	justify-self: end;
+	align-self: end;
+	pointer-events: auto;
 }
 

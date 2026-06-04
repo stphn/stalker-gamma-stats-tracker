@@ -1,6 +1,9 @@
 .root {
 	display: grid;
-	gap: 2px;
+	/* label row + card row that fills the stretched column height so the big
+	   card's edges line up with the stacked squad cards. */
+	grid-template-rows: auto 1fr;
+	gap: 4px;
 }
 
 .superLabel {
@@ -18,6 +21,8 @@
 	display: grid;
 	gap: 6px;
 	box-shadow: var(--shadow-elevation-medium);
+	/* Distribute name → stats → HP across the full card height. */
+	align-content: space-between;
 }
 
 .nameSection {

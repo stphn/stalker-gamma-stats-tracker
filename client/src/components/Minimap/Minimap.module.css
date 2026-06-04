@@ -1,8 +1,12 @@
-/* ── Minimap shell — 220px to accommodate the outer compass ring ── */
+/* ── Minimap shell — sized via --mm-size so the ring/inner stay proportional.
+   264px = the original 220px + 20%. --mm-ring is the compass-ring inset
+   (≈ size × 0.1227); the inner map clip derives from both. ── */
 .root {
+  --mm-size: 264px;
+  --mm-ring: 32px;
   position: relative;
-  width: 220px;
-  height: 220px;
+  width: var(--mm-size);
+  height: var(--mm-size);
   flex-shrink: 0;
   cursor: pointer;
   margin-block: calc(var(--pad-md) * -1);
@@ -13,8 +17,8 @@
 
 /* ── Map + ring wrapper — position:relative so .rotor's inset:0 anchors here ── */
 .mapWrap {
-  width: 220px;
-  height: 220px;
+  width: var(--mm-size);
+  height: var(--mm-size);
   position: relative;
   background: transparent;
 }
@@ -45,10 +49,10 @@
    Inner circle of the webp ≈ 76% of image = 220 * 0.76 = 167px → 166px diameter, 27px offset. */
 .mapClip {
   position: absolute;
-  left: 27px;
-  top: 27px;
-  width: 166px;
-  height: 166px;
+  left: var(--mm-ring);
+  top: var(--mm-ring);
+  width: calc(var(--mm-size) - 2 * var(--mm-ring));
+  height: calc(var(--mm-size) - 2 * var(--mm-ring));
   border-radius: 50%;
   overflow: hidden;
   /* Average ground tone sampled across the Zone maps (~rgb(50,48,35)) — a dark
@@ -59,14 +63,14 @@
   /* Plain flat backing (no blur) fills the ring area behind the compass
 	   image — clean solid colour instead of the old smudgy halo. box-shadow
 	   is never clipped by overflow:hidden, so it still fills the 27px ring. */
-  box-shadow: 0 0 0 27px rgba(6, 8, 7, 0.5);
+  box-shadow: 0 0 0 var(--mm-ring) var(--bg-glass);
   transition: box-shadow 0.15s ease-out;
 }
 
 /* ── Hover: amber glow ring + brighter compass ── */
 .root:hover .mapClip {
   box-shadow:
-    0 0 0 27px rgba(6, 8, 7, 0.92),
+    0 0 0 var(--mm-ring) var(--bg-glass),
     0 0 16px 3px color-mix(in srgb, var(--color-positive) 60%, transparent),
     inset 0 0 0 1px color-mix(in srgb, var(--color-positive) 55%, transparent);
 }

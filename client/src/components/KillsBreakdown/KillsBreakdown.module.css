@@ -30,7 +30,7 @@
 	grid-template-columns: 1fr auto;
 	align-items: center;
 	gap: 8px;
-	padding: 4px 8px;
+	padding: 4px var(--row-pad-x, 8px);
 	background: var(--bg-surface);
 	border-bottom: 1px solid var(--bg-subtle);
 }

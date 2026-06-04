@@ -2,7 +2,8 @@
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
-	align-self: flex-end;
+	/* Stretch to the actors-row height so the squad is as tall as the player. */
+	align-self: stretch;
 }
 
 .label {
@@ -15,10 +16,15 @@
 }
 
 .grid {
-	display: grid;
-	grid-auto-flow: column;
-	grid-auto-columns: 1fr;
-	gap: 6px;
+	/* Fill bottom-up, two per column; the newest member wraps into a new column
+	   at the bottom-right. column-reverse = stack from the bottom; wrap = overflow
+	   into the next column to the right. */
+	display: flex;
+	flex-flow: column-reverse wrap;
+	align-content: flex-start;
+	gap: var(--pad-sm);
+	flex: 1;
+	min-height: 0;
 }
 
 .card {
@@ -27,6 +33,17 @@
 	display: grid;
 	gap: 4px;
 	box-shadow: var(--shadow-elevation-medium);
+	/* Distribute name → rank → HP across each card's share of the height. */
+	align-content: space-between;
+	/* Half the column height each → exactly two cards per column. */
+	flex: 0 0 calc(50% - var(--pad-sm) / 2);
+}
+
+/* A lone companion fills the full height instead of sitting half-height.
+   :only-child only matches when there's exactly one card total — a lone card in
+   an overflow column (e.g. the 3rd of 3) still stays half-height. */
+.card:only-child {
+	flex-basis: 100%;
 }
 
 .nameRow {

@@ -173,18 +173,20 @@ export default function App() {
 									<DeathOverlay run={runs[0] ?? null} />
 								) : undefined
 							}
+							compass={
+								displayActor && (
+									<Minimap actor={displayActor} onExpand={() => setMapOpen(true)} />
+								)
+							}
 							left={
 								displayActor && (
 									<>
-										<div className="compass-row">
-											<Minimap actor={displayActor} onExpand={() => setMapOpen(true)} />
-											<Location
-												location={displayActor.location}
-												locationName={displayActor.location_name}
-												gameTime={displayActor.game_time}
-												gameState={gameState}
-											/>
-										</div>
+										<Location
+											location={displayActor.location}
+											locationName={displayActor.location_name}
+											gameTime={displayActor.game_time}
+											gameState={gameState}
+										/>
 										<div className="actors">
 											<Player actor={displayActor} />
 											{data.companions && data.companions.length > 0 && (
