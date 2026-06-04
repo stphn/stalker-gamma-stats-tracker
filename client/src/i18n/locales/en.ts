@@ -65,7 +65,14 @@ export const en: Record<string, string> = {
 	'map.legend.companions': 'Squad',
 	'map.legend.squadShow': 'Show squad',
 	'map.legend.squadHide': 'Hide squad',
+	'map.layers': 'Layers',
 	'map.legend.noPos': 'No map position',
+	'map.legend.npcs': 'Characters',
+	'map.legend.locations': 'Locations',
+	'map.legend.factions': 'Territory',
+	'map.legend.changers': 'Transitions',
+	'map.legend.campfires': 'Campfires',
+	'map.legend.stashes': 'Stashes',
 	'minimap.underground': 'UNDERGROUND',
 	'minimap.openFull': 'Open full map',
 
@@ -104,6 +111,8 @@ export const en: Record<string, string> = {
 	'ach.heading': 'Achievements',
 	'zonenews.title': 'Zone News',
 	'zonenews.empty': 'The Zone is quiet…',
+	'loot.title': 'Loot',
+	'loot.empty': 'Nothing looted yet…',
 
 	// All-Time panel
 	'alltime.progress': 'Progress',
@@ -166,6 +175,15 @@ export const en: Record<string, string> = {
 	'rep.neutral': 'Neutral',
 	'rep.bad': 'Bad',
 	'rep.terrible': 'Terrible',
+
+	// Progression toasts
+	'toast.promotion': 'Promotion',
+	'toast.demotion': 'Demotion',
+	'toast.rankUp': 'Rank up',
+	'toast.rankDown': 'Rank down',
+	'toast.repUp': 'Experience up',
+	'toast.repDown': 'Experience down',
+	'toast.dismiss': 'Dismiss',
 
 	// Faction display names
 	'faction.stalker': 'Loner',

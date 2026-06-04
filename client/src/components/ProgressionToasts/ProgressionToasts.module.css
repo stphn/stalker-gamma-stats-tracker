@@ -1,0 +1,106 @@
+/* Fixed bottom-right stack; newest is first in the DOM and sits on top. */
+.root {
+	position: fixed;
+	right: var(--pad-lg);
+	bottom: var(--pad-lg);
+	z-index: 60;
+	display: grid;
+	gap: var(--pad-sm);
+	width: min(320px, calc(100vw - 2 * var(--pad-lg)));
+	pointer-events: none;
+}
+
+.card {
+	pointer-events: auto;
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: var(--pad-md);
+	padding: var(--pad-sm) var(--pad-md);
+	background: var(--bg-base);
+	border: 1px solid var(--border);
+	border-left-width: 3px;
+	box-shadow: var(--shadow-elevation-high);
+	animation: toast-in 240ms ease-out;
+}
+
+/* Direction tint: promotion vs demotion. */
+.up {
+	border-left-color: var(--color-positive);
+}
+.down {
+	border-left-color: var(--color-danger);
+}
+
+.icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.up .icon {
+	color: var(--color-positive);
+}
+.down .icon {
+	color: var(--color-danger);
+}
+
+.body {
+	display: grid;
+	gap: 1px;
+	min-width: 0;
+}
+
+.headline {
+	font-family: var(--font-display);
+	font-size: var(--text-xs);
+	font-weight: 700;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--text-primary);
+}
+.up .headline {
+	color: var(--color-positive);
+}
+.down .headline {
+	color: var(--color-danger);
+}
+
+.detail {
+	font-size: var(--text-sm);
+	color: var(--text);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.close {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2px;
+	background: none;
+	border: none;
+	color: var(--text-disabled);
+	cursor: pointer;
+	transition: color 120ms ease;
+}
+.close:hover {
+	color: var(--text-primary);
+}
+
+@keyframes toast-in {
+	from {
+		opacity: 0;
+		transform: translateX(16px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.card {
+		animation: none;
+	}
+}

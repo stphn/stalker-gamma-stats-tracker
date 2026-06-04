@@ -61,7 +61,14 @@ export const de: Record<string, string> = {
 	'map.legend.companions': 'Truppe',
 	'map.legend.squadShow': 'Truppe anzeigen',
 	'map.legend.squadHide': 'Truppe ausblenden',
+	'map.layers': 'Ebenen',
 	'map.legend.noPos': 'Keine Kartenposition',
+	'map.legend.npcs': 'Charaktere',
+	'map.legend.locations': 'Orte',
+	'map.legend.factions': 'Territorium',
+	'map.legend.changers': 'Übergänge',
+	'map.legend.campfires': 'Lagerfeuer',
+	'map.legend.stashes': 'Verstecke',
 	'minimap.underground': 'UNTERGRUND',
 	'minimap.openFull': 'Vollkarte öffnen',
 
@@ -153,6 +160,15 @@ export const de: Record<string, string> = {
 	'rep.neutral': 'Neutral',
 	'rep.bad': 'Schlecht',
 	'rep.terrible': 'Schrecklich',
+
+	// Progression toasts
+	'toast.promotion': 'Beförderung',
+	'toast.demotion': 'Degradierung',
+	'toast.rankUp': 'Rang gestiegen',
+	'toast.rankDown': 'Rang gesunken',
+	'toast.repUp': 'Erfahrung gestiegen',
+	'toast.repDown': 'Erfahrung gesunken',
+	'toast.dismiss': 'Schließen',
 
 	'faction.stalker': 'Einzelgänger',
 	'faction.actor_stalker': 'Einzelgänger',

@@ -48,7 +48,7 @@ export const CATEGORY_META: Record<NewsCategory, { label: string; color: string;
 	combat:      { label: 'Combat',      color: 'var(--color-danger)',   tickerVisible: true },
 	progression: { label: 'Progression', color: 'var(--color-positive)', tickerVisible: true },
 	task:        { label: 'Task',        color: 'var(--color-info)',     tickerVisible: true },
-	loot:        { label: 'Loot',        color: 'var(--accent-dim)',     tickerVisible: true },
+	loot:        { label: 'Loot',        color: 'var(--accent-dim)',     tickerVisible: false },
 	maintenance: { label: 'Upkeep',      color: 'var(--text-disabled)',  tickerVisible: true },
 	other:       { label: 'Other',       color: 'var(--text-disabled)',  tickerVisible: true },
 	noise:       { label: 'Noise',       color: 'var(--text-disabled)',  tickerVisible: false },

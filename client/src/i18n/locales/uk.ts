@@ -61,7 +61,14 @@ export const uk: Record<string, string> = {
 	'map.legend.companions': 'Загін',
 	'map.legend.squadShow': 'Показати загін',
 	'map.legend.squadHide': 'Сховати загін',
+	'map.layers': 'Шари',
 	'map.legend.noPos': 'Немає позиції на карті',
+	'map.legend.npcs': 'Персонажі',
+	'map.legend.locations': 'Локації',
+	'map.legend.factions': 'Територія',
+	'map.legend.changers': 'Переходи',
+	'map.legend.campfires': 'Багаття',
+	'map.legend.stashes': 'Схованки',
 	'minimap.underground': 'ПІД ЗЕМЛЕЮ',
 	'minimap.openFull': 'Відкрити повну карту',
 
@@ -153,6 +160,15 @@ export const uk: Record<string, string> = {
 	'rep.neutral': 'Нейтральна',
 	'rep.bad': 'Погана',
 	'rep.terrible': 'Жахлива',
+
+	// Progression toasts
+	'toast.promotion': 'Підвищення',
+	'toast.demotion': 'Пониження',
+	'toast.rankUp': 'Ранг підвищено',
+	'toast.rankDown': 'Ранг знижено',
+	'toast.repUp': 'Досвід зростає',
+	'toast.repDown': 'Досвід падає',
+	'toast.dismiss': 'Закрити',
 
 	'faction.stalker': 'Одинак',
 	'faction.actor_stalker': 'Одинак',

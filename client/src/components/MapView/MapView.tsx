@@ -1,31 +1,72 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { NavigationArrowIcon, SmileyXEyesIcon, UserCircleDashedIcon } from '@phosphor-icons/react';
+import {
+	CampfireIcon,
+	GearIcon,
+	MapPinIcon,
+	NavigationArrowIcon,
+	PackageIcon,
+	SignpostIcon,
+	SmileyXEyesIcon,
+	ToggleLeftIcon,
+	ToggleRightIcon,
+	UserCircleDashedIcon,
+	UsersThreeIcon,
+} from '@phosphor-icons/react';
 import type { ActorInfo, Companion, Run } from '../../types';
 import { useI18n } from '../../i18n/I18nContext';
 import mapLevelsData from '../../data/map-levels.json';
 import { mapUrl } from '../../utils/mapsBase';
 import { hp_color } from '../../utils/formatters';
 import { FACTION_COLORS } from '../../utils/constants';
+import {
+	FACTION_TERRITORY_COLORS,
+	NPC_ROLE_COLORS,
+	loadMapEntities,
+	shortPlace,
+	type MapEntities,
+} from '../../utils/mapEntities';
+import { FactionIcon } from '../FactionIcon/FactionIcon';
 import styles from './MapView.module.css';
 
 // World coordinate space (from rawRect in map-levels.json)
 const WORLD_W = 1024;
 const WORLD_H = 2634;
 
-// Death markers (and the dead-player marker) use the theme accent — shape (skull)
-// and the legend toggle keep them distinct from the live player/companion markers.
-// var() resolves in Phosphor's color prop and inline styles, so they follow the theme.
-const DEATH_YELLOW = 'var(--accent-base)';
+// Death markers (and the dead-player marker) use the danger red so they read at a
+// glance over bright level art; shape (skull) keeps them distinct from the live
+// player/companion markers. var() resolves in Phosphor's color prop + inline styles.
+const DEATH_RED = 'var(--color-danger)';
 
-// Persisted legend toggles (default on when no stored choice yet).
+// Persisted legend toggles. Deaths/companions default on; the denser entity
+// layers default off so the map opens uncluttered (caller passes the default).
 const LS_SHOW_DEATHS     = 'tracker_map_show_deaths';
 const LS_SHOW_COMPANIONS = 'tracker_map_show_companions';
-function loadToggle(key: string): boolean {
-	try { return localStorage.getItem(key) !== 'false'; } catch { return true; }
+const LS_SHOW_LOCATIONS  = 'tracker_map_show_locations';
+const LS_SHOW_NPCS       = 'tracker_map_show_npcs';
+const LS_SHOW_FACTIONS   = 'tracker_map_show_factions';
+const LS_SHOW_CHANGERS   = 'tracker_map_show_changers';
+const LS_SHOW_CAMPFIRES  = 'tracker_map_show_campfires';
+const LS_SHOW_STASHES    = 'tracker_map_show_stashes';
+function loadToggle(key: string, fallback = true): boolean {
+	try {
+		const v = localStorage.getItem(key);
+		return v == null ? fallback : v !== 'false';
+	} catch { return fallback; }
 }
 function saveToggle(key: string, value: boolean) {
 	try { localStorage.setItem(key, String(value)); } catch {}
 }
+
+// Per-layer zoom gates — denser layers only appear once zoomed in enough to read
+// them, which also keeps the rendered marker count low via viewport culling.
+const FACTION_MIN_ZOOM  = 0.8;  // territory circles read at an overview zoom
+const CHANGER_MIN_ZOOM  = 1.0;  // changers are rare + at zone edges → show early
+const NPC_MIN_ZOOM      = 2.4;
+const CAMPFIRE_MIN_ZOOM = 3.0;
+const LOCATION_MIN_ZOOM = 3.5;
+const STASH_MIN_ZOOM    = 5.0;  // 1171 of them → only when zoomed right in
+// Off-screen margin (px) kept around the viewport when culling markers.
+const CULL_MARGIN = 120;
 
 interface RawRect     { x1: number; y1: number; x2: number; y2: number }
 interface WorldBounds { minX: number; maxX: number; minZ: number; maxZ: number }
@@ -49,6 +90,56 @@ function worldToMapPos(px: number, pz: number, level: LevelEntry) {
 const MIN_ZOOM  = 0.3;
 const MAX_ZOOM  = 32;
 const ZOOM_STEP = 1.3;
+
+// A level only loads its full-res webp once it occupies at least this many screen
+// pixels (the current level is always loaded). Mounting the <img> triggers the
+// lazy fetch, so detail streams in as you zoom toward a region.
+const HIRES_MIN_ONSCREEN_PX = 200;
+
+/** One level's full-res image, positioned in world space, fading in on load. */
+function LevelImage({ level }: { level: LevelEntry }) {
+	const [loaded, setLoaded] = useState(false);
+	const rr = level.rawRect;
+	return (
+		<img
+			src={mapUrl(`${level.id}.webp`)}
+			className={styles.levelImg}
+			style={{
+				left:    `${rr.x1 / WORLD_W * 100}%`,
+				top:     `${rr.y1 / WORLD_H * 100}%`,
+				width:   `${(rr.x2 - rr.x1) / WORLD_W * 100}%`,
+				height:  `${(rr.y2 - rr.y1) / WORLD_H * 100}%`,
+				opacity: loaded ? 1 : 0,
+			}}
+			alt={level.name}
+			draggable={false}
+			decoding="async"
+			onLoad={() => setLoaded(true)}
+		/>
+	);
+}
+
+/** One layer row in the settings popover: icon · label · ToggleLeft/Right state. */
+function ToggleRow({ icon, label, on, onToggle }: {
+	icon: React.ReactNode; label: string; on: boolean; onToggle: () => void;
+}) {
+	return (
+		<button
+			className={styles.settingsRow}
+			onClick={onToggle}
+			role="menuitemcheckbox"
+			aria-checked={on}
+		>
+			<span className={styles.settingsRowIcon}>{icon}</span>
+			<span className={styles.settingsRowLabel}>{label}</span>
+			<span className={on ? styles.toggleOn : styles.toggleOff}>
+				{on
+					? <ToggleRightIcon size={20} weight="fill" />
+					: <ToggleLeftIcon size={20} weight="fill" />}
+			</span>
+		</button>
+	);
+}
 
 // Idle time after the last user pan/zoom before the view re-centers on the
 // player and follows them — keeps the marker in view without manual scrolling.
@@ -74,8 +165,27 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 	const [areaH, setAreaH]               = useState(800);
 	const [showDeaths, setShowDeaths]     = useState(() => loadToggle(LS_SHOW_DEATHS));
 	const [showCompanions, setShowCompanions] = useState(() => loadToggle(LS_SHOW_COMPANIONS));
+	const [showLocations, setShowLocations]   = useState(() => loadToggle(LS_SHOW_LOCATIONS, false));
+	const [showNpcs, setShowNpcs]             = useState(() => loadToggle(LS_SHOW_NPCS, true));
+	const [showFactions, setShowFactions]     = useState(() => loadToggle(LS_SHOW_FACTIONS, false));
+	const [showChangers, setShowChangers]     = useState(() => loadToggle(LS_SHOW_CHANGERS, false));
+	const [showCampfires, setShowCampfires]   = useState(() => loadToggle(LS_SHOW_CAMPFIRES, false));
+	const [showStashes, setShowStashes]       = useState(() => loadToggle(LS_SHOW_STASHES, false));
 	useEffect(() => { saveToggle(LS_SHOW_DEATHS, showDeaths); }, [showDeaths]);
 	useEffect(() => { saveToggle(LS_SHOW_COMPANIONS, showCompanions); }, [showCompanions]);
+	useEffect(() => { saveToggle(LS_SHOW_LOCATIONS, showLocations); }, [showLocations]);
+	useEffect(() => { saveToggle(LS_SHOW_NPCS, showNpcs); }, [showNpcs]);
+	useEffect(() => { saveToggle(LS_SHOW_FACTIONS, showFactions); }, [showFactions]);
+	useEffect(() => { saveToggle(LS_SHOW_CHANGERS, showChangers); }, [showChangers]);
+	useEffect(() => { saveToggle(LS_SHOW_CAMPFIRES, showCampfires); }, [showCampfires]);
+	useEffect(() => { saveToggle(LS_SHOW_STASHES, showStashes); }, [showStashes]);
+
+	// Layer settings popover (replaces the old always-on legend stack).
+	const [settingsOpen, setSettingsOpen] = useState(false);
+
+	// Static map entities (locations / NPCs / level changers) — lazy-loaded once.
+	const [entities, setEntities] = useState<MapEntities | null>(null);
+	useEffect(() => { loadMapEntities().then(setEntities).catch(() => {}); }, []);
 
 	const drag = useRef({ active: false, startX: 0, startY: 0, panX: 0, panY: 0 });
 	// True once the user has zoomed/panned/followed — suppresses auto re-fit on resize
@@ -228,12 +338,30 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 
 	useEffect(() => {
 		const onKey = (e: KeyboardEvent) => {
-			if (e.key === 'Escape')             { close(); return; }
+			// Escape closes the layer popover first, then the map.
+			if (e.key === 'Escape') {
+				if (settingsOpen) { setSettingsOpen(false); return; }
+				close();
+				return;
+			}
 			if (e.key === 'r' || e.key === 'R') { bumpIdle(); resetView(levelData); return; }
 		};
 		window.addEventListener('keydown', onKey);
 		return () => window.removeEventListener('keydown', onKey);
-	}, [close, resetView, levelData, bumpIdle]);
+	}, [close, resetView, levelData, bumpIdle, settingsOpen]);
+
+	// Close the layer popover on any click outside it.
+	const settingsRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		if (!settingsOpen) return;
+		const onDown = (e: MouseEvent) => {
+			if (settingsRef.current && !settingsRef.current.contains(e.target as Node)) {
+				setSettingsOpen(false);
+			}
+		};
+		window.addEventListener('mousedown', onDown);
+		return () => window.removeEventListener('mousedown', onDown);
+	}, [settingsOpen]);
 
 	const onBackdropClick = (e: React.MouseEvent) => {
 		if (panelRef.current && !panelRef.current.contains(e.target as Node)) close();
@@ -292,6 +420,34 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 		return markers;
 	}, [runs]);
 
+	// Map-pixel → screen-pixel (markers live outside the scaled .world layer so
+	// they stay crisp). Mirrors the death/companion transform.
+	const toScreen = (mx: number, my: number) => ({
+		x: zoom * (mx / WORLD_W * areaW + pan.x),
+		y: zoom * (my / WORLD_W * areaW + pan.y),
+	});
+	// Viewport cull: skip markers well outside the visible area so panning a
+	// fully-zoomed map only ever renders the handful of on-screen entities.
+	const onScreen = (x: number, y: number, m = CULL_MARGIN) =>
+		x >= -m && x <= areaW + m && y >= -m && y <= areaH + m;
+
+	// Progressive high-res: pick the non-underground levels whose area is on
+	// screen and big enough to deserve detail (always the current level). A
+	// generous margin keeps neighbours mounted across small pans so they don't
+	// thrash; off-screen levels unmount to free decoded-image memory.
+	const levelMargin = 0.5 * Math.max(areaW, areaH);
+	const hiresLevels = allLevels.filter(l => {
+		if (l.underground || !l.rawRect) return false;
+		const a = toScreen(l.rawRect.x1, l.rawRect.y1);
+		const b = toScreen(l.rawRect.x2, l.rawRect.y2);
+		const intersects =
+			b.x >= -levelMargin && a.x <= areaW + levelMargin &&
+			b.y >= -levelMargin && a.y <= areaH + levelMargin;
+		if (!intersects) return false;
+		if (l.id === levelId) return true;
+		return Math.max(b.x - a.x, b.y - a.y) >= HIRES_MIN_ONSCREEN_PX;
+	});
+
 	return (
 		<div className={styles.backdrop} role="dialog" aria-modal aria-label="Full map" onMouseDown={onBackdropClick}>
 			<div className={styles.panel} ref={panelRef}>
@@ -299,9 +455,6 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 
 				<div className={styles.header}>
 					<span className={styles.label}>◈ {t('map.title')}</span>
-					<span className={styles.zoneName}>
-						{t(`level.${levelId}`) !== `level.${levelId}` ? t(`level.${levelId}`) : (levelData?.name ?? levelId ?? '—')}
-					</span>
 					<div className={styles.headerRight}>
 						<button className={styles.resetBtn} onClick={() => { bumpIdle(); resetView(levelData); }} title={t('map.resetTitle')}>
 							{zoom.toFixed(1)}× · {t('map.reset')}
@@ -336,20 +489,9 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 								alt=""
 								draggable={false}
 							/>
-							{levelData?.rawRect && !levelData.underground && (
-								<img
-									src={mapUrl(`${levelId}.webp`)}
-									className={styles.levelImg}
-									style={{
-										left:   `${levelData.rawRect.x1 / WORLD_W * 100}%`,
-										top:    `${levelData.rawRect.y1 / WORLD_H * 100}%`,
-										width:  `${(levelData.rawRect.x2 - levelData.rawRect.x1) / WORLD_W * 100}%`,
-										height: `${(levelData.rawRect.y2 - levelData.rawRect.y1) / WORLD_H * 100}%`,
-									}}
-									alt={levelData.name}
-									draggable={false}
-								/>
-							)}
+							{hiresLevels.map(l => (
+								<LevelImage key={l.id} level={l} />
+							))}
 						</div>
 					</div>
 
@@ -376,7 +518,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 								filter: 'drop-shadow(0 0 3px rgba(0,0,0,0.9))',
 							}}>
 								{gameState === 'dead'
-									? <SmileyXEyesIcon width="100%" height="100%" weight="fill" color={DEATH_YELLOW} />
+									? <SmileyXEyesIcon width="100%" height="100%" weight="fill" color={DEATH_RED} />
 									: <NavigationArrowIcon width="100%" height="100%" weight="fill" color={FACTION_COLORS[actor?.faction ?? ''] ?? '#e8c46a'} />
 								}
 							</div>
@@ -403,7 +545,7 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 						return (
 							<div key={dm.key} className={styles.deathOverlay} style={{ left: sx, top: sy }}>
 								<div className={styles.deathMarker}>
-									<div style={{ width: 22, height: 22 }}><SmileyXEyesIcon width="100%" height="100%" weight="fill" color={DEATH_YELLOW} /></div>
+									<div style={{ width: 22, height: 22 }}><SmileyXEyesIcon width="100%" height="100%" weight="fill" color={DEATH_RED} /></div>
 									{dm.count > 1 && <span className={styles.deathCount}>×{dm.count}</span>}
 								</div>
 							</div>
@@ -432,26 +574,148 @@ export function MapView({ actor, onClose, gameState = 'off', debug = false, runs
 						);
 					})}
 
-					{/* Legend */}
-					<div className={styles.legend}>
-						{!!deathMarkers.length && (
-							<button
-								className={`${styles.legendBtn} ${showDeaths ? styles.legendBtnOn : ''}`}
-								onClick={() => setShowDeaths(d => !d)}
-							>
-								<SmileyXEyesIcon size={11} weight="fill" />
-								{showDeaths ? t('map.legend.deathsHide') : t('map.legend.deathsShow')}
-							</button>
+					{/* Faction territory — semi-transparent "city" circles behind
+					    controlled smart terrains (rendered first → underneath markers). */}
+					{showFactions && entities && zoom >= FACTION_MIN_ZOOM &&
+						entities.smart_terrain.map((st, i) => {
+							const fac = st.factions?.[0];
+							if (!fac) return null;
+							const rgb = FACTION_TERRITORY_COLORS[fac];
+							if (!rgb) return null;
+							const { x, y } = toScreen(st.mapX, st.mapY);
+							if (!onScreen(x, y, 80)) return null;
+							const r = Math.max(10, Math.min(64, 12 * zoom * areaW / WORLD_W));
+							return (
+								<div
+									key={`fac-${i}`}
+									className={styles.factionCircle}
+									style={{
+										left: x, top: y,
+										width: r * 2, height: r * 2,
+										background: `rgba(${rgb},0.14)`,
+										borderColor: `rgba(${rgb},0.55)`,
+									}}
+								/>
+							);
+						})}
+
+					{/* Locations — smart-terrain place names */}
+					{showLocations && entities && zoom >= LOCATION_MIN_ZOOM &&
+						entities.smart_terrain.map((st, i) => {
+							if (!st.location) return null;
+							const { x, y } = toScreen(st.mapX, st.mapY);
+							if (!onScreen(x, y)) return null;
+							return (
+								<div key={`loc-${i}`} className={styles.locationOverlay} style={{ left: x, top: y }}>
+									<span className={styles.locationLabel}>{shortPlace(st.location)}</span>
+								</div>
+							);
+						})}
+
+					{/* Level changers — transitions between zones */}
+					{showChangers && entities && zoom >= CHANGER_MIN_ZOOM &&
+						entities.level_changer.map((lc, i) => {
+							const { x, y } = toScreen(lc.mapX, lc.mapY);
+							if (!onScreen(x, y)) return null;
+							const dest = lc.name?.match(/to_([a-z0-9_]+?)(?:_\d+)?$/i)?.[1]?.replace(/_/g, ' ');
+							return (
+								<div key={`lc-${i}`} className={styles.changerOverlay} style={{ left: x, top: y }}>
+									<div className={styles.changerMarker}>
+										<span className={styles.changerIcon}>
+											<SignpostIcon width="100%" height="100%" weight="fill" color="var(--accent-base)" />
+										</span>
+										{dest && zoom >= CHANGER_MIN_ZOOM && <span className={styles.changerName}>{dest}</span>}
+									</div>
+								</div>
+							);
+						})}
+
+					{/* Campfires — GAMMA rest / sleep / cook spots (icon-only) */}
+					{showCampfires && entities && zoom >= CAMPFIRE_MIN_ZOOM &&
+						entities.campfire.map((c, i) => {
+								const { x, y } = toScreen(c.mapX, c.mapY);
+								if (!onScreen(x, y)) return null;
+								return (
+									<div key={`fire-${i}`} className={styles.poiOverlay} style={{ left: x, top: y }}>
+										<span className={styles.poiIcon}>
+											<CampfireIcon width="100%" height="100%" weight="fill" color="var(--color-warning)" />
+										</span>
+									</div>
+								);
+							})}
+
+						{showStashes && entities && zoom >= STASH_MIN_ZOOM &&
+							entities.stash.map((s, i) => {
+								const { x, y } = toScreen(s.mapX, s.mapY);
+								if (!onScreen(x, y)) return null;
+								return (
+									<div key={`stash-${i}`} className={styles.poiOverlay} style={{ left: x, top: y }}>
+										<span className={styles.poiIconSm}>
+											<PackageIcon width="100%" height="100%" weight="fill" color="var(--color-info)" />
+										</span>
+									</div>
+								);
+							})}
+
+						{/* Notable characters — named NPCs with role colour + faction icon */}
+						{showNpcs && entities && zoom >= NPC_MIN_ZOOM &&
+							entities.named_npc.map((npc, i) => {
+							const { x, y } = toScreen(npc.mapX, npc.mapY);
+							if (!onScreen(x, y)) return null;
+							const color = NPC_ROLE_COLORS[npc.role ?? 'npc'] ?? NPC_ROLE_COLORS.npc;
+							return (
+								<div key={`npc-${i}`} className={styles.npcOverlay} style={{ left: x, top: y }}>
+									<span className={styles.npcLeader} style={{ background: color }} />
+									<span className={styles.npcDot} style={{ background: color, borderColor: color }} />
+									<span className={styles.npcName} style={{ color }}>
+										{npc.faction && <FactionIcon faction={npc.faction} size="xs" />}
+										{npc.char_name ?? shortPlace(npc.location)}
+									</span>
+								</div>
+							);
+						})}
+
+					{/* Layer settings popover — gear opens a panel of ToggleLeft/Right rows */}
+					<div className={styles.settings} ref={settingsRef} onMouseDown={e => e.stopPropagation()}>
+						{settingsOpen && (
+							<div className={styles.settingsPanel} role="menu">
+								<div className={styles.settingsHead}>
+									<span className={styles.settingsTitle}>{t('map.layers')}</span>
+									<button
+										className={styles.settingsClose}
+										onClick={() => setSettingsOpen(false)}
+										aria-label={t('map.close')}
+									>
+										✕
+									</button>
+								</div>
+								{!!deathMarkers.length && (
+									<ToggleRow icon={<SmileyXEyesIcon size={13} weight="fill" />} label={t('map.legend.deaths')} on={showDeaths} onToggle={() => setShowDeaths(v => !v)} />
+								)}
+								{!!companions?.length && (
+									<ToggleRow icon={<UserCircleDashedIcon size={13} weight="fill" />} label={t('map.legend.companions')} on={showCompanions} onToggle={() => setShowCompanions(v => !v)} />
+								)}
+								{entities && (
+									<>
+										<ToggleRow icon={<UsersThreeIcon size={13} weight="fill" />} label={t('map.legend.npcs')} on={showNpcs} onToggle={() => setShowNpcs(v => !v)} />
+										<ToggleRow icon={<MapPinIcon size={13} weight="fill" />} label={t('map.legend.locations')} on={showLocations} onToggle={() => setShowLocations(v => !v)} />
+										<ToggleRow icon={<UserCircleDashedIcon size={13} weight="fill" />} label={t('map.legend.factions')} on={showFactions} onToggle={() => setShowFactions(v => !v)} />
+										<ToggleRow icon={<SignpostIcon size={13} weight="fill" />} label={t('map.legend.changers')} on={showChangers} onToggle={() => setShowChangers(v => !v)} />
+										<ToggleRow icon={<CampfireIcon size={13} weight="fill" />} label={t('map.legend.campfires')} on={showCampfires} onToggle={() => setShowCampfires(v => !v)} />
+										<ToggleRow icon={<PackageIcon size={13} weight="fill" />} label={t('map.legend.stashes')} on={showStashes} onToggle={() => setShowStashes(v => !v)} />
+									</>
+								)}
+							</div>
 						)}
-						{!!companions?.length && (
-							<button
-								className={`${styles.legendBtn} ${showCompanions ? styles.legendBtnOn : ''}`}
-								onClick={() => setShowCompanions(c => !c)}
-							>
-								<UserCircleDashedIcon size={11} weight="fill" />
-								{showCompanions ? t('map.legend.squadHide') : t('map.legend.squadShow')}
-							</button>
-						)}
+						<button
+							className={`${styles.settingsBtn} ${settingsOpen ? styles.settingsBtnOpen : ''}`}
+							onClick={() => setSettingsOpen(o => !o)}
+							aria-expanded={settingsOpen}
+							title={t('map.layers')}
+						>
+							<GearIcon size={13} weight="fill" />
+							{t('map.layers')}
+						</button>
 					</div>
 				</div>
 

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from './types';
 import { useI18n } from './i18n/I18nContext';
 import { useMapPreload } from './hooks/useMapPreload';
+import { useProgressionToasts } from './hooks/useProgressionToasts';
 import { useRuns } from './useRuns';
 import { useStats } from './useStats';
 import './App.css';
@@ -18,6 +19,7 @@ import { GameAchievementsPanel } from './components/GameAchievements/GameAchieve
 import { MapView } from './components/MapView/MapView';
 import { Minimap } from './components/Minimap/Minimap';
 import { Player } from './components/Player/Player';
+import { ProgressionToasts } from './components/ProgressionToasts/ProgressionToasts';
 import { RightPanel } from './components/RightPanel/RightPanel';
 import { Stage } from './components/Stage/Stage';
 import { StatsTabs } from './components/StatsTabs/StatsTabs';
@@ -43,6 +45,9 @@ export default function App() {
 
 	// Warm the cache for every map in the background (current level first)
 	useMapPreload(displayActor?.location);
+
+	// Rank / experience tier-crossing toasts (bottom-right stack).
+	const { toasts, dismiss, pushTest } = useProgressionToasts(displayActor, gameState);
 
 	// Night picks the night/ backdrop variant — 19:30–05:30 in-game (minute
 	// precision). Levels without a night/ folder just fall back to their normal
@@ -129,6 +134,7 @@ export default function App() {
 					gameState={gameState}
 					stale={stale}
 					onTestDeath={triggerDeath}
+					onTestToast={pushTest}
 					deathScreen={previewDeath}
 					onToggleDeathScreen={() => setPreviewDeath(v => !v)}
 					onClose={() => setDebug(false)}
@@ -252,6 +258,7 @@ export default function App() {
 			/>
 			</footer>
 		</div>
+		<ProgressionToasts toasts={toasts} onDismiss={dismiss} />
 		</div>
 	);
 }

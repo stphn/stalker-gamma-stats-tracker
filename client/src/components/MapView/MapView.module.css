@@ -62,7 +62,7 @@
 /* ── Header ── */
 .header {
 	display: grid;
-	grid-template-columns: auto 1fr auto;
+	grid-template-columns: 1fr auto;
 	align-items: center;
 	gap: var(--pad-md);
 	padding: 10px var(--pad-md);
@@ -75,14 +75,6 @@
 	letter-spacing: 2px;
 	text-transform: uppercase;
 	color: var(--accent-dim);
-}
-
-.zoneName {
-	font-family: var(--font-display);
-	font-size: var(--text-sm);
-	letter-spacing: 2px;
-	text-transform: uppercase;
-	color: var(--accent-base);
 }
 
 .headerRight {
@@ -165,13 +157,15 @@
 	z-index: 1;
 }
 
-/* Current level — full-resolution image overlay, sits above the backdrop */
+/* Per-level full-resolution overlays, above the backdrop. Each fades in as its
+   image finishes loading (progressive high-res when zooming into a region). */
 .levelImg {
 	position: absolute;
 	object-fit: fill;
 	z-index: 2;
 	pointer-events: none;
 	image-rendering: auto; /* high-quality GPU scaling */
+	transition: opacity 0.35s ease;
 }
 
 /* ── Player marker overlay — screen-space, sibling of .world ── */
@@ -261,18 +255,16 @@
 }
 
 /* ── Legend ── */
-.legend {
+/* ── Layer settings: a gear button bottom-left that opens a toggle popover ── */
+.settings {
 	position: absolute;
 	bottom: var(--pad-md);
 	left: var(--pad-md);
 	z-index: 20;
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
 	pointer-events: auto;
 }
 
-.legendBtn {
+.settingsBtn {
 	display: inline-flex;
 	align-items: center;
 	gap: 5px;
@@ -283,26 +275,117 @@
 	color: var(--text-dim);
 	background: rgba(8, 10, 9, 0.82);
 	border: 1px solid rgba(184, 148, 72, 0.18);
-	padding: 3px 8px;
+	padding: 4px 9px;
 	cursor: pointer;
 	transition: color 0.15s, background 0.15s, border-color 0.15s;
 	backdrop-filter: blur(4px);
 }
 
-.legendBtn:hover {
+.settingsBtn:hover {
 	color: var(--accent-bright);
 	border-color: rgba(184, 148, 72, 0.4);
 }
 
-.legendBtnOn {
+.settingsBtnOpen {
 	color: var(--accent-base);
 	border-color: rgba(184, 148, 72, 0.45);
 	background: rgba(184, 148, 72, 0.1);
 }
 
-.legendBtnOn:hover {
+/* Popover opens upward from the gear so it never clips the bottom edge. */
+.settingsPanel {
+	position: absolute;
+	bottom: calc(100% + 6px);
+	left: 0;
+	min-width: 184px;
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	padding: 6px;
+	background: rgba(8, 10, 9, 0.92);
+	border: 1px solid rgba(184, 148, 72, 0.22);
+	backdrop-filter: blur(6px);
+	box-shadow: var(--shadow-elevation-high, 0 8px 24px rgba(0, 0, 0, 0.5));
+	max-height: 60vh;
+	overflow-y: auto;
+}
+
+.settingsHead {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 2px 2px 5px 6px;
+}
+
+.settingsTitle {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--text-disabled);
+}
+
+.settingsClose {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	font-size: 11px;
+	line-height: 1;
+	color: var(--text-disabled);
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	transition: color 0.15s;
+}
+
+.settingsClose:hover {
+	color: var(--color-danger);
+}
+
+.settingsRow {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: var(--text-dim);
+	background: transparent;
+	border: none;
+	padding: 5px 6px;
+	cursor: pointer;
+	text-align: left;
+	transition: color 0.15s, background 0.15s;
+}
+
+.settingsRow:hover {
 	color: var(--accent-bright);
-	background: rgba(184, 148, 72, 0.18);
+	background: rgba(184, 148, 72, 0.08);
+}
+
+.settingsRowIcon {
+	display: inline-flex;
+	justify-content: center;
+	width: 14px;
+	color: var(--text-disabled);
+}
+
+.settingsRowLabel {
+	flex: 1;
+}
+
+.toggleOn {
+	display: inline-flex;
+	color: var(--accent-base);
+}
+
+.toggleOff {
+	display: inline-flex;
+	color: var(--text-disabled);
 }
 
 /* ── Death markers — screen-space, same approach as playerOverlay ── */
@@ -323,10 +406,10 @@
 	flex-direction: column;
 	align-items: center;
 	gap: 2px;
-	/* Dimmed white crosses read as quiet history; dark halo keeps them legible
+	/* Red skulls read at a glance; near-opaque + a dark halo keeps them legible
 	   over bright level art. */
-	opacity: 0.5;
-	filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.95));
+	opacity: 0.9;
+	filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.95));
 }
 
 .deathCount {
@@ -378,4 +461,158 @@
 .companionHpFill {
 	height: 100%;
 	transition: width 0.3s;
+}
+
+/* ── Static map entities (gamma-db): faction circles, locations, NPCs, changers ── */
+
+/* Faction territory "city" circle — sits beneath every other marker. */
+.factionCircle {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	border: 1px solid;
+	border-radius: 50%;
+	z-index: 5;
+	pointer-events: none;
+}
+
+/* Location place-name label. */
+.locationOverlay {
+	position: absolute;
+	width: 0;
+	height: 0;
+	z-index: 7;
+	pointer-events: none;
+}
+
+.locationLabel {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	white-space: nowrap;
+	color: var(--text-dim);
+	background: rgba(8, 10, 9, 0.62);
+	padding: 0 4px;
+	text-shadow: 0 0 3px rgba(0, 0, 0, 0.95);
+}
+
+/* Level changers. */
+.changerOverlay {
+	position: absolute;
+	width: 0;
+	height: 0;
+	z-index: 7;
+	pointer-events: none;
+}
+
+.changerMarker {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	display: flex;
+	align-items: center;
+	gap: 3px;
+	filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.9));
+}
+
+/* Explicit box for the icon — the size prop has bitten us before, so size via a
+   sized parent + width/height:100% on the SVG (same pattern as player/death). */
+.changerIcon {
+	display: block;
+	width: 18px;
+	height: 18px;
+	flex-shrink: 0;
+}
+
+.changerName {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 0.5px;
+	text-transform: capitalize;
+	white-space: nowrap;
+	color: var(--accent-base);
+	background: rgba(8, 10, 9, 0.7);
+	padding: 0 3px;
+}
+
+/* Campfires / stashes — icon-only points. Sized box + width/height:100% on the
+   SVG (the size prop has bitten us before). */
+.poiOverlay {
+	position: absolute;
+	width: 0;
+	height: 0;
+	z-index: 6;
+	pointer-events: none;
+}
+
+.poiIcon,
+.poiIconSm {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	display: block;
+	filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.9));
+}
+
+.poiIcon {
+	width: 15px;
+	height: 15px;
+}
+
+.poiIconSm {
+	width: 11px;
+	height: 11px;
+	opacity: 0.85;
+}
+
+/* Notable characters. */
+.npcOverlay {
+	position: absolute;
+	width: 0;
+	height: 0;
+	z-index: 9;
+	pointer-events: none;
+}
+
+/* Thin diagonal leader line from the dot up-right to the name (callout style). */
+.npcLeader {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 18px;
+	height: 1px;
+	opacity: 0.6;
+	transform-origin: 0 50%;
+	transform: rotate(-45deg);
+}
+
+/* Dot sits exactly on the entity position. */
+.npcDot {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 7px;
+	height: 7px;
+	transform: translate(-50%, -50%);
+	border: 1px solid;
+	border-radius: 50%;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+/* Name floats up-and-right; its lower-left corner meets the leader-line end. */
+.npcName {
+	position: absolute;
+	left: 0;
+	top: 0;
+	transform: translate(12px, -12px) translateY(-100%);
+	display: inline-flex;
+	align-items: center;
+	gap: 3px;
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 0.5px;
+	white-space: nowrap;
+	background: rgba(8, 10, 9, 0.8);
+	padding: 0 3px;
+	filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.9));
 }
