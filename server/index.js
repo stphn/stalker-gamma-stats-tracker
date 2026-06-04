@@ -13,8 +13,28 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
+// The game writes Windows-125x bytes for "smart" punctuation — e.g. the curly
+// apostrophe (U+2019) is a single byte 0x92, which is invalid UTF-8 and becomes
+// U+FFFD (the lost character) if read as 'utf8'. We read byte-preserving
+// (latin1) and remap the CP1252 C1 range (0x80-0x9F: Western smart quotes,
+// dashes, the ellipsis) to proper Unicode. ASCII and 0xA0-0xFF already match
+// latin1, so only this range needs fixing. Indexed by (byte - 0x80); the five
+// code points CP1252 leaves undefined are � here and pass through unchanged.
+const CP1252_C1 =
+    '€�‚ƒ„…†‡' +
+    'ˆ‰Š‹Œ�Ž�' +
+    '�‘’“”•–—' +
+    '˜™š›œ�žŸ'
+
+function fixEncoding(s) {
+    return s.replace(/[\u0080-\u009f]/g, (c) => {
+        const r = CP1252_C1[c.charCodeAt(0) - 0x80]
+        return r === '�' ? c : r
+    })
+}
+
 function readStats() {
-    try { return JSON.parse(fs.readFileSync(STATS_FILE, 'utf8')) }
+    try { return JSON.parse(fixEncoding(fs.readFileSync(STATS_FILE, 'latin1'))) }
     catch { return null }
 }
 
