@@ -17,7 +17,7 @@
 /* Glass surface. The shared KillsBreakdown rows + donut are flattened onto the
    glass by overriding the surface tokens they read, so nothing stacks boxes. */
 .card {
-	/* Fill the actors-row height (stretched) and center the rows + donut. */
+	/* Fill the actors-row height (stretched) and vertically center the content. */
 	flex: 1;
 	display: flex;
 	align-items: center;
@@ -27,11 +27,4 @@
 	--bg-surface: transparent;
 	--bg-raised: transparent;
 	--row-pad-x: 0px;
-}
-
-/* Mobile: opaque so it stays readable over the image. */
-@container layout (max-width: 900px) {
-	.card {
-		background: var(--bg-glass-mobile);
-	}
 }

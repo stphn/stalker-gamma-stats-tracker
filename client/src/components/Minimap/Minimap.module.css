@@ -4,6 +4,10 @@
 .root {
   --mm-size: 264px;
   --mm-ring: 32px;
+  /* Responsive scale: the inner map + player marker are positioned in fixed px by
+     JS (VIEW/dW/dH), so the only way to resize without drifting that alignment is a
+     uniform transform on the whole compass. Driven by container queries below. */
+  --mm-scale: 1;
   position: relative;
   width: var(--mm-size);
   height: var(--mm-size);
@@ -13,6 +17,17 @@
   background: transparent;
   border: none;
   padding: 0;
+  transform: scale(var(--mm-scale));
+  /* Large: bottom-right corner (no scaling). Medium pins to top-right (below). */
+  transform-origin: bottom right;
+}
+
+/* Mid-size: shrink a step (still bottom-right). Below 980px the stage hides it
+   entirely (see Stage.module.css) so no smaller steps are needed. */
+@container layout (max-width: 1100px) {
+  .root {
+    --mm-scale: 0.85;
+  }
 }
 
 /* ── Map + ring wrapper — position:relative so .rotor's inset:0 anchors here ── */

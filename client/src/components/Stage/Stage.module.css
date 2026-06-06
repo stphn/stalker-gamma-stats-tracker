@@ -2,14 +2,26 @@
 .stage {
 	position: relative;
 	width: 100%;
-	flex: 1;
-	height: clamp(420px, 46vw, 1080px);
+	/* The HUD (.content) lives in normal flow as the only flex child, so the stage
+	   grows to contain it instead of clipping — min-height is just the hero floor.
+	   Above ~1217px the 46vw term governs; the in-flow content never exceeds it. */
+	display: flex;
+	flex-direction: column;
+	min-height: clamp(560px, 46vw, 1080px);
 	overflow: hidden;
 	background: var(--bg-base);
 	cursor: crosshair;
 	--hud-inset: 6px;
 	/* Contain the VHS difference blend to the stage's own layers */
 	isolation: isolate;
+}
+
+/* Small devices: the actors block moves out below the stage (see App.tsx), so the
+   stage only needs to hold the title + compass — keep it a compact hero. */
+@container layout (max-width: 600px) {
+	.stage {
+		min-height: clamp(300px, 64vw, 440px);
+	}
 }
 
 
@@ -164,8 +176,11 @@
    pointer-events:none lets the bare image keep its crosshair / GL interactions;
    the actual UI cells re-enable pointer events. ── */
 .content {
-	position: absolute;
-	inset: 0;
+	/* In normal flow (not absolute) so its height contributes to the stage — the
+	   stage can't clip it. Fills the hero floor via flex-grow; grows past it when
+	   the content is taller. The WebGL canvas sits behind it (absolute, z0). */
+	position: relative;
+	flex: 1 1 auto;
 	display: grid;
 	grid-template-columns: 1fr auto;
 	grid-template-rows: 1fr auto;
@@ -175,11 +190,12 @@
 	pointer-events: none;
 }
 
-/* Location + actors (player, squad, kills) — bottom-left */
+/* Location + actors (player, squad, kills) — bottom-left, filling its column so
+   the actors grid / wrapping title have the column width to work with. */
 .bottomLeft {
 	grid-column: 1;
 	grid-row: 2;
-	justify-self: start;
+	justify-self: stretch;
 	align-self: end;
 	display: flex;
 	flex-direction: column;
@@ -188,12 +204,22 @@
 	pointer-events: auto;
 }
 
-/* Compass — bottom-right corner */
+/* Compass — bottom-right corner (its own column, never overlaps the actors). */
 .compass {
 	grid-column: 2;
 	grid-row: 2;
 	justify-self: end;
 	align-self: end;
 	pointer-events: auto;
+}
+
+/* Hide the compass once the actors can no longer sit 2-up beside it. Math: the
+   compass reserves ~348px (264px box + gap + padding); a 2-column actors grid needs
+   ~610px (2 × the ~300px player-card min); 610 + 348 ≈ 960, so below ~980px the
+   compass yields the width. The full map is still reachable from the header. */
+@container layout (max-width: 980px) {
+	.compass {
+		display: none;
+	}
 }
 

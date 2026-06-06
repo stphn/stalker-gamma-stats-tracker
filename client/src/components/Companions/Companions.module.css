@@ -39,11 +39,21 @@
 	flex: 0 0 calc(50% - var(--pad-sm) / 2);
 }
 
-/* A lone companion fills the full height instead of sitting half-height.
-   :only-child only matches when there's exactly one card total — a lone card in
-   an overflow column (e.g. the 3rd of 3) still stays half-height. */
+/* A lone companion fills the full height instead of sitting half-height. */
 .card:only-child {
 	flex-basis: 100%;
+}
+
+/* Medium screens (and the out-of-stage small layout): the squad sits in a single
+   column, so stack the cards full-width instead of the in-stage column-wrap. */
+@container layout (max-width: 1100px) {
+	.grid {
+		flex-flow: column nowrap;
+		align-content: stretch;
+	}
+	.card {
+		flex: 1;
+	}
 }
 
 .nameRow {

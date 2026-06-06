@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ActorInfo } from './types';
 import { useI18n } from './i18n/I18nContext';
 import { useMapPreload } from './hooks/useMapPreload';
+import { useMaxWidth } from './hooks/useMaxWidth';
 import { useProgressionToasts } from './hooks/useProgressionToasts';
 import { useRuns } from './useRuns';
 import { useStats } from './useStats';
@@ -29,6 +30,9 @@ export default function App() {
 	const { t } = useI18n();
 	const { data, connected, stale } = useStats();
 	const { runs, total: totalRuns } = useRuns();
+	// On small devices the actors block leaves the stage and renders above ZoneNews;
+	// on larger (tablet/desktop) widths it stays in the stage.
+	const [layoutRef, compact] = useMaxWidth(600);
 	const gameLive =
 		connected && !!data && Date.now() / 1000 - data.last_updated < 15;
 	const gameState = gameLive
@@ -122,6 +126,17 @@ export default function App() {
 		}
 	}, [latestDeathStart]);
 
+	// Built once; rendered inside the stage on wide screens, above ZoneNews when compact.
+	const actorsBlock = data && displayActor && (
+		<div className="actors">
+			<Player actor={displayActor} />
+			{data.companions && data.companions.length > 0 && (
+				<Companions companions={data.companions} />
+			)}
+			<KillsCard kills={data.session.kills} />
+		</div>
+	);
+
 	return (
 		<div style={{ overflow: 'hidden' }}>
 		<div className={shaking ? 'app death-shake' : 'app'}>
@@ -157,6 +172,7 @@ export default function App() {
 				</output>
 			) : (
 				<main
+					ref={layoutRef}
 					id="main"
 					className="layout"
 					aria-label="Stats dashboard"
@@ -187,18 +203,16 @@ export default function App() {
 											gameTime={displayActor.game_time}
 											gameState={gameState}
 										/>
-										<div className="actors">
-											<Player actor={displayActor} />
-											{data.companions && data.companions.length > 0 && (
-												<Companions companions={data.companions} />
-											)}
-											<KillsCard kills={data.session.kills} />
-										</div>
+										{!compact && actorsBlock}
 									</>
 								)
 							}
 						/>
 					</div>
+
+					{compact && actorsBlock && (
+						<div className="actors-out">{actorsBlock}</div>
+					)}
 
 					<ZoneNews news={data.news ?? []} />
 

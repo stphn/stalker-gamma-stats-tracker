@@ -6,7 +6,10 @@
 
 .name {
 	font-family: var(--font-display);
-	font-size: calc(var(--text-display) * 3);
+	/* Own clamp (not --text-display * 3): the shared token caps at ~1439px wide, so
+	   the title hit a flat 174px on every desktop and looked oversized on narrower
+	   (Mac) viewports. 9vw keeps it scaling until ~1920px, then holds at the cap. */
+	font-size: clamp(64px, 9vw, 174px);
 	font-weight: 700;
 	color: var(--accent-base);
 	text-transform: uppercase;

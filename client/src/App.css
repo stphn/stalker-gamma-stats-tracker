@@ -432,12 +432,42 @@ body {
 }
 
 /* ── Actors strip (player + squad + kills in stage) ── */
+/* Large: compact, content-width cards sitting bottom-left of the stage. */
 .actors {
   display: flex;
   flex-wrap: wrap;
   /* stretch so the squad + kills cards match the player card's height */
   align-items: stretch;
   gap: var(--pad-sm);
+}
+
+/* Medium & small: a real 2-column grid — player | squad on the first row, kills
+   spanning the row below. Defined columns (1fr each) keep the cards aligned and
+   give the player card enough width, preventing the player/squad overlap that
+   flex stretching caused. */
+@container layout (max-width: 1100px) {
+  .actors {
+    display: grid;
+    /* auto-fit: 2 columns (player | squad) when there's room for two ~300px cards,
+       else 1 column. 300px ≈ the player card's intrinsic min (name + 3 nowrap stat
+       values), so the card never clips. Kills (last child) always spans the row. */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    align-items: stretch;
+    /* Cap the width so the cards don't splay across the whole stage; they sit at a
+       comfortable size, left-aligned under the title. Only bites in the wide medium
+       band — phones (<600) are narrower than this and still fill naturally. */
+    max-width: 680px;
+  }
+  .actors > :last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* On narrow widths the actors strip leaves the stage and renders here, in normal
+   flow above the full-bleed ZoneNews bar — give it matching gutters. */
+.actors-out {
+  padding: var(--pad-lg);
+  background: var(--bg-base);
 }
 
 /* ── Death effect keyframes ── */
