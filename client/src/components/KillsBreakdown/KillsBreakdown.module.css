@@ -9,6 +9,29 @@
 	grid-template-columns: 1fr 1fr 1fr;
 }
 
+/* HUD form: kill-type rows on the left, donut on the right. Rows flow top-down
+   3 to a column, spilling into new columns, so the card stays short (e.g. 11
+   types → 3 + 3 + 3 + 2). The donut is dropped by the JSX when there are <2 types. */
+.compact {
+	grid-template-columns: auto auto;
+	align-items: center;
+	justify-content: start;
+	gap: var(--pad-md);
+}
+
+.compact .killRows {
+	grid-auto-flow: column;
+	grid-template-rows: repeat(3, auto);
+	grid-auto-columns: max-content;
+	column-gap: var(--pad-md);
+	align-content: center;
+}
+
+/* Per-column borders look broken in a wrapping grid; keep the HUD rows clean. */
+.compact .killRow {
+	border-bottom: none;
+}
+
 .killExtra {
 	display: flex;
 	flex-direction: column;

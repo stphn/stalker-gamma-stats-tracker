@@ -106,10 +106,12 @@ interface KillsBreakdownProps {
 	extra?: ReactNode;
 	/** Donut diameter in px (default 96). Larger when there's an extra column. */
 	donutSize?: number;
+	/** HUD form: donut on top, only the top-3 factions below. */
+	compact?: boolean;
 }
 
 /** Faction-by-faction kill rows + donut. Shared by the live session panel and the All-Time tab. */
-export function KillsBreakdown({ kills, label, extra, donutSize = 96 }: KillsBreakdownProps) {
+export function KillsBreakdown({ kills, label, extra, donutSize = 96, compact = false }: KillsBreakdownProps) {
 	const { t } = useI18n();
 
 	const killData = KILL_DEFS.map((d) => ({
@@ -120,8 +122,14 @@ export function KillsBreakdown({ kills, label, extra, donutSize = 96 }: KillsBre
 		.filter((d) => d.count > 0)
 		.sort((a, b) => b.count - a.count);
 
+	// A donut only conveys a breakdown with 2+ slices; a single faction is just a
+	// full ring, so the HUD card drops it. The full panel always keeps it.
+	const showDonut = compact ? killData.length >= 2 : true;
+
 	return (
-		<div className={`${styles.killsContent} ${extra ? styles.withExtra : ''}`}>
+		<div
+			className={`${styles.killsContent} ${extra ? styles.withExtra : ''} ${compact ? styles.compact : ''}`}
+		>
 			<div className={styles.killRows}>
 				{killData.map((k) => (
 					<div key={k.key} className={styles.killRow}>
@@ -156,7 +164,15 @@ export function KillsBreakdown({ kills, label, extra, donutSize = 96 }: KillsBre
 				))}
 				{killData.length === 0 && <StatRow label={t('kills.none')} value="—" />}
 			</div>
-			<KillsDonut segments={killData} total={kills.total} label={label} size={donutSize} thickness={donutSize >= 120 ? 18 : 14} />
+			{showDonut && (
+				<KillsDonut
+					segments={killData}
+					total={kills.total}
+					label={label}
+					size={donutSize}
+					thickness={donutSize >= 120 ? 18 : 14}
+				/>
+			)}
 			{extra && <div className={styles.killExtra}>{extra}</div>}
 		</div>
 	);

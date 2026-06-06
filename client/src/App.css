@@ -431,47 +431,13 @@ body {
   position: relative;
 }
 
-/* Desktop: sidebar floats over the right edge of the stage image. The glass
-   surface now lives on the inner .stats container (RightPanel), so the compass
-   above it stays a separate, frameless container. */
-.sidebar {
-  position: absolute;
-  right: var(--pad-lg);
-  top: calc(var(--pad-lg) + 2px);
-  z-index: 2;
-  width: clamp(300px, 26.4vw, 480px);
-  /* No overflow here: it has no height cap so it never scrolled vertically, but
-     it promoted overflow-x to auto (→ stray horizontal scrollbar) and would clip
-     the inner .stats glass shadow. */
-}
-
-/* Mobile: sidebar drops below, full-width */
-@container layout (max-width: 900px) {
-  .sidebar {
-    position: static;
-    width: 100%;
-  }
-}
-
-/* ── Actors strip (player + companions in stage) ── */
+/* ── Actors strip (player + squad + kills in stage) ── */
 .actors {
-  display: grid;
-  grid-template-columns: max-content max-content;
-  /* stretch so the squad column matches the player card's height */
+  display: flex;
+  flex-wrap: wrap;
+  /* stretch so the squad + kills cards match the player card's height */
   align-items: stretch;
   gap: var(--pad-sm);
-}
-
-@container layout (max-width: 900px) {
-  .actors {
-    grid-template-columns: max-content 1fr;
-  }
-}
-
-@container layout (max-width: 600px) {
-  .actors {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* ── Death effect keyframes ── */

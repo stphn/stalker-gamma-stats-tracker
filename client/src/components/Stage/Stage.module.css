@@ -160,7 +160,7 @@
 	cursor: default;
 }
 
-/* ── Content overlay — a corner grid: bottom-left content + top-right compass.
+/* ── Content overlay — a corner grid: bottom-left content + bottom-right compass.
    pointer-events:none lets the bare image keep its crosshair / GL interactions;
    the actual UI cells re-enable pointer events. ── */
 .content {
@@ -175,7 +175,7 @@
 	pointer-events: none;
 }
 
-/* Location + actors — bottom-left */
+/* Location + actors (player, squad, kills) — bottom-left */
 .bottomLeft {
 	grid-column: 1;
 	grid-row: 2;

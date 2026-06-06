@@ -1,0 +1,37 @@
+/* Matches the actor/squad cards: a plain label above a glass card. */
+.root {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.label {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	font-weight: 400;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--text-secondary);
+}
+
+/* Glass surface. The shared KillsBreakdown rows + donut are flattened onto the
+   glass by overriding the surface tokens they read, so nothing stacks boxes. */
+.card {
+	/* Fill the actors-row height (stretched) and center the rows + donut. */
+	flex: 1;
+	display: flex;
+	align-items: center;
+	padding: 8px 12px;
+	background: var(--bg-glass);
+	box-shadow: var(--shadow-elevation-medium);
+	--bg-surface: transparent;
+	--bg-raised: transparent;
+	--row-pad-x: 0px;
+}
+
+/* Mobile: opaque so it stays readable over the image. */
+@container layout (max-width: 900px) {
+	.card {
+		background: var(--bg-glass-mobile);
+	}
+}

@@ -31,7 +31,7 @@ export function Stage({ location, night, left, compass, overlay, death }: StageP
 			<div className={styles.vhs} aria-hidden="true">
 				<span className={styles.vhsBar} />
 			</div>
-			{/* Corner overlay: grid places content bottom-left, compass bottom-right. */}
+			{/* Corner overlay: actors (with kills) bottom-left, compass bottom-right. */}
 			<div className={styles.content}>
 				<div className={styles.bottomLeft}>{left}</div>
 				{compass && <div className={styles.compass}>{compass}</div>}

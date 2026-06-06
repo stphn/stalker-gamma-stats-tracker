@@ -18,9 +18,9 @@ import { Location } from './components/Location/Location';
 import { GameAchievementsPanel } from './components/GameAchievements/GameAchievements';
 import { MapView } from './components/MapView/MapView';
 import { Minimap } from './components/Minimap/Minimap';
+import { KillsCard } from './components/KillsCard/KillsCard';
 import { Player } from './components/Player/Player';
 import { ProgressionToasts } from './components/ProgressionToasts/ProgressionToasts';
-import { RightPanel } from './components/RightPanel/RightPanel';
 import { Stage } from './components/Stage/Stage';
 import { StatsTabs } from './components/StatsTabs/StatsTabs';
 import { ZoneNews } from './components/ZoneNews/ZoneNews';
@@ -192,14 +192,12 @@ export default function App() {
 											{data.companions && data.companions.length > 0 && (
 												<Companions companions={data.companions} />
 											)}
+											<KillsCard kills={data.session.kills} />
 										</div>
 									</>
 								)
 							}
 						/>
-						<aside className="sidebar" aria-label="Session stats">
-							<RightPanel data={data} />
-						</aside>
 					</div>
 
 					<ZoneNews news={data.news ?? []} />
