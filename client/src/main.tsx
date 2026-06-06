@@ -6,9 +6,13 @@ import './index.css';
 import App from './App.tsx';
 import { I18nProvider } from './i18n/I18nContext';
 import { applyTheme, getStoredTheme } from './components/ThemeSwitcher/ThemeSwitcher';
+import { initScrollActivity } from './scrollActivity';
 
 // Apply the saved theme before first paint to avoid a flash of the default.
 applyTheme(getStoredTheme());
+
+// Reveal scrollbars only while scrolling (overlay style); see App.css.
+initScrollActivity();
 
 // Phosphor icons render a bare <svg> with no aria-hidden by default, so screen
 // readers (JAWS/VoiceOver) announce them as unlabelled graphics. Every icon in

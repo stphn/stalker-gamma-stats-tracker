@@ -1,6 +1,9 @@
+/* Desktop default: brand | menu (nav + settings) | status on one row. Below the
+   small breakpoint the menu collapses behind a burger (see @media block below). */
 .header {
 	display: grid;
 	grid-template-columns: 1fr auto auto;
+	grid-template-areas: "logo menu status";
 	align-items: center;
 	gap: var(--pad-lg);
 	background: var(--bg-header);
@@ -10,6 +13,11 @@
 	position: relative;
 	z-index: 10;
 }
+
+.logo { grid-area: logo; }
+.menu { grid-area: menu; }
+.burger { grid-area: menu; }
+.statusGroup { grid-area: status; }
 
 .header::after {
 	content: '';
@@ -48,9 +56,18 @@
 	text-transform: uppercase;
 }
 
+/* Drop the tagline once the bar gets tight, before the full burger collapse. */
+@media (max-width: 1023px) {
+	.tagline {
+		display: none;
+	}
+}
+
 .nav {
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
+	justify-content: flex-start;
 	gap: 10px;
 }
 
@@ -81,6 +98,48 @@
 	user-select: none;
 }
 
+/* ── Menu (nav links + settings) ──
+   Desktop default: a single inline row; the burger is hidden. The small-screen
+   @media block below turns this into a dropdown behind the burger. */
+.menu {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: var(--pad-md);
+}
+
+/* Settings cluster (theme + language) — divided from the nav links on desktop. */
+.utility {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 10px;
+	padding-left: var(--pad-md);
+	border-left: 1px solid color-mix(in srgb, var(--accent-dim) 25%, transparent);
+}
+
+.burger {
+	display: none;
+	align-items: center;
+	justify-content: center;
+	padding: 4px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--accent-dim);
+	transition: color 0.15s;
+}
+
+.burger:hover,
+.burger[aria-expanded='true'] {
+	color: var(--accent-base);
+}
+
+.burgerIcon {
+	width: 20px;
+	height: 20px;
+}
+
 .statusGroup {
 	display: flex;
 	flex-direction: row;
@@ -93,9 +152,8 @@
 	align-items: center;
 	gap: 6px;
 	padding: 4px 10px;
-	border-radius: 0;
+	border-radius: 2px;
 	border: 1px solid;
-	clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
 	font-family: var(--font-display);
 	font-size: var(--text-2xs);
 	letter-spacing: 1px;
@@ -107,73 +165,28 @@
 	opacity: 0.6;
 }
 
-.pillSep {
-	opacity: 0.3;
-}
-
-.pillStatus {
-	font-weight: 600;
-}
-
-@keyframes pulse-green {
+@keyframes pulse-icon {
 	0%,
 	100% {
-		box-shadow: 0 0 4px 1px color-mix(in srgb, var(--color-positive) 40%, transparent);
+		filter: drop-shadow(0 0 2px color-mix(in srgb, currentColor 40%, transparent));
 	}
 	50% {
-		box-shadow: 0 0 10px 4px color-mix(in srgb, var(--color-positive) 80%, transparent);
+		filter: drop-shadow(0 0 6px color-mix(in srgb, currentColor 85%, transparent));
 	}
 }
 
-@keyframes pulse-amber {
-	0%,
-	100% {
-		box-shadow: 0 0 4px 1px color-mix(in srgb, var(--color-warning) 40%, transparent);
-	}
-	50% {
-		box-shadow: 0 0 10px 4px color-mix(in srgb, var(--color-warning) 80%, transparent);
-	}
-}
-
-.dot {
-	width: 9px;
-	height: 9px;
-	border-radius: 50%;
+.statusIcon {
+	width: 12px;
+	height: 12px;
 	flex-shrink: 0;
-	position: relative;
+	/* Inherits the pill's color via currentColor */
 }
 
-/* Specular highlight — sells the "lit hardware LED" look */
-.dot::after {
-	content: '';
-	position: absolute;
-	top: 1.5px;
-	left: 1.5px;
-	width: 3px;
-	height: 3px;
-	border-radius: 50%;
-	background: rgba(255, 255, 255, 0.8);
+.pill.green .statusIcon {
+	animation: pulse-icon 2s ease-in-out infinite;
 }
-
-.dot.green {
-	background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--color-positive) 55%, #fff), var(--color-positive) 55%, color-mix(in srgb, var(--color-positive) 75%, #000));
-	animation: pulse-green 2s ease-in-out infinite;
-}
-.dot.amber {
-	background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--color-warning) 55%, #fff), var(--color-warning) 55%, color-mix(in srgb, var(--color-warning) 75%, #000));
-	animation: pulse-amber 2.4s ease-in-out infinite;
-}
-.dot.red {
-	background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--color-danger) 55%, #fff), var(--color-danger) 55%, color-mix(in srgb, var(--color-danger) 75%, #000));
-	box-shadow: 0 0 4px 1px color-mix(in srgb, var(--color-danger) 33%, transparent);
-}
-/* Off = unlit LED: dark body, faint highlight */
-.dot.dim {
-	background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--text-dim) 45%, #fff), var(--text-dim) 60%, color-mix(in srgb, var(--text-dim) 60%, #000));
-	opacity: 0.65;
-}
-.dot.dim::after {
-	opacity: 0.3;
+.pill.orange .statusIcon {
+	animation: pulse-icon 2.4s ease-in-out infinite;
 }
 
 .pill.green {
@@ -181,7 +194,7 @@
 	border-color: color-mix(in srgb, var(--color-positive) 30%, transparent);
 	background: color-mix(in srgb, var(--color-positive) 8%, transparent);
 }
-.pill.amber {
+.pill.orange {
 	color: var(--color-warning);
 	border-color: color-mix(in srgb, var(--color-warning) 30%, transparent);
 	background: color-mix(in srgb, var(--color-warning) 8%, transparent);
@@ -191,8 +204,64 @@
 	border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
 	background: color-mix(in srgb, var(--color-danger) 8%, transparent);
 }
-.pill.dim {
-	color: var(--text-dim);
-	border-color: var(--border);
-	background: color-mix(in srgb, var(--text-dim) 8%, transparent);
+
+/* ── Small screens only ──
+   Brand + burger + status on the bar; nav links and settings collapse into a
+   dropdown behind the burger. Tagline and pill labels are dropped (pills keep
+   their tooltips and stay in the bar, never in the menu). Desktop is untouched. */
+@media (max-width: 767px) {
+	.header {
+		grid-template-columns: 1fr auto auto;
+		grid-template-areas: "logo status burger";
+	}
+
+	.pillLabel {
+		display: none;
+	}
+
+	.burger {
+		display: inline-flex;
+		grid-area: burger;
+	}
+
+	/* Menu becomes a dropdown panel anchored under the header bar. */
+	.menu {
+		position: absolute;
+		top: 100%;
+		right: 0;
+		z-index: 20;
+		flex-direction: column;
+		align-items: stretch;
+		gap: var(--pad-md);
+		min-width: 200px;
+		padding: var(--pad-md);
+		background: var(--bg-overlay, var(--surface));
+		border: 1px solid var(--border);
+		box-shadow: var(--shadow-elevation-medium);
+	}
+
+	.menu[data-open='false'] {
+		display: none;
+	}
+
+	.nav {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--pad-sm);
+	}
+
+	/* Pipes only make sense in a horizontal row. */
+	.navSep {
+		display: none;
+	}
+
+	.utility {
+		flex-direction: column;
+		align-items: stretch;
+		gap: var(--pad-sm);
+		padding-left: 0;
+		padding-top: var(--pad-sm);
+		border-left: none;
+		border-top: 1px solid color-mix(in srgb, var(--accent-dim) 25%, transparent);
+	}
 }

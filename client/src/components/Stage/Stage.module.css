@@ -25,6 +25,52 @@
 }
 
 
+/* ── Fullscreen toggle — top-right HUD button.
+   Dim at rest so it doesn't fight the visuals; revealed on stage hover, keyboard
+   focus, or while fullscreen is active. ── */
+.fullscreenBtn {
+	position: absolute;
+	top: var(--pad-md);
+	right: var(--pad-md);
+	z-index: 5;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	cursor: pointer;
+	color: var(--text-primary);
+	background: color-mix(in srgb, var(--bg-base) 55%, transparent);
+	border: 1px solid color-mix(in srgb, var(--accent-dim) 35%, transparent);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	opacity: 0.3;
+	transition: opacity 0.2s ease, color 0.15s, border-color 0.15s;
+}
+
+.stage:hover .fullscreenBtn,
+.stage:fullscreen .fullscreenBtn,
+.fullscreenBtn:focus-visible {
+	opacity: 1;
+}
+
+.fullscreenBtn:hover {
+	color: var(--accent-bright);
+	border-color: color-mix(in srgb, var(--accent-dim) 70%, transparent);
+}
+
+.fullscreenIcon {
+	width: 18px;
+	height: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.fullscreenBtn {
+		transition: none;
+	}
+}
+
 /* ── Scanline sweep ── */
 .scanline {
 	position: absolute;
