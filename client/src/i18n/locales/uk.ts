@@ -270,6 +270,8 @@ export const uk: Record<string, string> = {
 	'ach.invictus.name': 'Invictus',
 	'ach.invictus.req': 'Усі 3 сюжети · Ironman · Найвища складність · Макс. 1 смерть · Без дебагу',
 	'ach.invictus.reward': 'Право похвалитися',
+	'ach.spoilerFree': 'Без спойлерів',
+	'ach.spoilerAria': 'Прихована нагорода',
 
 	'level.l01_escape': 'Кордон',
 	'level.l02_garbage': 'Звалище',

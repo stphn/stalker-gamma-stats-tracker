@@ -270,6 +270,8 @@ export const fr: Record<string, string> = {
 	'ach.invictus.name': 'Invictus',
 	'ach.invictus.req': 'Les 3 campagnes · Ironman · Difficulté maximale · Max 1 mort · Sans debug',
 	'ach.invictus.reward': 'Droit de se vanter',
+	'ach.spoilerFree': 'Sans spoiler',
+	'ach.spoilerAria': 'Succès caché',
 
 	'level.l01_escape': 'Cordon',
 	'level.l02_garbage': 'La Décharge',
