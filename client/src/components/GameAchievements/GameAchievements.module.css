@@ -12,12 +12,11 @@
 	padding-right: var(--pad-lg);
 }
 
-/* Header row: section title on the left, tab strip pushed to the far right,
-   one divider rule under the whole row. */
+/* Header row: section title on the left; the spoiler toggle + tab strip are
+   pushed to the far right by the heading's auto margin. One divider under all. */
 .head {
 	display: flex;
 	align-items: flex-end;
-	justify-content: space-between;
 	gap: var(--pad-md);
 	padding: 0 var(--pad-lg);
 	border-bottom: 1px solid var(--border);
@@ -32,6 +31,56 @@
 	text-transform: uppercase;
 	color: var(--text-primary);
 	padding: var(--pad-sm) 0;
+	margin-right: auto;
+}
+
+/* Narrow: "Achievements" + the Spoiler-Free toggle share one left-aligned line,
+   and the tab strip wraps onto its own full-width row below. */
+@container layout (max-width: 750px) {
+	.head {
+		flex-wrap: wrap;
+		gap: 0 var(--pad-sm);
+	}
+	/* Drop the auto margin so the heading and toggle sit together on the left. */
+	.heading { margin-right: 0; }
+	/* Force the tabs onto the next line, left-aligned. */
+	.tabBar { flex-basis: 100%; }
+}
+
+/* Spoiler-free toggle — reads like a tab but with a ToggleLeft/Right glyph. */
+.spoilerToggle {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	letter-spacing: 1.5px;
+	text-transform: uppercase;
+	color: var(--text-secondary);
+	/* No resting fill (unlike the tabs) — just a hover tint. The transparent 2px
+	   bottom border keeps it height-aligned with the tabs alongside it. */
+	background: transparent;
+	border: none;
+	border-bottom: 2px solid transparent;
+	padding: var(--pad-sm) var(--pad-md);
+	margin-bottom: -1px;
+	cursor: pointer;
+	transition: color 0.15s, background 0.15s;
+}
+
+.spoilerToggle:hover {
+	color: var(--text-primary);
+	background: color-mix(in srgb, var(--accent-base) 12%, transparent);
+}
+
+.toggleOn {
+	display: inline-flex;
+	color: var(--accent-bright);
+}
+
+.toggleOff {
+	display: inline-flex;
+	color: var(--text-disabled);
 }
 
 /* Tabs — matches StatsTabs styling so the two panels read as a family.
@@ -48,7 +97,8 @@
 	letter-spacing: 1.5px;
 	text-transform: uppercase;
 	color: var(--text-secondary);
-	background: transparent;
+	/* Three-tier fill: subtle at rest, stronger on hover, strongest when active. */
+	background: color-mix(in srgb, var(--accent-base) 5%, transparent);
 	border: none;
 	border-bottom: 2px solid transparent;
 	padding: var(--pad-sm) var(--pad-md);
@@ -59,11 +109,13 @@
 
 .tab:hover {
 	color: var(--text-primary);
-	background: color-mix(in srgb, var(--accent-base) 8%, transparent);
+	background: color-mix(in srgb, var(--accent-base) 12%, transparent);
 }
 
-.tabActive {
+.tabActive,
+.tabActive:hover {
 	color: var(--accent-bright);
+	background: color-mix(in srgb, var(--accent-base) 18%, transparent);
 	border-bottom-color: var(--accent-base);
 }
 

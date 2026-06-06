@@ -292,6 +292,9 @@ export const en: Record<string, string> = {
 	// Achievements — tabs
 	'ach.tab.official': 'Official — {earned} / {total}',
 	'ach.tab.custom': 'Custom — {earned} / {total}',
+	'ach.spoilerFree': 'Spoiler-Free',
+	'ach.spoiler': '? ? ?',
+	'ach.spoilerAria': 'Hidden achievement',
 
 	// Achievements — custom (T.R.A.C.K.E.R. milestones, no in-game reward)
 	'ach.first_blood.name': 'First Blood',

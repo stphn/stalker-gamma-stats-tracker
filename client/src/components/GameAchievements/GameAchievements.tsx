@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { LockIcon, LockOpenIcon } from '@phosphor-icons/react';
+import { useEffect, useState } from 'react';
+import { LockIcon, LockOpenIcon, ToggleLeftIcon, ToggleRightIcon } from '@phosphor-icons/react';
 import type { Achievement, GameAchievements, PdaStats, StatsBlock } from '../../types';
 import { useI18n } from '../../i18n/I18nContext';
 import { fmt_time } from '../../utils/formatters';
@@ -14,6 +14,20 @@ interface Def {
 }
 
 const n = (v: number | undefined) => v ?? 0;
+
+// Spoiler-free toggle: mask locked achievements so storyline-revealing names,
+// requirements, and rewards stay hidden until earned. Defaults on. Persisted
+// via localStorage (same pattern as the map layer toggles).
+const LS_SPOILER_FREE = 'tracker_ach_spoiler_free';
+function loadToggle(key: string, fallback = true): boolean {
+	try {
+		const v = localStorage.getItem(key);
+		return v == null ? fallback : v !== 'false';
+	} catch { return fallback; }
+}
+function saveToggle(key: string, value: boolean) {
+	try { localStorage.setItem(key, String(value)); } catch {}
+}
 
 const ACHIEVEMENTS: Def[] = [
 	{
@@ -244,6 +258,8 @@ interface Prog {
 export function GameAchievementsPanel({ pda, gameAchievements, alltime, custom }: GameAchievementsPanelProps) {
 	const { t } = useI18n();
 	const [tab, setTab] = useState<AchTab>('official');
+	const [spoilerFree, setSpoilerFree] = useState(() => loadToggle(LS_SPOILER_FREE, true));
+	useEffect(() => { saveToggle(LS_SPOILER_FREE, spoilerFree); }, [spoilerFree]);
 	const { earned, unlocked } = gameAchievements;
 	const officialTotal = ACHIEVEMENTS.length;
 
@@ -253,15 +269,17 @@ export function GameAchievementsPanel({ pda, gameAchievements, alltime, custom }
 		!!custom[def.id] || def.value(alltime) >= def.max;
 	const customEarned = CUSTOM.filter(isCustomUnlocked).length;
 
-	const card = (id: string, isUnlocked: boolean, prog: Prog | null, reward?: string) => {
+	const card = (id: string, isUnlocked: boolean, prog: Prog | null, reward?: string, masked = false) => {
 		const pct = prog ? Math.min(100, (prog.value / prog.max) * 100) : 0;
 		const f = prog?.fmt ?? String;
-		const name = t(`ach.${id}.name`);
+		// Masked locked cards hide the name/requirement/reward (the spoilers) but
+		// keep the progress bar so you still see how close you are.
+		const name = masked ? t('ach.spoiler') : t(`ach.${id}.name`);
 		return (
 			<article
 				key={id}
 				className={isUnlocked ? `${styles.card} ${styles.unlocked}` : styles.card}
-				aria-label={name}
+				aria-label={masked ? t('ach.spoilerAria') : name}
 			>
 				<div className={styles.name}>
 					<span className={styles.icon} aria-hidden="true">
@@ -271,8 +289,8 @@ export function GameAchievementsPanel({ pda, gameAchievements, alltime, custom }
 				</span>
 					{name}
 				</div>
-				<p className={styles.req}>{t(`ach.${id}.req`)}</p>
-				{reward && <p className={styles.reward}>{reward}</p>}
+				{!masked && <p className={styles.req}>{t(`ach.${id}.req`)}</p>}
+				{!masked && reward && <p className={styles.reward}>{reward}</p>}
 				{prog && (
 					<>
 						<div className={styles.barWrap} role="progressbar" aria-valuenow={Math.min(prog.value, prog.max)} aria-valuemax={prog.max}>
@@ -291,6 +309,19 @@ export function GameAchievementsPanel({ pda, gameAchievements, alltime, custom }
 		<section className={styles.root}>
 			<div className={styles.head}>
 				<span className={styles.heading}>{t('ach.heading')}</span>
+				<button
+					type="button"
+					className={styles.spoilerToggle}
+					aria-pressed={spoilerFree}
+					onClick={() => setSpoilerFree((v) => !v)}
+				>
+					<span className={spoilerFree ? styles.toggleOn : styles.toggleOff} aria-hidden="true">
+						{spoilerFree
+							? <ToggleRightIcon size={18} weight="fill" />
+							: <ToggleLeftIcon size={18} weight="fill" />}
+					</span>
+					{t('ach.spoilerFree')}
+				</button>
 				<div className={styles.tabBar} role="tablist" aria-label={t('ach.heading')}>
 					<button
 						type="button" role="tab" id="ach-tab-official" aria-controls="ach-panel"
@@ -316,12 +347,12 @@ export function GameAchievementsPanel({ pda, gameAchievements, alltime, custom }
 					? ACHIEVEMENTS.map((def) => {
 						const isUnlocked = !!unlocked[def.id];
 						const prog = !isUnlocked && def.progress ? def.progress(pda, gameAchievements) : null;
-						return card(def.id, isUnlocked, prog, t(`ach.${def.id}.reward`));
+						return card(def.id, isUnlocked, prog, t(`ach.${def.id}.reward`), spoilerFree && !isUnlocked);
 					})
 					: CUSTOM.map((def) => {
 						const isUnlocked = isCustomUnlocked(def);
 						const prog = isUnlocked ? null : { value: def.value(alltime), max: def.max, fmt: def.fmt };
-						return card(def.id, isUnlocked, prog);
+						return card(def.id, isUnlocked, prog, undefined, spoilerFree && !isUnlocked);
 					})}
 			</div>
 		</section>
