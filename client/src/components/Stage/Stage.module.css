@@ -71,6 +71,14 @@
 	}
 }
 
+/* Hide on mobile — touch browsers (esp. iOS Safari) don't support element
+   fullscreen, and the compact hero has no room for it. */
+@container layout (max-width: 600px) {
+	.fullscreenBtn {
+		display: none;
+	}
+}
+
 /* ── Scanline sweep ── */
 .scanline {
 	position: absolute;

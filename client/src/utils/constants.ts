@@ -52,6 +52,8 @@ export const FACTIONS: Record<string, string> = {
 	helicopter: 'Helicopter',
 	other: 'Other',
 	independent: 'Independent',
+	greh: 'Sin',
+	sin: 'Sin',
 };
 
 // Faction text/label colors — from Figma Faction Icon component set
@@ -73,6 +75,8 @@ export const FACTION_COLORS: Record<string, string> = {
 	helicopter: '#c8a85a',
 	other: '#8a8070',
 	independent: '#8a8070',
+	greh: '#c8954a',
+	sin: '#c8954a',
 };
 
 // Icon background colors — from Figma Faction Icon component fills
@@ -91,6 +95,8 @@ export const FACTION_BG_COLORS: Record<string, string> = {
 	killer: '#1a1a3a',
 	renegade: '#2a2a0e',
 	mutant: '#3a1212',
+	greh: '#2a1a08',
+	sin: '#2a1a08',
 };
 
 export const FACTION_ICONS: Record<string, string> = {
@@ -108,4 +114,7 @@ export const FACTION_ICONS: Record<string, string> = {
 	killer: '/factions/faction_mercenary.webp',
 	renegade: '/factions/faction_renegades.webp',
 	independent: '/factions/faction_inisig.webp',
+	greh: '/factions/faction_sin.webp',
+	sin: '/factions/faction_sin.webp',
+	mutant: '/factions/faction_mutant.webp',
 };

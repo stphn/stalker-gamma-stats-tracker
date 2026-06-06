@@ -249,7 +249,7 @@ th.num .sort {
     display: flex;
     align-items: center;
     gap: var(--pad-sm);
-    padding: 0 var(--pad-lg) var(--pad-sm);
+    padding: var(--pad-md) var(--pad-lg) var(--pad-sm);
   }
 
   .sortbarSelect {
@@ -306,7 +306,9 @@ th.num .sort {
 
   .table tr {
     border: 1px solid var(--border);
-    margin: 0 var(--pad-lg) var(--pad-sm);
+    border-left: none;
+    border-right: none;
+    margin: 0 0 var(--pad-sm);
     padding: var(--pad-xs) 0;
     background: color-mix(in srgb, var(--bg-surface) 60%, transparent);
   }
