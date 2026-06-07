@@ -47,6 +47,11 @@ npm run sync:mod:check    # compare the two, non-zero exit on drift
 
 The install path defaults to `C:/GAMMA/mods`; override with the `GAMMA_MODS` env var.
 
+A **pre-commit hook** (`.githooks/pre-commit`, enabled via `core.hooksPath` — set
+automatically by the `prepare` script on `npm install`/`bun install`) runs `sync:mod:check`
+and blocks the commit on drift. It skips silently when no GAMMA install is present (clones /
+CI). Bypass a blocked commit with `git commit --no-verify`.
+
 ## Reset
 
 Career totals never reset on death/new game (they're cross-save, per install). To wipe

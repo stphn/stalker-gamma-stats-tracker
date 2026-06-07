@@ -52,11 +52,15 @@ console.log(`repo:    ${REPO}`);
 console.log(`install: ${INSTALL}\n`);
 
 if (mode === 'check') {
-  if (!existsSync(REPO) || !existsSync(INSTALL)) {
-    console.error('✗ one side is missing — cannot compare:');
-    if (!existsSync(REPO)) console.error(`  repo:    ${REPO}`);
-    if (!existsSync(INSTALL)) console.error(`  install: ${INSTALL}`);
+  if (!existsSync(REPO)) {
+    console.error(`✗ repo copy missing:\n  ${REPO}`);
     process.exit(1);
+  }
+  // The install is environment-specific (absent on clones / CI), so treat it as
+  // a skip rather than a failure — keeps this usable as a portable git hook.
+  if (!existsSync(INSTALL)) {
+    console.log(`• install not present — skipping drift check\n  ${INSTALL}`);
+    process.exit(0);
   }
   const same = norm(REPO) === norm(INSTALL);
   const rawSame = readFileSync(REPO).equals(readFileSync(INSTALL));

@@ -12,7 +12,8 @@
     "dev:client": "bun run --cwd client dev",
     "sync:mod": "node scripts/sync-mod.mjs",
     "sync:mod:pull": "node scripts/sync-mod.mjs pull",
-    "sync:mod:check": "node scripts/sync-mod.mjs check"
+    "sync:mod:check": "node scripts/sync-mod.mjs check",
+    "prepare": "git config core.hooksPath .githooks"
   },
   "trustedDependencies": [
     "onnxruntime-node"
