@@ -5,26 +5,18 @@
 	background: var(--bg-base);
 }
 
-/* Deaths / K/D blocks beside the donut — echoes the donut's center styling */
-.combatStat {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 2px;
-}
-
-.combatValue {
-	font-family: var(--font-display);
-	font-size: var(--text-2xl);
-	font-weight: 700;
-	line-height: 1;
-	color: var(--text-primary);
+/* Combat section: a label + the three-card split, matching a StatGroup's spacing
+   so its columns line up with the StatGrid below it. */
+.combat {
+	display: grid;
+	gap: 4px;
 }
 
 .combatLabel {
 	font-family: var(--font-display);
 	font-size: var(--text-2xs);
-	letter-spacing: 1px;
+	font-weight: 600;
+	letter-spacing: 1.5px;
 	text-transform: uppercase;
-	color: var(--text-secondary);
+	color: var(--accent-base);
 }

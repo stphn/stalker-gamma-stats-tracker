@@ -28,6 +28,28 @@ export interface StatsBlock {
 	playtime: number;
 }
 
+/**
+ * Cross-save persistent stats (`data.alltime`). Extends the base block with the
+ * richer fields the mod accumulates across every character on the install. All
+ * extras are optional — a mod build that predates them simply omits them and the
+ * UI guards each with a 0 default (see `n()` in AllTimePanel).
+ */
+export interface AllTimeBlock extends StatsBlock {
+	distance_m?: number; // metres walked, accumulated from polled actor position
+	zone_days?: number; // cumulative in-game days survived
+	levels_visited?: number;
+	tasks_failed?: number;
+	tasks_cancelled?: number;
+	pdas_delivered?: number;
+	articles?: number;
+	emissions?: number;
+	psi_storms?: number;
+	field_dressings?: number;
+	wounded_helped?: number;
+	boxes_smashed?: number;
+	enemies_surrendered?: number;
+}
+
 export interface SessionBlock extends StatsBlock {
 	start: number;
 	death_location?: string;
@@ -128,7 +150,7 @@ export interface StatsData {
 	last_updated: number;
 	game_state: 'playing' | 'menu';
 	session: SessionBlock;
-	alltime: StatsBlock;
+	alltime: AllTimeBlock;
 	alltime_official?: PdaStats;
 	actor?: ActorInfo;
 	companions?: Companion[];

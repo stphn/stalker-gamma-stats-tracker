@@ -9,6 +9,31 @@
 	grid-template-columns: 1fr 1fr 1fr;
 }
 
+/* All-Time combat: faction rows split into two columns + donut, as three equal
+   bordered cards with the StatGrid gap so they line up with the grid below. */
+.splitRows {
+	grid-template-columns: repeat(3, 1fr);
+	gap: var(--pad-md);
+}
+
+.splitRows > .killRows,
+.splitRows > .donutWrap {
+	border: 1px solid var(--border);
+	background: var(--bg-surface);
+}
+
+/* "Other" row: hover-tooltip affordance — help cursor. */
+.killNameHelp {
+	cursor: help;
+}
+
+/* Stack the three cards once the container gets tight. */
+@container layout (max-width: 640px) {
+	.splitRows {
+		grid-template-columns: 1fr;
+	}
+}
+
 /* HUD form: kill-type rows on the left, donut on the right. Rows flow top-down
    3 to a column, spilling into new columns, so the card stays short (e.g. 11
    types → 3 + 3 + 3 + 2). The donut is dropped by the JSX when there are <2 types. */
@@ -78,13 +103,6 @@
 	font-family: var(--font-display);
 	font-size: var(--text-sm);
 	font-weight: 400;
-}
-
-.killDot {
-	width: 8px;
-	height: 8px;
-	border-radius: 2px;
-	flex-shrink: 0;
 }
 
 .killValue {

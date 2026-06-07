@@ -220,7 +220,7 @@ export default function App() {
 						<DeathLog runs={runs} totalRuns={totalRuns} highlightStart={highlightStart} />
 					)}
 
-					<StatsTabs data={data} />
+					<StatsTabs data={data} runs={runs} totalRuns={totalRuns} />
 					{data.alltime_official && data.game_achievements && (
 						<GameAchievementsPanel
 							pda={data.alltime_official}

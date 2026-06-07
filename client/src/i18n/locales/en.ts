@@ -95,7 +95,8 @@ export const en: Record<string, string> = {
 	'kills.renegades': 'Renegades',
 	'kills.mutants': 'Mutants',
 	'kills.helis': 'Helis',
-	'kills.other': 'Other',
+	'kills.other': 'Unknown',
+	'kills.otherNote': 'Enemies with no recognised faction (Sin, UNISG, unique NPCs)',
 	'kills.none': 'No kills yet',
 
 	// Session panels (RightPanel)
@@ -123,6 +124,21 @@ export const en: Record<string, string> = {
 	'alltime.progress': 'Progress',
 	'alltime.levelChanges': 'Level Changes',
 	'alltime.kd': 'K/D Ratio',
+	'alltime.career': 'Career',
+	'alltime.runs': 'Runs',
+	'alltime.distance': 'Distance',
+	'alltime.zoneDays': 'Zone Days',
+	'alltime.records': 'Records',
+	'alltime.deadliestRun': 'Deadliest Run',
+	'alltime.longestSurvival': 'Longest Survival',
+	'alltime.richestHaul': 'Richest Haul',
+	'alltime.perRunAvg': 'Per Run (avg)',
+	'alltime.avgKills': 'Avg Kills',
+	'alltime.avgSurvival': 'Avg Survival',
+	'alltime.avgEarned': 'Avg Earned',
+	'alltime.earningsTrend': 'Earnings Over Career',
+	'alltime.perRun': 'Per Run',
+	'alltime.cumulative': 'Cumulative',
 
 	// PDA panel — group labels
 	'pda.combat': 'Combat',

@@ -16,6 +16,18 @@ export function fmt_time(seconds: number | undefined) {
 	return `${h}h ${m}m ${s}s`;
 }
 
+// Metres walked → a compact "12.4 km" / "840 m" string. Distances climb into the
+// hundreds of km across a career, so km with one decimal is the natural unit.
+export function fmt_distance(metres: number | undefined, locale = 'en') {
+	const m = metres ?? 0;
+	if (m < 1000) return `${Math.round(m)} m`;
+	const km = (m / 1000).toLocaleString(LOCALE_TAG[locale] ?? 'en-US', {
+		minimumFractionDigits: 1,
+		maximumFractionDigits: 1,
+	});
+	return `${km} km`;
+}
+
 // Compact death-log stamp: day.month.yy + time to the second — players die many
 // times a day, so the time of day is what distinguishes runs. Full date is kept
 // on the row's hover title. Local time.
