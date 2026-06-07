@@ -1,0 +1,17 @@
+#!/bin/sh
+# Block a commit when the repo's vendored Stats Tracker mod and the deployed
+# GAMMA install have drifted, so the canonical copy never silently goes stale.
+# Skips automatically when the install isn't present (clones / CI). Bypass with
+# `git commit --no-verify`.
+#
+# Enabled via core.hooksPath=.githooks (set on `npm install` by the prepare
+# script, or manually: git config core.hooksPath .githooks).
+
+if ! npm run --silent sync:mod:check; then
+	echo ""
+	echo "✗ pre-commit: Stats Tracker mod is out of sync (see above)."
+	echo "  Deploy repo → install:   npm run sync:mod"
+	echo "  Pull install → repo:     npm run sync:mod:pull && git add mod"
+	echo "  Commit anyway:           git commit --no-verify"
+	exit 1
+fi

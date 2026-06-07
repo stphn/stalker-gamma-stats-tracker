@@ -9,7 +9,11 @@
   "scripts": {
     "dev": "concurrently -n server,client -c cyan,magenta \"bun run --cwd server dev\" \"bun run --cwd client dev\"",
     "dev:server": "bun run --cwd server dev",
-    "dev:client": "bun run --cwd client dev"
+    "dev:client": "bun run --cwd client dev",
+    "sync:mod": "node scripts/sync-mod.mjs",
+    "sync:mod:pull": "node scripts/sync-mod.mjs pull",
+    "sync:mod:check": "node scripts/sync-mod.mjs check",
+    "prepare": "git config core.hooksPath .githooks"
   },
   "trustedDependencies": [
     "onnxruntime-node"
