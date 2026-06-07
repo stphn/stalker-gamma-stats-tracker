@@ -37,6 +37,16 @@ the two in sync when editing (edit here, copy out; or edit there, copy back befo
 committing). The mod runs inside Anomaly's restricted Lua sandbox: `io.*` is available but
 **`os.remove` is not** (only `os.time`/`os.clock`), so file ops must use `io`.
 
+Keep the copies in sync with the helper (`scripts/sync-mod.mjs`):
+
+```
+npm run sync:mod          # deploy: repo → GAMMA install (restart the game to reload)
+npm run sync:mod:pull     # pull:   GAMMA install → repo (then review + commit)
+npm run sync:mod:check    # compare the two, non-zero exit on drift
+```
+
+The install path defaults to `C:/GAMMA/mods`; override with the `GAMMA_MODS` env var.
+
 ## Reset
 
 Career totals never reset on death/new game (they're cross-save, per install). To wipe
