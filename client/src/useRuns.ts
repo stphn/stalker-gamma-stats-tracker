@@ -9,12 +9,14 @@ export function useRuns(): { runs: Run[]; total: number; loading: boolean } {
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
-		// Initial fetch — most recent 10 runs, newest first (+ exact total count)
+		// Full career fetch — every run, newest first (+ exact total count). The
+		// All-Time tab computes career records/averages and the money trend from
+		// the whole history, so we no longer cap at 10. One row per death keeps
+		// this comfortably small (hundreds at most).
 		supabase
 			.from('runs')
 			.select('*', { count: 'exact' })
 			.order('start', { ascending: false })
-			.limit(10)
 			.then(({ data, count }) => {
 				if (data) setRuns(data as Run[])
 				if (count != null) setTotal(count)
@@ -42,9 +44,7 @@ export function useRuns(): { runs: Run[]; total: number; loading: boolean } {
 							next[idx] = { ...next[idx], ...incoming }
 							return next
 						}
-						return [incoming, ...prev]
-							.sort((a, b) => b.start - a.start)
-							.slice(0, 10)
+						return [incoming, ...prev].sort((a, b) => b.start - a.start)
 					})
 				},
 			)
