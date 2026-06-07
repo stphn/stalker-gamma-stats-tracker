@@ -13,6 +13,8 @@ export function LanguageSwitcher({ variant = 'buttons' }: LanguageSwitcherProps)
 	if (variant === 'select') {
 		return (
 			<select
+				id="language-select"
+				name="language"
 				className={styles.select}
 				value={locale}
 				onChange={(e) => setLocale(e.target.value as Locale)}

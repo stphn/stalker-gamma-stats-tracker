@@ -39,6 +39,8 @@ export function ThemeSwitcher() {
 
 	return (
 		<select
+			id="theme-select"
+			name="theme"
 			className={styles.select}
 			value={theme}
 			onChange={e => change(e.target.value)}
