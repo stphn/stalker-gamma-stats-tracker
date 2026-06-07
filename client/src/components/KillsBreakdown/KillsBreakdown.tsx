@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import type { Kills } from '../../types';
 import { useI18n } from '../../i18n/I18nContext';
 import {
@@ -102,9 +101,7 @@ function KillsDonut({
 interface KillsBreakdownProps {
 	kills: Kills;
 	label: string;
-	/** Optional extra column rendered right of the donut (e.g. Deaths + K/D). */
-	extra?: ReactNode;
-	/** Donut diameter in px (default 96). Larger when there's an extra column. */
+	/** Donut diameter in px (default 96). Larger for the All-Time panel. */
 	donutSize?: number;
 	/** HUD form: donut on top, only the top-3 factions below. */
 	compact?: boolean;
@@ -115,7 +112,7 @@ interface KillsBreakdownProps {
 type KillDatum = (typeof KILL_DEFS)[number] & { count: number; color: string };
 
 /** Faction-by-faction kill rows + donut. Shared by the live session panel and the All-Time tab. */
-export function KillsBreakdown({ kills, label, extra, donutSize = 96, compact = false, splitRows = false }: KillsBreakdownProps) {
+export function KillsBreakdown({ kills, label, donutSize = 96, compact = false, splitRows = false }: KillsBreakdownProps) {
 	const { t } = useI18n();
 
 	const killData: KillDatum[] = KILL_DEFS.map((d) => ({
@@ -196,15 +193,12 @@ export function KillsBreakdown({ kills, label, extra, donutSize = 96, compact = 
 	}
 
 	return (
-		<div
-			className={`${styles.killsContent} ${extra ? styles.withExtra : ''} ${compact ? styles.compact : ''}`}
-		>
+		<div className={`${styles.killsContent} ${compact ? styles.compact : ''}`}>
 			<div className={styles.killRows}>
 				{killData.map(renderRow)}
 				{killData.length === 0 && <StatRow label={t('kills.none')} value="—" />}
 			</div>
 			{donut}
-			{extra && <div className={styles.killExtra}>{extra}</div>}
 		</div>
 	);
 }

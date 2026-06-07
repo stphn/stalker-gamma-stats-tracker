@@ -4,11 +4,6 @@
 	gap: 1px;
 }
 
-/* Three equal columns: kill rows | donut | extra (Deaths + K/D) */
-.withExtra {
-	grid-template-columns: 1fr 1fr 1fr;
-}
-
 /* All-Time combat: faction rows split into two columns + donut, as three equal
    bordered cards with the StatGrid gap so they line up with the grid below. */
 .splitRows {
@@ -64,16 +59,6 @@
 /* Per-column borders look broken in a wrapping grid; keep the HUD rows clean. */
 .compact .killRow {
 	border-bottom: none;
-}
-
-.killExtra {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	gap: var(--pad-lg);
-	padding: var(--pad-sm) var(--pad-md);
-	background: var(--bg-surface);
 }
 
 .killRows {
