@@ -128,6 +128,10 @@ export const fr: Record<string, string> = {
 	'alltime.earningsTrend': 'Gains au fil de la carrière',
 	'alltime.perRun': 'Par partie',
 	'alltime.cumulative': 'Cumulé',
+	'alltime.note.title': 'Comment fonctionne « Cumul »',
+	'alltime.note.body': 'Ces totaux s’accumulent sur chaque stalker et chaque sauvegarde de ce PC et ne font qu’augmenter — ils ne sont jamais remis à zéro à la mort. Charger d’anciennes sauvegardes, recharger ou rejouer du contenu peut compter la progression plusieurs fois ; « Cumul » reflète donc toute votre activité suivie, pas une seule partie.',
+	'alltime.note.dismiss': 'Masquer la note',
+	'alltime.note.show': 'Comment fonctionne « Cumul »',
 	// PDA panel — group labels
 	'pda.combat': 'Combat',
 	'pda.survival': 'Survie',

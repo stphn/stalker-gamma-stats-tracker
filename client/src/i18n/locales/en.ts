@@ -139,6 +139,10 @@ export const en: Record<string, string> = {
 	'alltime.earningsTrend': 'Earnings Over Career',
 	'alltime.perRun': 'Per Run',
 	'alltime.cumulative': 'Cumulative',
+	'alltime.note.title': 'How All-Time works',
+	'alltime.note.body': 'These totals build up across every stalker and save on this PC and only ever climb — they never reset when you die. Loading older saves, reloading, or replaying content can count progress more than once, so All-Time shows your total tracked activity, not a single playthrough.',
+	'alltime.note.dismiss': 'Hide note',
+	'alltime.note.show': 'How All-Time works',
 
 	// PDA panel — group labels
 	'pda.combat': 'Combat',
