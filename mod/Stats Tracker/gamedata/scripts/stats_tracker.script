@@ -1,0 +1,928 @@
+-- stats_tracker.script
+-- Tracks kills, deaths, tasks, economy, and achievements.
+-- Writes gamma_stats.json (website feed) and gamma_persistent.lua (alltime across saves).
+
+local alltime      = {}
+local session      = {}
+local run_history  = {}  -- last 3 sessions that ended in a death (newest first)
+local unlocked     = {}  -- our custom achievements
+local game_ach     = {}  -- native game achievements
+
+local alltime_base_playtime  = 0
+local session_start          = 0
+local last_money             = 0
+local last_pos               = nil  -- actor position at last tick (for distance walked)
+local last_stash_seen        = 0  -- session.stashes at last tick (to re-check the stash achievement)
+-- Per-tick distance over this cap (metres) is treated as a teleport/level change
+-- and discarded. At a 500ms feed tick even sprinting stays well under this.
+local DIST_CAP               = 50
+local last_save_tick         = 0
+local last_persist_tick      = 0
+local skip_first_load_screen = true
+local is_loading             = true
+local needs_seeding          = false  -- true on very first run (no persistent file)
+local session_ended          = false  -- true after death so load_state starts fresh
+
+-- Website feed (gamma_stats.json) is written often for a smooth live map;
+-- persistence (gamma_persistent.lua) is heavier so it's saved less frequently
+-- (events like kills/deaths/tasks still persist immediately via their callbacks).
+local FEED_INTERVAL_MS    = 500
+local PERSIST_INTERVAL_MS = 5000
+
+-- Zone news: curated in-game tips captured for the website feed.
+-- Volatile per session (newest first). Curated by raw caption key (language-
+-- independent) so only world events surface, not every barker/UI nag.
+local news_buf   = {}
+local NEWS_MAX   = 30
+-- Discovery mode: false = capture every tip (so we can see the real caption
+-- keys), true = keep only the curated categories in NEWS_MATCH below.
+local NEWS_CURATE = false
+-- Loot capture: true = push every item pickup ("Looted X") into the feed.
+-- Pickups don't go through news_manager.send_tip, so they're captured straight
+-- from the actor_on_item_take callback instead. Toggle off once curated.
+local NEWS_LOOT   = true
+local NEWS_MATCH = {
+    "surge", "emission", "psy", "psi",                  -- blowouts / psi-storms
+    "warfare", "domination", "territory", "captured",   -- warfare / faction control
+    "promot", "rank_up",                                -- promotions
+    "achievement",                                       -- unlocks
+}
+
+-- ============================================================
+-- Data initializers
+-- ============================================================
+
+local function new_kills()
+    return {
+        total=0,
+        stalker=0, bandit=0, military=0,
+        freedom=0, duty=0, ecolog=0, csky=0,
+        monolith=0, killer=0, renegade=0,
+        mutant=0, helicopter=0, other=0,
+    }
+end
+
+local function new_alltime()
+    return {
+        kills         = new_kills(),
+        deaths        = 0,
+        tasks         = 0,
+        rubles_earned = 0,
+        rubles_spent  = 0,
+        artifacts     = 0,
+        items         = 0,
+        stashes       = 0,
+        level_changes = 0,
+        playtime      = 0,
+        -- Cross-save richer fields (carried from the native PDA counters via the
+        -- same baseline/delta model as stashes; see update_native_accumulators).
+        distance_m          = 0,  -- metres walked
+        zone_days           = 0,  -- in-game days survived
+        levels_visited      = 0,
+        tasks_failed        = 0,
+        tasks_cancelled     = 0,
+        pdas_delivered      = 0,
+        articles            = 0,
+        emissions           = 0,
+        psi_storms          = 0,
+        field_dressings     = 0,
+        wounded_helped      = 0,
+        boxes_smashed       = 0,
+        enemies_surrendered = 0,
+    }
+end
+
+local function new_session()
+    local t = new_alltime()
+    t.start = os.time()
+    return t
+end
+
+local function backfill(tbl, defaults)
+    for k, v in pairs(defaults) do
+        if tbl[k] == nil then tbl[k] = v end
+    end
+end
+
+-- ============================================================
+-- Achievement definitions
+-- ============================================================
+
+local ACH = {
+    { id="first_blood",   name="First Blood",     desc="Kill your first enemy",          check=function(a) return a.kills.total >= 1      end },
+    { id="killer_100",    name="Hunter",          desc="Kill 100 enemies",               check=function(a) return a.kills.total >= 100    end },
+    { id="killer_500",    name="Executioner",     desc="Kill 500 enemies",               check=function(a) return a.kills.total >= 500    end },
+    { id="killer_1000",   name="Butcher",         desc="Kill 1,000 enemies",             check=function(a) return a.kills.total >= 1000   end },
+    { id="mutant_50",     name="Mutant Hunter",   desc="Kill 50 mutants",                check=function(a) return a.kills.mutant >= 50    end },
+    { id="bandit_50",     name="Bandit Hunter",   desc="Kill 50 bandits",                check=function(a) return a.kills.bandit >= 50    end },
+    { id="military_50",   name="Army Slayer",     desc="Kill 50 military",               check=function(a) return a.kills.military >= 50  end },
+    { id="first_death",   name="Zone Tax",        desc="Die for the first time",         check=function(a) return a.deaths >= 1           end },
+    { id="deaths_10",     name="Nine Lives",      desc="Die 10 times and keep going",    check=function(a) return a.deaths >= 10          end },
+    { id="task_1",        name="On the Job",      desc="Complete your first task",       check=function(a) return a.tasks >= 1            end },
+    { id="task_25",       name="Contractor",      desc="Complete 25 tasks",              check=function(a) return a.tasks >= 25           end },
+    { id="task_100",      name="Fixer",           desc="Complete 100 tasks",             check=function(a) return a.tasks >= 100          end },
+    { id="artifact_1",    name="Anomaly Diver",   desc="Find your first artifact",       check=function(a) return a.artifacts >= 1        end },
+    { id="artifact_10",   name="Collector",       desc="Find 10 artifacts",              check=function(a) return a.artifacts >= 10       end },
+    { id="stash_10",      name="Scavenger",       desc="Find 10 stashes",                check=function(a) return a.stashes >= 10         end },
+    { id="rich_100k",     name="Rich Stalker",    desc="Earn 100,000 rubles total",      check=function(a) return a.rubles_earned >= 100000 end },
+    { id="explorer_25",   name="Zone Explorer",   desc="Change levels 25 times",         check=function(a) return a.level_changes >= 25   end },
+    { id="veteran_10h",   name="Zone Veteran",    desc="Survive 10 hours in the Zone",   check=function(a) return a.playtime >= 36000     end },
+    { id="veteran_50h",   name="Legend",          desc="Survive 50 hours in the Zone",   check=function(a) return a.playtime >= 180000    end },
+}
+
+-- ============================================================
+-- Minimal JSON encoder
+-- ============================================================
+
+local function j(v)
+    local t = type(v)
+    if t == "nil"     then return "null" end
+    if t == "boolean" then return tostring(v) end
+    if t == "number"  then return tostring(v) end
+    if t == "string"  then
+        return '"' .. v:gsub('\\','\\\\'):gsub('"','\\"'):gsub('\n','\\n'):gsub('\r','\\r'):gsub('\t','\\t') .. '"'
+    end
+    if t == "table" then
+        local n = #v
+        if n > 0 then
+            -- sequence table → JSON array
+            local parts = {}
+            for i = 1, n do parts[i] = j(v[i]) end
+            return "[" .. table.concat(parts, ",") .. "]"
+        end
+        local parts = {}
+        for k, val in pairs(v) do
+            parts[#parts+1] = j(tostring(k)) .. ":" .. j(val)
+        end
+        return "{" .. table.concat(parts, ",") .. "}"
+    end
+    return "null"
+end
+
+-- ============================================================
+-- Lua table serializer (for gamma_persistent.lua)
+-- ============================================================
+
+local function ser(v)
+    local t = type(v)
+    if t == "nil"     then return "nil" end
+    if t == "boolean" or t == "number" then return tostring(v) end
+    if t == "string"  then return string.format("%q", v) end
+    if t == "table" then
+        local parts = {}
+        for k, val in pairs(v) do
+            local key = (type(k) == "string" and k:match("^[%a_][%w_]*$"))
+                and k or ("[" .. ser(k) .. "]")
+            parts[#parts+1] = key .. "=" .. ser(val)
+        end
+        return "{" .. table.concat(parts, ",") .. "}"
+    end
+    return "nil"
+end
+
+-- ============================================================
+-- Persistent file I/O (alltime + achievements, save-independent)
+-- ============================================================
+
+local function appdata()
+    return getFS():update_path("$app_data_root$", "")
+end
+
+local function save_persistent()
+    local f = io.open(appdata() .. "gamma_persistent.lua", "w")
+    if f then
+        f:write("return " .. ser({
+            alltime       = alltime,
+            unlocked      = unlocked,
+            run_history   = run_history,
+            session       = session,
+            session_ended = session_ended,
+        }))
+        f:close()
+    end
+end
+
+local function load_persistent()
+    local f = io.open(appdata() .. "gamma_persistent.lua", "r")
+    if not f then return nil end
+    local content = f:read("*all")
+    f:close()
+    if not content or content == "" then return nil end
+    local fn = loadstring(content)
+    if not fn then return nil end
+    local ok, result = pcall(fn)
+    return (ok and type(result) == "table") and result or nil
+end
+
+-- Career reset: write a `gamma_reset.flag` file next to gamma_persistent.lua and
+-- the next load wipes the cross-save totals to a true zero (without reseeding
+-- from the native stats, which a plain file-delete would do). One-shot: once
+-- consumed the flag is stamped "done" so it won't fire again. The Anomaly Lua
+-- sandbox has no os.remove, so we can't delete the file — re-empty or recreate it
+-- to reset again. Clears the local alltime blob only; the website's run history
+-- (Supabase `runs`) is a separate ledger.
+local function check_reset()
+    local path = appdata() .. "gamma_reset.flag"
+    local f = io.open(path, "r")
+    if not f then return false end
+    local content = f:read("*all") or ""
+    f:close()
+    if content:find("done", 1, true) then return false end  -- already consumed
+    local w = io.open(path, "w")
+    if w then w:write("done\n") ; w:close() end
+    return true
+end
+
+-- ============================================================
+-- Website feed (gamma_stats.json)
+-- ============================================================
+
+local function stat_count(key)
+    local ok, v = pcall(game_statistics.get_statistic_count, key)
+    return (ok and type(v) == "number") and v or 0
+end
+
+-- Stash counts. treasure_manager increments the native "stashes_found"
+-- statistic each time a tracked stash is looted, but nothing increments our
+-- counters directly (which is why session.stashes was always 0). We baseline
+-- the native stat at session start and report the delta since:
+--   session.stashes — looted this run
+--   alltime.stashes — anchored to its cross-save value at session start, plus
+--                     this run's delta (same accumulation model as kills/tasks)
+local function update_session_stashes()
+    if not db.actor then return end
+    -- Wait for first-run seeding to set alltime.stashes before anchoring to it,
+    -- otherwise we'd capture a pre-seed value and clobber the seeded total.
+    if needs_seeding then return end
+    local cur = stat_count("stashes_found")
+    if session.stashes_base == nil then
+        session.stashes_base         = cur
+        session.alltime_stashes_base = alltime.stashes or 0
+    end
+    local looted = math.max(0, cur - session.stashes_base)
+    session.stashes = looted
+    alltime.stashes = (session.alltime_stashes_base or 0) + looted
+end
+
+-- Richer cross-save fields. The native PDA exposes these as per-save counters
+-- that reset on a new game, so we accumulate them into alltime with the same
+-- baseline/delta model as stashes: anchor the native value at session start, then
+-- add the in-session growth to the stored cross-save total. New characters
+-- re-anchor (session is fresh), so totals carry across saves without double
+-- counting. Each entry's `get` returns the current native value, or nil to skip
+-- this tick (e.g. zone days can't be read safely at the main menu).
+local NATIVE_ACCUM = {
+    { key = "emissions",           get = function() return stat_count("emissions") end },
+    { key = "psi_storms",          get = function() return stat_count("psi_storms") end },
+    { key = "field_dressings",     get = function() return stat_count("field_dressings") end },
+    { key = "wounded_helped",      get = function() return stat_count("wounded_helped") end },
+    { key = "boxes_smashed",       get = function() return stat_count("boxes_smashed") end },
+    { key = "enemies_surrendered", get = function() return stat_count("enemies_surrendered") end },
+    { key = "pdas_delivered",      get = function() return stat_count("pdas_delivered") end },
+    { key = "articles",            get = function() return stat_count("articles") end },
+    { key = "tasks_failed",        get = function() return stat_count("tasks_failed") end },
+    { key = "tasks_cancelled",     get = function() return stat_count("tasks_cancelled") end },
+    {
+        key = "levels_visited",
+        get = function()
+            local ok, v = pcall(game_statistics.get_actor_visited_levels_count)
+            return (ok and type(v) == "number") and v or nil
+        end,
+    },
+    {
+        key = "zone_days",
+        get = function()
+            -- Absolute Zone clock vs campaign start, in days. Guard on db.actor:
+            -- at the menu this throws a C-level AV that pcall can't catch.
+            if not db.actor then return nil end
+            local ok, d = pcall(function()
+                return math.floor(game.get_game_time():diffSec(level.get_start_time()) / 86400)
+            end)
+            return (ok and type(d) == "number") and d or nil
+        end,
+    },
+}
+
+local function update_native_accumulators()
+    if not db.actor then return end
+    -- Wait for first-run seeding so we anchor against a settled alltime baseline.
+    if needs_seeding then return end
+    session.native_base    = session.native_base    or {}  -- native value when anchored
+    session.native_at_base = session.native_at_base or {}  -- alltime value when anchored
+    for _, m in ipairs(NATIVE_ACCUM) do
+        local cur = m.get()
+        if cur ~= nil then
+            if session.native_base[m.key] == nil then
+                session.native_base[m.key]    = cur
+                session.native_at_base[m.key] = alltime[m.key] or 0
+            else
+                local delta = math.max(0, cur - session.native_base[m.key])
+                alltime[m.key] = (session.native_at_base[m.key] or 0) + delta
+            end
+        end
+    end
+end
+
+local function read_official_stats()
+    local function gsc(key)
+        local ok, v = pcall(game_statistics.get_statistic_count, key)
+        return (ok and type(v) == "number") and v or 0
+    end
+    local npc  = gsc("killed_stalkers")
+    local mut  = gsc("killed_monsters")
+    local heli = gsc("helicopters_downed")
+    local k = new_kills()
+    k.total      = npc + mut + heli
+    k.stalker    = npc
+    k.mutant     = mut
+    k.helicopter = heli
+
+    local ok_ach, ach_count = pcall(game_statistics.get_actor_achievements_count)
+    local ok_lev, lev_count = pcall(game_statistics.get_actor_visited_levels_count)
+
+    return {
+        kills                = k,
+        deaths               = gsc("deaths"),
+        tasks                = gsc("tasks_completed"),
+        tasks_failed         = gsc("tasks_failed"),
+        tasks_cancelled      = gsc("tasks_cancelled"),
+        rubles_earned        = alltime.rubles_earned or 0,
+        current_money        = (db.actor and db.actor:money()) or 0,
+        artifacts            = gsc("artefacts_found"),
+        items                = alltime.items or 0,
+        stashes              = gsc("stashes_found"),
+        level_changes        = gsc("level_changes"),
+        -- PDA is per-save, so report this character's playtime (session, which
+        -- persists across level changes and only resets on death), not the
+        -- cross-save alltime total.
+        playtime             = session.playtime or 0,
+        -- In-game "Time Elapsed" in Zone days, like the native PDA statistics
+        -- screen. Absolute Zone clock vs the campaign start, so it's retroactive.
+        game_days            = (function()
+            -- Only valid in an active game session. At the main menu there is no
+            -- level and game.get_game_time()/level.get_start_time() throw a C-level
+            -- access violation that pcall CANNOT catch -> hard crash. Guard on db.actor.
+            if not db.actor then return 0 end
+            local ok, d = pcall(function()
+                return math.floor(game.get_game_time():diffSec(level.get_start_time()) / 86400)
+            end)
+            return (ok and type(d) == "number") and d or 0
+        end)(),
+        emissions            = gsc("emissions"),
+        psi_storms           = gsc("psi_storms"),
+        pdas_delivered       = gsc("pdas_delivered"),
+        boxes_smashed        = gsc("boxes_smashed"),
+        wounded_helped       = gsc("wounded_helped"),
+        enemies_surrendered  = gsc("enemies_surrendered"),
+        field_dressings      = gsc("field_dressings"),
+        articles             = gsc("articles"),
+        achievements_count   = (ok_ach and type(ach_count) == "number") and ach_count or 0,
+        levels_visited       = (ok_lev and type(lev_count) == "number") and lev_count or 0,
+    }
+end
+
+local function snapshot_session()
+    local s = session
+    local k = s.kills or {}
+    return {
+        kills = {
+            total=k.total or 0, stalker=k.stalker or 0, bandit=k.bandit or 0,
+            military=k.military or 0, freedom=k.freedom or 0, duty=k.duty or 0,
+            ecolog=k.ecolog or 0, csky=k.csky or 0, monolith=k.monolith or 0,
+            killer=k.killer or 0, renegade=k.renegade or 0,
+            mutant=k.mutant or 0, helicopter=k.helicopter or 0, other=k.other or 0,
+        },
+        deaths        = s.deaths        or 0,
+        tasks         = s.tasks         or 0,
+        rubles_earned = s.rubles_earned or 0,
+        rubles_spent  = s.rubles_spent  or 0,
+        artifacts     = s.artifacts     or 0,
+        items         = s.items         or 0,
+        stashes       = s.stashes       or 0,
+        level_changes = s.level_changes or 0,
+        playtime      = os.time() - session_start,
+        start         = s.start         or 0,
+        death_location      = s.death_location,
+        death_location_name = s.death_location_name,
+        death_pos_x         = s.death_pos_x,
+        death_pos_z         = s.death_pos_z,
+    }
+end
+
+local function get_companions()
+    local result = {}
+    if not db.actor then return result end
+    pcall(function()
+        if not axr_companions then return end
+        local ntc = axr_companions.non_task_companions
+        if not ntc then return end
+        for id, _ in pairs(ntc) do
+            local obj = level.object_by_id(id)
+            if obj and obj:alive() then
+                local cpos = obj:position()
+                result[#result + 1] = {
+                    name    = obj:character_name() or "Unknown",
+                    health  = math.floor(obj.health * 100),
+                    faction = character_community(obj) or "stalker",
+                    rank    = obj:character_rank() or 0,
+                    reputation = obj:character_reputation() or 0,
+                    pos_x   = cpos.x,
+                    pos_z   = cpos.z,
+                    level   = level.name() or "unknown",
+                }
+            end
+        end
+    end)
+    return result
+end
+
+local function flush()
+    local elapsed = os.time() - session_start
+    session.playtime = elapsed
+    alltime.playtime = alltime_base_playtime + elapsed
+
+    pcall(update_session_stashes)
+    pcall(update_native_accumulators)
+
+    local earned = 0
+    local total  = 0
+    for _ in pairs(game_ach) do earned = earned + 1 end
+    if ini_sys then total = ini_sys:line_count("achievements") or 0 end
+
+    local official = new_alltime()
+    pcall(function() official = read_official_stats() end)
+
+    local actor_info = {}
+    if db.actor then
+        pcall(function()
+            local pos = db.actor:position()
+            local dir = db.actor:direction()
+            actor_info = {
+                name       = db.actor:character_name() or "Unknown",
+                faction    = character_community(db.actor) or "stalker",
+                rank       = db.actor:character_rank() or 0,
+                reputation = db.actor:character_reputation() or 0,
+                money      = db.actor:money() or 0,
+                location   = level.name() or "unknown",
+                location_name = (function()
+                    local raw = level.name() or ""
+                    local key = "st_level_" .. raw
+                    local t   = game.translate_string(key)
+                    return (t and t ~= "" and t ~= key) and t or nil
+                end)(),
+                game_time  = { h = level.get_time_hours(), m = level.get_time_minutes() },
+                pos_x      = pos.x,
+                pos_z      = pos.z,
+                -- facing heading in degrees, 0 = north (+z), CW; for a north-up map
+                heading    = math.deg(math.atan2(dir.x, dir.z)),
+                -- health 0–100 (db.actor.health is 0–1, same as companions)
+                health     = math.floor((db.actor.health or 0) * 100),
+            }
+        end)
+    end
+
+    local companions = get_companions()
+
+    local out = {
+        last_updated      = os.time(),
+        game_state        = db.actor and "playing" or "menu",
+        session           = session,
+        alltime           = alltime,
+        alltime_official  = official,
+        actor             = actor_info,
+        companions        = (#companions > 0) and companions or nil,
+        last_run          = (#run_history > 0) and run_history or nil,
+        achievements      = unlocked,
+        game_achievements = {
+            unlocked = game_ach,
+            earned   = earned,
+            total    = total,
+        },
+        news              = (#news_buf > 0) and news_buf or nil,
+    }
+
+    local f = io.open(appdata() .. "gamma_stats.json", "w")
+    if f then f:write(j(out)) ; f:close() end
+end
+
+-- ============================================================
+-- Zone news capture (curated)
+-- ============================================================
+
+local function is_newsworthy(cap)
+    if type(cap) ~= "string" or cap == "" then return false end
+    if not NEWS_CURATE then return true end  -- discovery mode: keep everything
+    local low = string.lower(cap)
+    for _, kw in ipairs(NEWS_MATCH) do
+        if string.find(low, kw, 1, true) then return true end
+    end
+    return false
+end
+
+-- Every captured event carries a `kind` so the website can route one stream to
+-- many surfaces (ticker / toast / stacked notifications / feed) by filtering.
+-- Note: this only mutates the buffer; the caller decides whether to flush now.
+-- High-frequency sources (loot) skip the immediate write and ride the next
+-- on_actor_update tick (<=500ms) so a stash dump can't trigger a flush storm.
+local function push_news_entry(kind, text, key)
+    table.insert(news_buf, 1, { kind = kind, text = text, at = os.time(), key = key })
+    while #news_buf > NEWS_MAX do table.remove(news_buf) end
+end
+
+local function push_news(cap)
+    if not is_newsworthy(cap) then return end
+    local text = cap
+    pcall(function()
+        local t = game.translate_string(cap)
+        if t and t ~= "" then text = t end
+    end)
+    push_news_entry("event", text, cap)
+    pcall(flush)  -- low-frequency: surface world events promptly
+end
+
+-- Loot pickups: resolve the item's display name and feed it as a "loot" entry.
+-- No flush here — pickups are bursty; the periodic feed tick carries them.
+local function push_loot(obj)
+    if not NEWS_LOOT or not obj then return end
+    local name
+    local ok = pcall(function() name = ui_item.get_sec_name(obj:section()) end)
+    if not ok or not name or name == "" then name = obj:section() end
+    push_news_entry("loot", name, obj:section())
+end
+
+-- Wrap news_manager.send_tip so curated tips are mirrored to the website feed.
+-- Original behaviour is untouched (we only observe then delegate).
+local function install_news_hook()
+    if not news_manager or type(news_manager.send_tip) ~= "function" then return end
+    if news_manager._tracker_hooked then return end
+    local orig = news_manager.send_tip
+    news_manager.send_tip = function(npc, text, ...)
+        pcall(push_news, text)
+        return orig(npc, text, ...)
+    end
+    news_manager._tracker_hooked = true
+end
+
+-- ============================================================
+-- Achievement check
+-- ============================================================
+
+local function check_ach()
+    if not db.actor then return end
+    for _, a in ipairs(ACH) do
+        if not unlocked[a.id] and a.check(alltime) then
+            unlocked[a.id] = { name=a.name, desc=a.desc, at=os.time() }
+            news_manager.send_tip(db.actor, "Achievement unlocked: " .. a.name, nil, "ui_inGame2_Check_mark_OK", 5000)
+            save_persistent()
+        end
+    end
+end
+
+-- ============================================================
+-- Native game achievements
+-- ============================================================
+
+local function read_game_achievements()
+    local result = {}
+    local total  = 0
+    local earned = 0
+    local line_count = ini_sys:line_count("achievements") or 0
+    for i = 0, line_count - 1 do
+        local _, id, _ = ini_sys:r_line("achievements", i, "", "")
+        if id and id ~= "" then
+            total = total + 1
+            if game_statistics.has_actor_achievement(id) then
+                result[id] = true
+                earned = earned + 1
+            end
+        end
+    end
+    return result, earned, total
+end
+
+function on_achievement_earned(id, unlock_str)
+    game_ach[id] = true
+    flush()
+end
+
+-- ============================================================
+-- Seed alltime from game_statistics on very first run
+-- ============================================================
+
+local function seed_from_game_statistics()
+    local function gsc(key)
+        local ok, v = pcall(game_statistics.get_statistic_count, key)
+        return (ok and type(v) == "number") and v or 0
+    end
+
+    local npc_kills  = gsc("killed_stalkers")
+    local monsters   = gsc("killed_monsters")
+    local helis      = gsc("helicopters_downed")
+    local total      = npc_kills + monsters + helis
+
+    if total == 0 and gsc("deaths") == 0 and gsc("tasks_completed") == 0 then
+        return  -- nothing to seed, skip
+    end
+
+    alltime.kills.total      = total
+    -- game_statistics has no faction breakdown; put all NPC kills under stalker
+    -- sub-buckets will fill in correctly going forward
+    alltime.kills.stalker    = npc_kills
+    alltime.kills.mutant     = monsters
+    alltime.kills.helicopter = helis
+
+    alltime.deaths        = gsc("deaths")
+    alltime.stashes       = gsc("stashes_found")
+    alltime.tasks         = gsc("tasks_completed")
+    alltime.artifacts     = gsc("artefacts_found")
+    alltime.level_changes = gsc("level_changes")
+
+    alltime.seeded = true
+    save_persistent()
+    flush()
+end
+
+-- ============================================================
+-- Kill tracking helpers
+-- ============================================================
+
+local function is_actor(obj)
+    return obj and obj:id() == AC_ID
+end
+
+local function record_kill(npc)
+    alltime.kills.total = alltime.kills.total + 1
+    session.kills.total = session.kills.total + 1
+
+    local key = "other"
+    local section = npc and npc:section()
+    if section and section:find("helicopter") then
+        key = "helicopter"
+    elseif npc and IsMonster(npc) then
+        key = "mutant"
+    elseif npc and IsStalker(npc) then
+        local comm = character_community(npc)
+        if     comm == "bandit"                                then key = "bandit"
+        elseif comm == "army" or comm == "istrebitel"          then key = "military"
+        elseif comm == "freedom"                               then key = "freedom"
+        elseif comm == "duty"                                  then key = "duty"
+        elseif comm == "ecolog"                                then key = "ecolog"
+        elseif comm == "csky"                                  then key = "csky"
+        elseif comm == "monolith" or comm == "zombied"         then key = "monolith"
+        elseif comm == "killer"                                then key = "killer"
+        elseif comm == "renegade"                              then key = "renegade"
+        elseif comm == "stalker" or comm == "actor_stalker"    then key = "stalker"
+        else                                                        key = "other"
+        end
+    end
+
+    alltime.kills[key] = alltime.kills[key] + 1
+    session.kills[key] = session.kills[key] + 1
+
+    check_ach()
+    flush()
+    save_persistent()
+end
+
+-- ============================================================
+-- Callbacks
+-- ============================================================
+
+-- Regular NPC kills (human NPCs — stalkers, bandits, military, etc.)
+function on_npc_death(npc, who, ...)
+    if not is_actor(who) then return end
+    local ok, err = pcall(record_kill, npc)
+    if not ok then printf("![stats_tracker] on_npc_death error: %s", tostring(err)) end
+end
+
+-- Monster kills (mutants — fired by bind_monster.script)
+function on_monster_death(npc, who, ...)
+    if not is_actor(who) then return end
+    local ok, err = pcall(record_kill, npc)
+    if not ok then printf("![stats_tracker] on_monster_death error: %s", tostring(err)) end
+end
+
+-- Stealth NPC kills — npc_on_death_callback fires with weapon as killer,
+-- so we catch them here instead (killer arg is the actual actor)
+function on_stealth_kill(npc, killer, weapon, was_melee)
+    if not is_actor(killer) then return end
+    local ok, err = pcall(record_kill, npc)
+    if not ok then printf("![stats_tracker] on_stealth_kill error: %s", tostring(err)) end
+end
+
+function on_actor_death()
+    alltime.deaths = alltime.deaths + 1
+    session.deaths = session.deaths + 1
+    pcall(function()
+        local raw = level.name() or ""
+        local key = "st_level_" .. raw
+        local t   = game.translate_string(key)
+        session.death_location      = raw
+        session.death_location_name = (t and t ~= "" and t ~= key) and t or nil
+    end)
+    pcall(function()
+        if db.actor then
+            local pos = db.actor:position()
+            session.death_pos_x = pos.x
+            session.death_pos_z = pos.z
+        end
+    end)
+    -- capture now — Lua state resets on menu return so load_state is too late
+    pcall(update_session_stashes)
+    pcall(function()
+        table.insert(run_history, 1, snapshot_session())
+        while #run_history > 3 do table.remove(run_history) end
+    end)
+    check_ach()
+    flush()
+    session_ended = true  -- tells load_state to start a fresh session, not restore this one
+    save_persistent()
+end
+
+function on_task_update(tsk, state, tm, id)
+    if state == 2 then
+        alltime.tasks = alltime.tasks + 1
+        session.tasks = session.tasks + 1
+        check_ach()
+        flush()
+        save_persistent()
+    end
+end
+
+function on_item_take(obj)
+    if is_loading then return end
+    alltime.items = alltime.items + 1
+    session.items = session.items + 1
+    pcall(push_loot, obj)
+    if IsArtefact(obj) then
+        alltime.artifacts = alltime.artifacts + 1
+        session.artifacts = session.artifacts + 1
+        check_ach()
+    end
+end
+
+function on_level_change()
+    -- load_state always fires before this callback and resets skip_first_load_screen,
+    -- so this is always the "first" call after a load. Use it only for initialization.
+    skip_first_load_screen = false
+    is_loading = false
+    last_pos = nil  -- new level = teleported position; don't book the jump
+    if db.actor then last_money = db.actor:money() end
+    local ok, result = pcall(read_game_achievements)
+    game_ach = (ok and result) or {}
+    if needs_seeding then
+        needs_seeding = false
+        pcall(seed_from_game_statistics)
+    end
+    -- level_changes are counted in load_state (where we can distinguish
+    -- a level transition from a death/menu reload via the session_ended flag).
+    check_ach()
+    flush()
+    save_persistent()
+end
+
+function on_actor_update()
+    if is_loading then return end
+
+    local now = time_global()
+    if now - last_save_tick < FEED_INTERVAL_MS then return end
+    last_save_tick = now
+
+    if db.actor then
+        local money = db.actor:money()
+        if money > last_money then
+            local delta = money - last_money
+            alltime.rubles_earned = alltime.rubles_earned + delta
+            session.rubles_earned = session.rubles_earned + delta
+            check_ach()
+        elseif money < last_money then
+            local delta = last_money - money
+            alltime.rubles_spent = alltime.rubles_spent + delta
+            session.rubles_spent = session.rubles_spent + delta
+        end
+        last_money = money
+
+        -- Distance walked: accumulate the horizontal (x/z) step since last tick.
+        -- last_pos is cleared on load/level-change so the first post-load tick
+        -- never books a jump, and the DIST_CAP guard rejects any teleport.
+        local ok, pos = pcall(function() return db.actor:position() end)
+        if ok and pos then
+            if last_pos then
+                local dx = pos.x - last_pos.x
+                local dz = pos.z - last_pos.z
+                local step = math.sqrt(dx * dx + dz * dz)
+                if step < DIST_CAP then
+                    alltime.distance_m = (alltime.distance_m or 0) + step
+                end
+            end
+            last_pos = { x = pos.x, z = pos.z }
+        end
+    end
+
+    flush()  -- website feed, every FEED_INTERVAL_MS for a smooth live map (updates stashes)
+
+    -- A looted stash has no event callback, so re-check the stash achievement
+    -- here whenever flush() bumped the count.
+    if (session.stashes or 0) ~= last_stash_seen then
+        last_stash_seen = session.stashes or 0
+        check_ach()
+    end
+
+    -- Persist to disk less often (heavier); events already persist on their own
+    if now - last_persist_tick >= PERSIST_INTERVAL_MS then
+        last_persist_tick = now
+        save_persistent()
+    end
+end
+
+-- ============================================================
+-- Load state — reads alltime from file, ignores save contents
+-- ============================================================
+
+function load_state(m)
+    local saved = load_persistent()
+
+    -- Honour a one-shot career reset before anything reads the saved totals.
+    -- saved=nil drops into the fresh-session path below; seeded=true keeps it a
+    -- true zero instead of reseeding kills/deaths from the native game stats.
+    if check_reset() then
+        saved = nil
+        alltime = new_alltime()
+        alltime.seeded = true
+        unlocked    = {}
+        run_history = {}
+        save_persistent()
+    elseif saved and saved.alltime then
+        alltime = saved.alltime
+        backfill(alltime, new_alltime())
+        backfill(alltime.kills, new_kills())
+        if alltime.kills.total == 0 and not alltime.seeded then
+            needs_seeding = true
+        end
+        unlocked    = saved.unlocked    or {}
+        run_history = saved.run_history or {}
+    else
+        alltime = new_alltime()
+        needs_seeding = true
+        unlocked    = {}
+        run_history = {}
+    end
+
+    local was_death    = not saved or saved.session_ended
+    local saved_session = saved and saved.session
+
+    if saved_session and not was_death then
+        -- Level transition: restore the running session and count this crossing.
+        session = saved_session
+        backfill(session, new_session())
+        if not session.kills then session.kills = new_kills() end
+        backfill(session.kills, new_kills())
+
+        alltime.level_changes = alltime.level_changes + 1
+        session.level_changes = session.level_changes + 1
+
+        -- Adjust time tracking so elapsed playtime continues accumulating correctly.
+        local prev_playtime   = session.playtime or 0
+        alltime_base_playtime = (alltime.playtime or 0) - prev_playtime
+        session_start         = os.time() - prev_playtime
+    else
+        -- Fresh start: death reload, menu load, or first run.
+        alltime_base_playtime = alltime.playtime or 0
+        session               = new_session()
+        session_start         = os.time()
+    end
+
+    session_ended          = false
+    last_save_tick         = 0
+    last_money             = 0
+    last_pos               = nil
+    skip_first_load_screen = true
+    is_loading             = true
+    game_ach               = {}
+
+    flush()
+end
+
+-- ============================================================
+-- Entry point
+-- ============================================================
+
+function on_game_start()
+    if not alltime.kills then alltime = new_alltime() end
+    if not session.kills then session = new_session() end
+    pcall(flush)  -- write initial menu state before any save is loaded
+    RegisterScriptCallback("npc_on_death_callback",       on_npc_death)
+    RegisterScriptCallback("monster_on_death_callback",   on_monster_death)
+    RegisterScriptCallback("actor_on_death",              on_actor_death)
+    RegisterScriptCallback("actor_on_task_callback",      on_task_update)
+    RegisterScriptCallback("actor_on_item_take",          on_item_take)
+    RegisterScriptCallback("on_loading_screen_dismissed", on_level_change)
+    RegisterScriptCallback("actor_on_update",             on_actor_update)
+    RegisterScriptCallback("actor_on_achievement_earned", on_achievement_earned)
+    RegisterScriptCallback("load_state",                  load_state)
+    -- stealth kills: npc_on_death_callback fires with weapon as killer,
+    -- this separate callback has the actual actor as killer
+    pcall(RegisterScriptCallback, "npc_on_silent_kill_callback", on_stealth_kill)
+    -- mirror curated on-screen tips into the website's Zone News feed
+    pcall(install_news_hook)
+end
