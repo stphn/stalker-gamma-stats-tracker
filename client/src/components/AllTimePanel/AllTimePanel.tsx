@@ -1,6 +1,7 @@
 import type { AllTimeBlock, Run } from '../../types';
 import { useI18n } from '../../i18n/I18nContext';
 import { fmt_money } from '../../utils/formatters';
+import { AllTimeNote } from '../AllTimeNote/AllTimeNote';
 import { CareerBand } from '../CareerBand/CareerBand';
 import { KillsBreakdown } from '../KillsBreakdown/KillsBreakdown';
 import { Records } from '../Records/Records';
@@ -37,6 +38,9 @@ export function AllTimePanel({ stats, runs, totalRuns }: AllTimePanelProps) {
 
 	return (
 		<div className={styles.root}>
+			{/* How cross-save totals accumulate — dismissable explainer. */}
+			<AllTimeNote />
+
 			{/* Career band — the hero numbers only the cross-save tier can own. */}
 			<CareerBand
 				totalRuns={totalRuns}

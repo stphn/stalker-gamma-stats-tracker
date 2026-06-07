@@ -129,7 +129,7 @@ export function useStageGL(
 				material.uniforms.uNextTexture.value = tex;
 				material.uniforms.uNextImageResolution.value.copy(res);
 				material.uniforms.uTransition.value = 0;
-				fadeStart = clock.getElapsedTime();
+				fadeStart = timer.getElapsed();
 				fading = true;
 			});
 		};
@@ -210,11 +210,12 @@ export function useStageGL(
 		// ── Render loop ───────────────────────────────────────────────────────
 		let animId = 0;
 		let time = 0;
-		const clock = new THREE.Clock();
+		const timer = new THREE.Timer();
 
 		function tick() {
 			animId = requestAnimationFrame(tick);
-			time = clock.getElapsedTime();
+			timer.update();
+			time = timer.getElapsed();
 
 			// Per-frame decay — exactly as in J0SUKE's GPGPU.render()
 			variable.material.uniforms.uTime.value = time;

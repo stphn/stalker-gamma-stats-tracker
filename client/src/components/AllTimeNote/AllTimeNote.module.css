@@ -1,0 +1,76 @@
+.note {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--pad-sm);
+	padding: var(--pad-sm) var(--pad-md);
+	background: var(--bg-surface);
+	border: 1px solid var(--border);
+	border-left: 2px solid var(--color-info);
+	border-radius: 2px;
+}
+
+.icon {
+	flex-shrink: 0;
+	margin-top: 1px;
+	color: var(--color-info);
+}
+
+.body {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	flex: 1;
+	min-width: 0;
+}
+
+.title {
+	font-family: var(--font-display);
+	font-size: var(--text-2xs);
+	font-weight: 700;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--text-primary);
+}
+
+.text {
+	margin: 0;
+	font-family: var(--font-body);
+	font-size: var(--text-xs);
+	line-height: 1.45;
+	color: var(--text-secondary);
+}
+
+/* Close (collapse) + reopen share the ghost-button base from ProgressionToasts. */
+.close,
+.reopen {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	padding: 2px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--text-disabled);
+	transition: color 120ms ease, opacity 120ms ease;
+}
+
+.close:hover {
+	color: var(--text-primary);
+}
+
+/* Collapsed state: a subtle, info-tinted ⓘ tucked to the right. */
+.collapsed {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.reopen {
+	color: var(--color-info);
+	opacity: 0.7;
+}
+
+.reopen:hover {
+	color: var(--accent-bright);
+	opacity: 1;
+}

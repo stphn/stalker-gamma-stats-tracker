@@ -128,6 +128,10 @@ export const de: Record<string, string> = {
 	'alltime.earningsTrend': 'Einnahmen im Verlauf',
 	'alltime.perRun': 'Pro Durchlauf',
 	'alltime.cumulative': 'Kumuliert',
+	'alltime.note.title': 'So funktioniert „Gesamt“',
+	'alltime.note.body': 'Diese Werte summieren sich über jeden Stalker und Spielstand auf diesem PC und steigen nur — sie werden beim Tod nie zurückgesetzt. Ältere Spielstände laden, neu laden oder Inhalte wiederholen kann Fortschritt mehrfach zählen; „Gesamt“ zeigt also deine gesamte erfasste Aktivität, nicht einen einzelnen Durchlauf.',
+	'alltime.note.dismiss': 'Hinweis ausblenden',
+	'alltime.note.show': 'So funktioniert „Gesamt“',
 	// PDA panel — group labels
 	'pda.combat': 'Kampf',
 	'pda.survival': 'Überleben',
